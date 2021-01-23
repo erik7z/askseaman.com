@@ -1,0 +1,8 @@
+/.env
+/api/node_modules
+/neo4j/data
+/neo4j/import
+/neo4j/logs
+/neo4j/plugins
+/ui/_html
+/ui/node_modules

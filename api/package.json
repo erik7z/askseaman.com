@@ -1,0 +1,31 @@
+{
+	"name": "as-api",
+	"version": "1.0.0",
+	"description": "askseaman.com - questions & answers for proffesional seamans",
+	"type": "module",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon src/index.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"apollo-server-express": "2.19.2",
+		"bcryptjs": "2.4.3",
+		"body-parser": "1.19.0",
+		"cors": "2.8.5",
+		"express": "4.16.4",
+		"express-jwt": "6.0.0",
+		"graphql": "15.4.0",
+		"graphql-auth-directives": "2.2.1",
+		"jsonwebtoken": "^8.5.1",
+		"lodash.merge": "4.6.2",
+		"neo4j-driver": "4.2.2",
+		"neo4j-graphql-js": "2.19.1"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.7"
+	}
+}
