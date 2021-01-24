@@ -5,7 +5,7 @@ import {
 	HasRoleDirective,
 } from 'graphql-auth-directives'
 
-import { resolvers, typeDefs } from './graphql/index.js'
+import { resolvers, typeDefs } from './graphql'
 
 const schema = makeAugmentedSchema({
 	typeDefs,
@@ -34,9 +34,24 @@ const schema = makeAugmentedSchema({
 	},
 })
 
+/*TODO*/
+// export const createDriver = async (config: Neo4jConfig) => {
+//   const driver: Driver = neo4j.driver(
+//       `${config.scheme}://${config.host}:${config.port}`,
+//       neo4j.auth.basic(config.username, config.password)
+//   );
+
+//   await driver.verifyConnectivity()
+
+//   return driver;
+// }
+
 const driver = neo4j.driver(
-	process.env.NEO4J_URI,
-	neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
+	process.env.NEO4J_URI || 'bolt://localhost:7687',
+	neo4j.auth.basic(
+		process.env.NEO4J_USER || 'neo4j',
+		process.env.NEO4J_PASSWORD || 'letmein'
+	)
 )
 
 // synchronize graphl & neo4j schema

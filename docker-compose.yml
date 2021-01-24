@@ -30,11 +30,12 @@ services:
   api:
     build: ./api
     # restart: unless-stopped
+    command: sh -c "cd /api/ && npm install && npm run start" # dev option
     ports:
       - 4000:4000
     volumes:
       - ./api:/api
-      - /api/node_modules
+      # - /api/node_modules # prod option (hide node modules folder)
     environment:
       - NEO4J_URI=${NEO4J_URI}
       - NEO4J_USER=${NEO4J_USER}

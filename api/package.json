@@ -2,14 +2,15 @@
 	"name": "as-api",
 	"version": "1.0.0",
 	"description": "askseaman.com - questions & answers for proffesional seamans",
-	"type": "module",
-	"main": "src/index.js",
+	"main": "src/index.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "nodemon src/index.js"
+		"start": "nodemon src/index.ts",
+		"build": "tsc -p ./",
+		"codegen": "graphql-codegen --config codegen.yml"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "http://erik7z.github.io/",
 	"license": "ISC",
 	"dependencies": {
 		"apollo-server-express": "2.19.2",
@@ -26,6 +27,18 @@
 		"neo4j-graphql-js": "2.19.1"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.7"
+		"@graphql-codegen/cli": "1.20.0",
+		"@types/express": "^4.17.11",
+		"@types/graphql": "^14.5.0",
+		"@types/lodash.merge": "^4.6.6",
+		"@types/node": "^14.14.22",
+		"@typescript-eslint/eslint-plugin": "^4.14.0",
+		"@typescript-eslint/parser": "^4.14.0",
+		"eslint": "^7.18.0",
+		"nodemon": "^2.0.7",
+		"ts-node": "^9.1.1",
+		"typescript": "^4.1.3",
+		"@graphql-codegen/typescript": "1.20.0",
+		"@graphql-codegen/typescript-resolvers": "1.18.1"
 	}
 }

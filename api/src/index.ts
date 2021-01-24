@@ -1,13 +1,18 @@
 import express from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 
-import { schema, driver } from './database.js'
+import { schema, driver } from './database'
 
 const app = express()
 app.use(bodyParser.json())
 
-const checkErrorHeaderMiddleware = async (req, res, next) => {
+const checkErrorHeaderMiddleware = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	req.error = req.headers['x-error']
 	next()
 }
@@ -18,9 +23,6 @@ const server = new ApolloServer({
 	context: ({ req }) => {
 		return {
 			driver,
-			cypherParams: {
-				currentUserId: req.headers.userid,
-			},
 			req,
 		}
 	},
@@ -35,5 +37,3 @@ const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
 app.listen({ host, port, path }, () => {
 	console.log(`GraphQL server ready at http://${host}:${port}${path}`)
 })
-
-// driver.close()
