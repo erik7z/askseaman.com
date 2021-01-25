@@ -3,14 +3,14 @@ import { Request, Response, NextFunction } from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 
-import { schema, driver } from './database'
+import { schema, createDriver } from './database'
 
 const app = express()
 app.use(bodyParser.json())
 
 const checkErrorHeaderMiddleware = async (
 	req: Request,
-	res: Response,
+	_res: Response,
 	next: NextFunction
 ) => {
 	req.error = req.headers['x-error']
@@ -18,22 +18,28 @@ const checkErrorHeaderMiddleware = async (
 }
 app.use('*', checkErrorHeaderMiddleware)
 
-const server = new ApolloServer({
-	schema,
-	context: ({ req }) => {
-		return {
-			driver,
-			req,
-		}
-	},
-})
+const init = async () => {
+	const driver = createDriver()
 
-server.applyMiddleware({ app, path: '/' })
+	const server = new ApolloServer({
+		schema,
+		context: ({ req }) => {
+			return {
+				driver,
+				req,
+			}
+		},
+	})
 
-const port = process.env.GRAPHQL_SERVER_PORT || 4000
-const path = process.env.GRAPHQL_SERVER_PATH || '/'
-const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
+	server.applyMiddleware({ app, path: '/' })
 
-app.listen({ host, port, path }, () => {
-	console.log(`GraphQL server ready at http://${host}:${port}${path}`)
-})
+	const port = process.env.GRAPHQL_SERVER_PORT || 4000
+	const path = process.env.GRAPHQL_SERVER_PATH || '/'
+	const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
+
+	app.listen({ host, port, path }, () => {
+		console.log(`GraphQL server ready at http://${host}:${port}${path}`)
+	})
+}
+
+init()

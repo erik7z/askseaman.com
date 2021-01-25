@@ -7,7 +7,7 @@ import {
 
 import { resolvers, typeDefs } from './graphql'
 
-const schema = makeAugmentedSchema({
+export const schema = makeAugmentedSchema({
 	typeDefs,
 	resolvers,
 	schemaDirectives: {
@@ -24,38 +24,21 @@ const schema = makeAugmentedSchema({
 		experimental: true,
 		query: true,
 		mutation: false,
-
-		// query: {
-		//   exclude: ["MyCustomPayload"]
-		// },
-		// mutation: {
-		//   exclude: ["MyCustomPayload"]
-		// }
 	},
 })
 
-/*TODO*/
-// export const createDriver = async (config: Neo4jConfig) => {
-//   const driver: Driver = neo4j.driver(
-//       `${config.scheme}://${config.host}:${config.port}`,
-//       neo4j.auth.basic(config.username, config.password)
-//   );
-
-//   await driver.verifyConnectivity()
-
-//   return driver;
-// }
-
-const driver = neo4j.driver(
-	process.env.NEO4J_URI || 'bolt://localhost:7687',
-	neo4j.auth.basic(
-		process.env.NEO4J_USER || 'neo4j',
-		process.env.NEO4J_PASSWORD || 'letmein'
+export const createDriver = async () => {
+	const driver = neo4j.driver(
+		process.env.NEO4J_URI || 'bolt://localhost:7687',
+		neo4j.auth.basic(
+			process.env.NEO4J_USER || 'neo4j',
+			process.env.NEO4J_PASSWORD || 'letmein'
+		)
 	)
-)
 
-// synchronize graphl & neo4j schema
-// assertSchema({ schema, driver, debug: true })
-assertSchema({ schema, driver })
+	await driver.verifyConnectivity()
 
-export { schema, driver }
+	assertSchema({ schema, driver })
+
+	return driver
+}

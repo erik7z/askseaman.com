@@ -1,17 +1,10 @@
-import { Driver } from 'neo4j-driver'
-import { Request } from 'express'
-
+import { ApolloServerContext } from './../../types/backend'
+import { Resolvers } from '../../types/generated-backend'
 import { neo4jgraphql } from 'neo4j-graphql-js'
-import { Resolvers } from '../generated/graphql-backend'
 
-interface IContext {
-	driver: Driver
-	req: Request
-}
-
-const userResolvers: Resolvers = {
+const userResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
-		User(parent: any, params: any, ctx: IContext, resolveInfo) {
+		User(parent, params, ctx, resolveInfo) {
 			// if (!ctx.req.headers.userid) {
 			// 	throw new Error('request not authenticated')
 			// } else {
@@ -21,7 +14,7 @@ const userResolvers: Resolvers = {
 	},
 
 	Mutation: {
-		Register(parent: any, params: any, ctx: IContext, resolveInfo) {
+		Register(parent, params, ctx, resolveInfo) {
 			return neo4jgraphql(parent, params, ctx, resolveInfo)
 		},
 	},

@@ -1,22 +1,10 @@
-import { IResolvers } from 'apollo-server-express'
-import { Driver } from 'neo4j-driver'
-import { Request } from 'express'
-
 import { neo4jgraphql } from 'neo4j-graphql-js'
+import { Resolvers } from '../../types/generated-backend'
+import { ApolloServerContext } from '../../types/backend'
 
-interface IContext {
-	driver: Driver
-	req: Request
-}
-
-const questionResolvers: IResolvers = {
+const questionResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
-		Question: async (
-			_parent: undefined,
-			params: undefined,
-			ctx: IContext,
-			resolveInfo
-		) => {
+		Question: async (_parent, params, ctx, resolveInfo) => {
 			// console.log(ctx.req)
 			// if (!ctx.req.headers.userid) {
 			// 	throw new Error('request not authenticated')
@@ -26,12 +14,7 @@ const questionResolvers: IResolvers = {
 		},
 	},
 	Mutation: {
-		AskQuestion(
-			_parent: undefined,
-			params: undefined,
-			ctx: IContext,
-			resolveInfo
-		) {
+		AskQuestion(_parent, params, ctx, resolveInfo) {
 			return neo4jgraphql(_parent, params, ctx, resolveInfo)
 		},
 	},
