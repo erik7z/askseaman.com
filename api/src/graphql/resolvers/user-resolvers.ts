@@ -1,4 +1,4 @@
-import { createToken } from './../../middleware/auth'
+import { createToken } from '../../utils/auth'
 import { neo4jgraphql } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
 
@@ -8,10 +8,8 @@ import { Resolvers } from '../../types/generated-backend'
 const userResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
 		User(parent, params, ctx, resolveInfo) {
-			// if (!ctx.req.headers.userid) {
-			// 	throw new Error('request not authenticated')
+			// console.log(ctx.authParams)
 			return neo4jgraphql(parent, params, ctx, resolveInfo)
-			// }
 		},
 	},
 
@@ -19,19 +17,43 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 		async Register(parent, { data }, ctx, resolveInfo) {
 			const salt = bcrypt.genSaltSync(10)
 			data.password = bcrypt.hashSync(data.password, salt)
+			const roles = [process.env.DEFAULT_ROLE || 'reader']
+			const newData = { ...data, roles }
+			const user = await neo4jgraphql(
+				parent,
+				{ data: newData },
+				ctx,
+				resolveInfo
+			)
 
-			const user = await neo4jgraphql(parent, { data }, ctx, resolveInfo)
-
-			const token = await createToken({
+			user.token = await createToken({
 				user: {
 					id: user.userId,
 					name: user.name,
 					surname: user.surname,
 				},
-				roles: [process.env.DEFAULT_ROLE || 'reader'],
+				roles,
 			})
 
-			return token
+			return user
+		},
+		async SignIn(parent, { data }, ctx, resolveInfo) {
+			const loginUser = await neo4jgraphql(parent, { data }, ctx, resolveInfo)
+			if (!loginUser) throw new Error('No user was found with this email')
+
+			const valid = bcrypt.compareSync(data.password, loginUser.password)
+			if (!valid) throw new Error('Incorrect password')
+
+			loginUser.token = await createToken({
+				user: {
+					id: loginUser.userId,
+					name: loginUser.name,
+					surname: loginUser.surname,
+				},
+				roles: loginUser.roles || [process.env.DEFAULT_ROLE || 'reader'],
+			})
+
+			return loginUser
 		},
 	},
 }

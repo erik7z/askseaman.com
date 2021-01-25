@@ -4,6 +4,7 @@ import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 
 import { schema, driver } from './database'
+import { getUserFromToken } from './utils/auth'
 
 const app = express()
 app.use(bodyParser.json())
@@ -21,9 +22,14 @@ app.use('*', checkErrorHeaderMiddleware)
 const server = new ApolloServer({
 	schema,
 	context: ({ req }) => {
+		const authParams = getUserFromToken(req)
+
 		return {
 			driver,
 			req,
+			cypherParams: {
+				currentUserId: authParams?.user.id || null,
+			},
 		}
 	},
 })
