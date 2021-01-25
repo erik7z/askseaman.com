@@ -45,6 +45,8 @@ services:
       - GRAPHQL_SERVER_PATH=${GRAPHQL_SERVER_PATH}
       - GRAPHQL_SERVER_HOST=${GRAPHQL_SERVER_HOST}
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRY=${JWT_EXPIRY}
+      - DEFAULT_ROLE=${DEFAULT_ROLE}
     links:
       - as-neo4j
     depends_on:
