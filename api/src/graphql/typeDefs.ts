@@ -13,7 +13,7 @@ export const typeDefs = gql`
 
 	type Mutation {
 		SignIn(data: Dummy!): User!
-		Register(data: RegisterUserInput!): User!
+		Register(data: RegisterUserInput!): SignedToken!
 			@cypher(
 				statement: """
 				MERGE (l:LOCAL_ACCOUNT {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User { email: $data.email, password: $data.password, name: $data.name, surname: $data.surname, rank: $data.rank, userId: apoc.create.uuid(), createdAt: DateTime() }) RETURN u
@@ -67,7 +67,11 @@ export const typeDefs = gql`
 		text: String!
 		tags: [String!]!
 	}
-	#
+
+	type SignedToken {
+		token: String!
+	}
+
 	type User @isAuthenticated {
 		userId: ID! @id
 		email: String! @unique
