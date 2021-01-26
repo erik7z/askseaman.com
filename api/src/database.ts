@@ -23,7 +23,7 @@ export const schema = makeAugmentedSchema({
 		},
 		experimental: true,
 		query: {
-			exclude: ['SignedToken', 'LoginInfo'],
+			exclude: ['SignedToken', 'LoginInfo', 'RedirectUri'],
 		},
 		mutation: false,
 	},

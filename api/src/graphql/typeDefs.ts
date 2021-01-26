@@ -50,6 +50,31 @@ export const typeDefs = gql`
 				"""
 			)
 
+		ChangePassRequest(data: EmailInput!): RedirectUri!
+			@cypher(
+				statement: """
+				MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {email: $data.email})
+				SET l.code = $cypherParams.code
+				RETURN u
+				"""
+			)
+		ChangePassConfirm(data: CodeInput!): RedirectUri!
+			@cypher(
+				statement: """
+				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {code: $data.code})
+				RETURN u
+				"""
+			)
+
+		ChangePassComplete(data: CodeAndPassInput!): RedirectUri!
+			@cypher(
+				statement: """
+				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {code: $data.code})
+				SET l.password = $data.new_password, l.code = null
+				RETURN u
+				"""
+			)
+
 		AskQuestion(data: AskQuestionInput!): Question!
 			@cypher(
 				statement: """
@@ -79,6 +104,19 @@ export const typeDefs = gql`
 		password: String!
 	}
 
+	input EmailInput {
+		email: String!
+	}
+
+	input CodeInput {
+		code: Int!
+	}
+
+	input CodeAndPassInput {
+		code: Int!
+		new_password: String!
+	}
+
 	input AskQuestionInput {
 		title: String!
 		text: String!
@@ -89,6 +127,13 @@ export const typeDefs = gql`
 
 	type SignedToken {
 		token: String!
+	}
+
+	type LOCAL_ACCOUNT @isAuthenticated {
+		user: User! @relation(name: "AUTHENTICATED_WITH", direction: IN)
+		email: String! @unique
+		password: String
+		code: Int
 	}
 
 	type LoginInfo {
@@ -103,8 +148,9 @@ export const typeDefs = gql`
 
 	type User {
 		userId: ID! @id
-		email: String! @unique @isAuthenticated
-		# password: String! @isAuthenticated
+		email: LOCAL_ACCOUNT
+			@isAuthenticated
+			@relation(name: "AUTHENTICATED_WITH", direction: OUT)
 		name: String!
 		surname: String!
 		rank: Rank!
@@ -114,6 +160,12 @@ export const typeDefs = gql`
 		createdAt: DateTime
 		token: String
 		roles: [String]
+	}
+
+	type RedirectUri {
+		redirect: String!
+		status: ResponseStatus!
+		message: String
 	}
 
 	type Question @hasRole(roles: [reader]) {
@@ -165,5 +217,10 @@ export const typeDefs = gql`
 		user
 		admin
 		reader
+	}
+
+	enum ResponseStatus {
+		success
+		fail
 	}
 `

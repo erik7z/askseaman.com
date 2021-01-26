@@ -10,8 +10,12 @@ export interface AuthUserParams {
 	roles: string[]
 }
 
+export interface iCypherParams {
+	[key: string]: unknown
+}
+
 export interface ApolloServerContext {
 	driver: Driver
 	req: Request
-	cypherParams: { [key: string]: unknown } | null
+	cypherParams: iCypherParams
 }
