@@ -59,10 +59,10 @@ app.get(AUTH_VERIFY_CODE_URI + '/:code', async (req, res) => {
 
 	const redirect_uri = `${HOST_URI}${uri}?status=${status}&message=${message}`
 
-	// res.redirect(redirect_uri)
-	res.send({
-		redirect_uri,
-	})
+	res.redirect(redirect_uri)
+	// res.send({
+	// 	redirect_uri,
+	// })
 })
 
 const server = new ApolloServer({

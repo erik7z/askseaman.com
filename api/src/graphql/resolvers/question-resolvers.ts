@@ -5,17 +5,24 @@ import { ApolloServerContext } from '../../types/backend'
 const questionResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
 		Question: async (_parent, params, ctx, resolveInfo) => {
-			// console.log(ctx.req)
-			// if (!ctx.req.headers.userid) {
-			// 	throw new Error('request not authenticated')
-			// } else {
 			return neo4jgraphql(_parent, params, ctx, resolveInfo)
-			// }
 		},
 	},
 	Mutation: {
-		AskQuestion(_parent, params, ctx, resolveInfo) {
-			return neo4jgraphql(_parent, params, ctx, resolveInfo)
+		async AskQuestion(parent, { data }, ctx, resolveInfo) {
+			//TODO: trim EVERY tag spaces and make uppercase
+
+			return neo4jgraphql(parent, { data }, ctx, resolveInfo)
+		},
+
+		async EditQuestion(parent, { data }, ctx, resolveInfo) {
+			return neo4jgraphql(parent, { data }, ctx, resolveInfo)
+		},
+
+		async AddTag(parent, { data }, ctx, resolveInfo) {
+			//TODO: trim tag spaces and make uppercase
+
+			return neo4jgraphql(parent, { data }, ctx, resolveInfo)
 		},
 	},
 }

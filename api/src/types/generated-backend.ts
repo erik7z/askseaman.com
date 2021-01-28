@@ -41,6 +41,10 @@ export type EmailInput = {
   email: Scalars['String'];
 };
 
+export type IdInput = {
+  itemId: Scalars['ID'];
+};
+
 export type CodeInput = {
   code: Scalars['Int'];
 };
@@ -56,59 +60,20 @@ export type AskQuestionInput = {
   tags: Array<Scalars['String']>;
 };
 
+export type EditQuestionInput = {
+  questionId: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type AddTagInput = {
+  name: Scalars['String'];
+};
+
 export type SignedToken = {
   __typename?: 'SignedToken';
   token: Scalars['String'];
-};
-
-export enum _Local_AccountOrdering {
-  EmailAsc = 'email_asc',
-  EmailDesc = 'email_desc',
-  PasswordAsc = 'password_asc',
-  PasswordDesc = 'password_desc',
-  CodeAsc = 'code_asc',
-  CodeDesc = 'code_desc',
-  IdAsc = '_id_asc',
-  IdDesc = '_id_desc'
-}
-
-export type _Local_AccountFilter = {
-  AND?: Maybe<Array<_Local_AccountFilter>>;
-  OR?: Maybe<Array<_Local_AccountFilter>>;
-  user?: Maybe<_UserFilter>;
-  user_not?: Maybe<_UserFilter>;
-  user_in?: Maybe<Array<_UserFilter>>;
-  user_not_in?: Maybe<Array<_UserFilter>>;
-  email?: Maybe<Scalars['String']>;
-  email_not?: Maybe<Scalars['String']>;
-  email_in?: Maybe<Array<Scalars['String']>>;
-  email_not_in?: Maybe<Array<Scalars['String']>>;
-  email_regexp?: Maybe<Scalars['String']>;
-  email_contains?: Maybe<Scalars['String']>;
-  email_not_contains?: Maybe<Scalars['String']>;
-  email_starts_with?: Maybe<Scalars['String']>;
-  email_not_starts_with?: Maybe<Scalars['String']>;
-  email_ends_with?: Maybe<Scalars['String']>;
-  email_not_ends_with?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-  password_not?: Maybe<Scalars['String']>;
-  password_in?: Maybe<Array<Scalars['String']>>;
-  password_not_in?: Maybe<Array<Scalars['String']>>;
-  password_regexp?: Maybe<Scalars['String']>;
-  password_contains?: Maybe<Scalars['String']>;
-  password_not_contains?: Maybe<Scalars['String']>;
-  password_starts_with?: Maybe<Scalars['String']>;
-  password_not_starts_with?: Maybe<Scalars['String']>;
-  password_ends_with?: Maybe<Scalars['String']>;
-  password_not_ends_with?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['Int']>;
-  code_not?: Maybe<Scalars['Int']>;
-  code_in?: Maybe<Array<Scalars['Int']>>;
-  code_not_in?: Maybe<Array<Scalars['Int']>>;
-  code_lt?: Maybe<Scalars['Int']>;
-  code_lte?: Maybe<Scalars['Int']>;
-  code_gt?: Maybe<Scalars['Int']>;
-  code_gte?: Maybe<Scalars['Int']>;
 };
 
 export type Local_Account = {
@@ -117,8 +82,6 @@ export type Local_Account = {
   email: Scalars['String'];
   password?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['Int']>;
-  /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
-  _id?: Maybe<Scalars['String']>;
 };
 
 
@@ -130,7 +93,6 @@ export type LoginInfo = {
   __typename?: 'LoginInfo';
   userId: Scalars['ID'];
   email: Scalars['String'];
-  password: Scalars['String'];
   name: Scalars['String'];
   surname: Scalars['String'];
   token?: Maybe<Scalars['String']>;
@@ -168,10 +130,6 @@ export type _UserFilter = {
   userId_not_starts_with?: Maybe<Scalars['ID']>;
   userId_ends_with?: Maybe<Scalars['ID']>;
   userId_not_ends_with?: Maybe<Scalars['ID']>;
-  email?: Maybe<_Local_AccountFilter>;
-  email_not?: Maybe<_Local_AccountFilter>;
-  email_in?: Maybe<Array<_Local_AccountFilter>>;
-  email_not_in?: Maybe<Array<_Local_AccountFilter>>;
   name?: Maybe<Scalars['String']>;
   name_not?: Maybe<Scalars['String']>;
   name_in?: Maybe<Array<Scalars['String']>>;
@@ -222,6 +180,14 @@ export type _UserFilter = {
   comments_none?: Maybe<_CommentFilter>;
   comments_single?: Maybe<_CommentFilter>;
   comments_every?: Maybe<_CommentFilter>;
+  tags?: Maybe<_TagFilter>;
+  tags_not?: Maybe<_TagFilter>;
+  tags_in?: Maybe<Array<_TagFilter>>;
+  tags_not_in?: Maybe<Array<_TagFilter>>;
+  tags_some?: Maybe<_TagFilter>;
+  tags_none?: Maybe<_TagFilter>;
+  tags_single?: Maybe<_TagFilter>;
+  tags_every?: Maybe<_TagFilter>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -262,16 +228,12 @@ export type User = {
   questions?: Maybe<Array<Maybe<Question>>>;
   answers?: Maybe<Array<Maybe<Answer>>>;
   comments?: Maybe<Array<Maybe<Comment>>>;
+  tags?: Maybe<Array<Maybe<Tag>>>;
   createdAt?: Maybe<_Neo4jDateTime>;
   token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
-};
-
-
-export type UserEmailArgs = {
-  filter?: Maybe<_Local_AccountFilter>;
 };
 
 
@@ -298,6 +260,14 @@ export type UserCommentsArgs = {
   filter?: Maybe<_CommentFilter>;
 };
 
+
+export type UserTagsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_TagOrdering>>>;
+  filter?: Maybe<_TagFilter>;
+};
+
 export type RedirectUri = {
   __typename?: 'RedirectUri';
   redirect: Scalars['String'];
@@ -314,6 +284,8 @@ export enum _QuestionOrdering {
   TextDesc = 'text_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
+  UpdatedAtAsc = 'updatedAt_asc',
+  UpdatedAtDesc = 'updatedAt_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -382,6 +354,14 @@ export type _QuestionFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_not?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_not_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_lt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
 export type Question = {
@@ -393,6 +373,7 @@ export type Question = {
   answers?: Maybe<Array<Maybe<Answer>>>;
   tagged?: Maybe<Array<Maybe<Tag>>>;
   createdAt?: Maybe<_Neo4jDateTime>;
+  updatedAt?: Maybe<_Neo4jDateTime>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
@@ -427,6 +408,8 @@ export enum _AnswerOrdering {
   RateDesc = 'rate_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
+  UpdatedAtAsc = 'updatedAt_asc',
+  UpdatedAtDesc = 'updatedAt_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -488,6 +471,14 @@ export type _AnswerFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_not?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_not_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_lt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
 export type Answer = {
@@ -499,6 +490,7 @@ export type Answer = {
   text: Scalars['String'];
   rate: Scalars['Int'];
   createdAt?: Maybe<_Neo4jDateTime>;
+  updatedAt?: Maybe<_Neo4jDateTime>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
@@ -528,6 +520,8 @@ export enum _CommentOrdering {
   TextDesc = 'text_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
+  UpdatedAtAsc = 'updatedAt_asc',
+  UpdatedAtDesc = 'updatedAt_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -573,6 +567,14 @@ export type _CommentFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_not?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_not_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_lt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
 export type Comment = {
@@ -582,6 +584,7 @@ export type Comment = {
   answer: Answer;
   text: Scalars['String'];
   createdAt?: Maybe<_Neo4jDateTime>;
+  updatedAt?: Maybe<_Neo4jDateTime>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
@@ -599,6 +602,8 @@ export type CommentAnswerArgs = {
 export enum _TagOrdering {
   NameAsc = 'name_asc',
   NameDesc = 'name_desc',
+  CreatedAtAsc = 'createdAt_asc',
+  CreatedAtDesc = 'createdAt_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -625,12 +630,26 @@ export type _TagFilter = {
   questions_none?: Maybe<_QuestionFilter>;
   questions_single?: Maybe<_QuestionFilter>;
   questions_every?: Maybe<_QuestionFilter>;
+  createdAt?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_not?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  createdAt_not_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  createdAt_lt?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  addedBy?: Maybe<_UserFilter>;
+  addedBy_not?: Maybe<_UserFilter>;
+  addedBy_in?: Maybe<Array<_UserFilter>>;
+  addedBy_not_in?: Maybe<Array<_UserFilter>>;
 };
 
 export type Tag = {
   __typename?: 'Tag';
   name: Scalars['String'];
   questions?: Maybe<Array<Maybe<Question>>>;
+  createdAt?: Maybe<_Neo4jDateTime>;
+  addedBy?: Maybe<User>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
@@ -641,6 +660,11 @@ export type TagQuestionsArgs = {
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_QuestionOrdering>>>;
   filter?: Maybe<_QuestionFilter>;
+};
+
+
+export type TagAddedByArgs = {
+  filter?: Maybe<_UserFilter>;
 };
 
 export type Liked = {
@@ -840,8 +864,6 @@ export enum _RelationDirections {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<User>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for LOCAL_ACCOUNT type nodes. */
-  LOCAL_ACCOUNT?: Maybe<Array<Maybe<Local_Account>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Question type nodes. */
@@ -852,18 +874,6 @@ export type Query = {
   Comment?: Maybe<Array<Maybe<Comment>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Tag type nodes. */
   Tag?: Maybe<Array<Maybe<Tag>>>;
-};
-
-
-export type QueryLocal_AccountArgs = {
-  email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['Int']>;
-  _id?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_Local_AccountOrdering>>>;
-  filter?: Maybe<_Local_AccountFilter>;
 };
 
 
@@ -888,6 +898,7 @@ export type QueryQuestionArgs = {
   title?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -901,6 +912,7 @@ export type QueryAnswerArgs = {
   text?: Maybe<Scalars['String']>;
   rate?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -913,6 +925,7 @@ export type QueryCommentArgs = {
   commentId?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -923,6 +936,7 @@ export type QueryCommentArgs = {
 
 export type QueryTagArgs = {
   name?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<_Neo4jDateTimeInput>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -938,6 +952,9 @@ export type Mutation = {
   ChangePassConfirm: RedirectUri;
   ChangePassComplete: RedirectUri;
   AskQuestion: Question;
+  EditQuestion: Question;
+  DeleteQuestion: Question;
+  AddTag: Tag;
 };
 
 
@@ -968,6 +985,21 @@ export type MutationChangePassCompleteArgs = {
 
 export type MutationAskQuestionArgs = {
   data: AskQuestionInput;
+};
+
+
+export type MutationEditQuestionArgs = {
+  data: EditQuestionInput;
+};
+
+
+export type MutationDeleteQuestionArgs = {
+  data: IdInput;
+};
+
+
+export type MutationAddTagArgs = {
+  data: AddTagInput;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -1053,16 +1085,17 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
+  IdInput: IdInput;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   CodeInput: CodeInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   CodeAndPassInput: CodeAndPassInput;
   AskQuestionInput: AskQuestionInput;
+  EditQuestionInput: EditQuestionInput;
+  AddTagInput: AddTagInput;
   SignedToken: ResolverTypeWrapper<SignedToken>;
-  _LOCAL_ACCOUNTOrdering: _Local_AccountOrdering;
-  _LOCAL_ACCOUNTFilter: _Local_AccountFilter;
   LOCAL_ACCOUNT: ResolverTypeWrapper<Local_Account>;
   LoginInfo: ResolverTypeWrapper<LoginInfo>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   _UserOrdering: _UserOrdering;
   _UserFilter: _UserFilter;
   User: ResolverTypeWrapper<User>;
@@ -1109,15 +1142,17 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
+  IdInput: IdInput;
+  ID: Scalars['ID'];
   CodeInput: CodeInput;
   Int: Scalars['Int'];
   CodeAndPassInput: CodeAndPassInput;
   AskQuestionInput: AskQuestionInput;
+  EditQuestionInput: EditQuestionInput;
+  AddTagInput: AddTagInput;
   SignedToken: SignedToken;
-  _LOCAL_ACCOUNTFilter: _Local_AccountFilter;
   LOCAL_ACCOUNT: Local_Account;
   LoginInfo: LoginInfo;
-  ID: Scalars['ID'];
   _UserFilter: _UserFilter;
   User: User;
   RedirectUri: RedirectUri;
@@ -1208,14 +1243,12 @@ export type Local_AccountResolvers<ContextType = any, ParentType extends Resolve
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   code?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type LoginInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginInfo'] = ResolversParentTypes['LoginInfo']> = ResolversObject<{
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1225,13 +1258,14 @@ export type LoginInfoResolvers<ContextType = any, ParentType extends ResolversPa
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['LOCAL_ACCOUNT']>, ParentType, ContextType, RequireFields<UserEmailArgs, never>>;
+  email?: Resolver<Maybe<ResolversTypes['LOCAL_ACCOUNT']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['Rank'], ParentType, ContextType>;
   questions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<UserQuestionsArgs, never>>;
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<UserAnswersArgs, never>>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<UserCommentsArgs, never>>;
+  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<UserTagsArgs, never>>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -1254,6 +1288,7 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QuestionAnswersArgs, never>>;
   tagged?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QuestionTaggedArgs, never>>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1266,6 +1301,7 @@ export type AnswerResolvers<ContextType = any, ParentType extends ResolversParen
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1276,6 +1312,7 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   answer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<CommentAnswerArgs, never>>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1283,6 +1320,8 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
 export type TagResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = ResolversObject<{
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   questions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<TagQuestionsArgs, never>>;
+  createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+  addedBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<TagAddedByArgs, never>>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1368,7 +1407,6 @@ export type _Neo4jPointResolvers<ContextType = any, ParentType extends Resolvers
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  LOCAL_ACCOUNT?: Resolver<Maybe<Array<Maybe<ResolversTypes['LOCAL_ACCOUNT']>>>, ParentType, ContextType, RequireFields<QueryLocal_AccountArgs, never>>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
@@ -1383,6 +1421,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   ChangePassConfirm?: Resolver<ResolversTypes['RedirectUri'], ParentType, ContextType, RequireFields<MutationChangePassConfirmArgs, 'data'>>;
   ChangePassComplete?: Resolver<ResolversTypes['RedirectUri'], ParentType, ContextType, RequireFields<MutationChangePassCompleteArgs, 'data'>>;
   AskQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationAskQuestionArgs, 'data'>>;
+  EditQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationEditQuestionArgs, 'data'>>;
+  DeleteQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationDeleteQuestionArgs, 'data'>>;
+  AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{

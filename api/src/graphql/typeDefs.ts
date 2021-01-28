@@ -31,7 +31,8 @@ export const typeDefs = gql`
 					name: u.name,
 					surname: u.surname,
 					roles: u.roles
-				} as LoginInfo RETURN LoginInfo
+				} as LoginInfo
+				RETURN LoginInfo
 				"""
 			)
 
@@ -46,7 +47,8 @@ export const typeDefs = gql`
 					name: u.name,
 					surname: u.surname,
 					roles: u.roles
-				} as LoginInfo RETURN LoginInfo
+				} as LoginInfo
+				RETURN LoginInfo
 				"""
 			)
 
@@ -76,6 +78,7 @@ export const typeDefs = gql`
 			)
 
 		AskQuestion(data: AskQuestionInput!): Question!
+			@isAuthenticated
 			@cypher(
 				statement: """
 				MATCH (u:User {userId: $cypherParams.currentUserId})
@@ -84,7 +87,46 @@ export const typeDefs = gql`
 				WITH q
 				MATCH (t:Tag) where t.name IN $data.tags
 				CREATE (t)-[r:TAGGED]->(q)
-				return q
+				RETURN q
+				"""
+			)
+
+		EditQuestion(data: EditQuestionInput!): Question!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (q:Question {questionId:$data.questionId})<-[:ASKED]-(u:User)
+				SET q += {title: $data.title, text: $data.text, updatedAt: DateTime()}
+				WITH q
+				CALL {
+					WITH q
+					MATCH (t:Tag)-[r:TAGGED]->(q)
+					DELETE r
+					RETURN count(t) as deleted_tags
+				}
+				WITH q
+				CALL {
+					WITH q
+					MATCH (t:Tag) where t.name IN $data.tags
+					MERGE (t)-[r:TAGGED]->(q)
+					RETURN count(t) as added_tags
+				}
+				RETURN q
+				"""
+			)
+
+		DeleteQuestion(data: IdInput!): Question! @isAuthenticated
+
+		AddTag(data: AddTagInput!): Tag!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {userId: $cypherParams.currentUserId})
+				MERGE (t:Tag {
+					name: $data.name,
+					createdAt: DateTime()
+					})-[a:ADDED_BY]->(u)
+				RETURN t
 				"""
 			)
 	}
@@ -108,6 +150,10 @@ export const typeDefs = gql`
 		email: String!
 	}
 
+	input IdInput {
+		itemId: ID!
+	}
+
 	input CodeInput {
 		code: Int!
 	}
@@ -121,6 +167,17 @@ export const typeDefs = gql`
 		title: String!
 		text: String!
 		tags: [String!]!
+	}
+
+	input EditQuestionInput {
+		questionId: ID!
+		title: String
+		text: String
+		tags: [String!]
+	}
+
+	input AddTagInput {
+		name: String!
 	}
 
 	# ----------- TYPES
@@ -139,7 +196,7 @@ export const typeDefs = gql`
 	type LoginInfo {
 		userId: ID!
 		email: String!
-		password: String!
+		# password: String! #TODO: hide password from outside api
 		name: String!
 		surname: String!
 		token: String
@@ -157,6 +214,7 @@ export const typeDefs = gql`
 		questions: [Question] @relation(name: "ASKED", direction: OUT)
 		answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
 		comments: [Comment] @relation(name: "COMMENTED", direction: OUT)
+		tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
 		createdAt: DateTime
 		token: String
 		roles: [String]
@@ -176,6 +234,7 @@ export const typeDefs = gql`
 		answers: [Answer] @relation(name: "HAS_ANSWER", direction: IN)
 		tagged: [Tag] @relation(name: "TAGGED", direction: IN)
 		createdAt: DateTime
+		updatedAt: DateTime
 	}
 
 	type Answer {
@@ -186,6 +245,7 @@ export const typeDefs = gql`
 		text: String!
 		rate: Int!
 		createdAt: DateTime
+		updatedAt: DateTime
 	}
 
 	type Comment {
@@ -194,11 +254,14 @@ export const typeDefs = gql`
 		answer: Answer! @relation(name: "COMMENTED_ANSWER", direction: OUT)
 		text: String!
 		createdAt: DateTime
+		updatedAt: DateTime
 	}
 
 	type Tag {
 		name: String! @unique
 		questions: [Question] @relation(name: "TAGGED", direction: OUT)
+		createdAt: DateTime
+		addedBy: User @relation(name: "ADDED_BY", direction: OUT)
 	}
 
 	type Liked @relation(name: "LIKED") {
