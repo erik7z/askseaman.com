@@ -340,7 +340,6 @@ export const typeDefs = gql`
 
 	interface CanBeCommented {
 		nodeId: ID!
-		text: String
 	}
 
 	type Question implements CanBeCommented @hasRole(roles: [reader]) {
