@@ -1,4 +1,3 @@
-import { CanBeCommented } from './../types/generated-backend'
 import { gql } from 'apollo-server-express'
 
 export const typeDefs = gql`
@@ -172,9 +171,12 @@ export const typeDefs = gql`
 			@isAuthenticated
 			@cypher(
 				statement: """
-				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeCommented {nodeId: $data.nodeId})
-				CREATE (t)<-[c:COMMENT]-(u)
-				SET c += {text: $data.text, relId: apoc.create.uuid(), createdAt: DateTime()}
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})
+				CREATE (c:Comment)<-[:ADDED_COMMENT]-(u)
+				SET c += {text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+				WITH c
+				MATCH (t:CanBeCommented {nodeId: $data.nodeId})
+				CREATE (t)-[:HAS_COMMENT]->(c)
 				RETURN c
 				"""
 			)
@@ -324,6 +326,7 @@ export const typeDefs = gql`
 		questions: [Question] @relation(name: "ASKED", direction: OUT)
 		answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
 		tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
+		comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
 		createdAt: DateTime
 		token: String
 		roles: [String]
@@ -337,15 +340,13 @@ export const typeDefs = gql`
 
 	interface CanBeCommented {
 		nodeId: ID!
-		commentedBy: [User]
-		comments: [Comment]
+		text: String
 	}
 
 	type Question implements CanBeCommented @hasRole(roles: [reader]) {
 		nodeId: ID! @id
-		owner: User! @relation(name: "ASKED", direction: IN)
-		commentedBy: [User]
-		comments: [Comment]
+		author: User! @relation(name: "ASKED", direction: IN)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		title: String!
 		text: String!
 		answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
@@ -357,19 +358,18 @@ export const typeDefs = gql`
 	type Answer implements CanBeCommented {
 		nodeId: ID! @id
 		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
-		owner: User! @relation(name: "ANSWERED", direction: IN)
-		commentedBy: [User]
-		comments: [Comment]
+		author: User! @relation(name: "ANSWERED", direction: IN)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		text: String!
 		rate: Int
 		createdAt: DateTime
 		updatedAt: DateTime
 	}
 
-	type Comment @relation(name: "COMMENT", from: "user", to: "commented") {
-		user: User
-		commented: CanBeCommented
-		relId: ID!
+	type Comment {
+		nodeId: ID! @id
+		author: User @relation(name: "ADDED_COMMENT", direction: IN)
+		topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
 		text: String!
 		createdAt: DateTime!
 		updatedAt: DateTime

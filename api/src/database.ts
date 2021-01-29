@@ -33,6 +33,7 @@ export const schema = makeAugmentedSchema({
 				'DeleteQuestionResponse',
 				'DeleteAnswerResponse',
 				'DeleteTagResponse',
+				'CanBeCommented',
 			],
 		},
 		mutation: false,
