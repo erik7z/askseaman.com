@@ -72,7 +72,6 @@ const server = new ApolloServer({
 		const cypherParams: iCypherParams = {
 			currentUserId: authParams?.user.id || null,
 		}
-
 		return {
 			driver,
 			req,
