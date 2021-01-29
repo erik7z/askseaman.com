@@ -6,7 +6,7 @@ export const typeDefs = gql`
 			@isAuthenticated
 			@cypher(
 				statement: """
-				MATCH (u:User {userId: $cypherParams.currentUserId})
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})
 				RETURN u
 				"""
 			)
@@ -17,7 +17,7 @@ export const typeDefs = gql`
 			@cypher(
 				statement: """
 				CREATE (l:LOCAL_ACCOUNT {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {
-					userId: apoc.create.uuid(),
+					nodeId: apoc.create.uuid(),
 					email: $data.email,
 					name: $data.name,
 					surname: $data.surname,
@@ -25,7 +25,7 @@ export const typeDefs = gql`
 					roles: $data.roles,
 					createdAt: DateTime()
 				}) WITH {
-					userId: u.userId,
+					nodeId: u.nodeId,
 					email: u.email,
 					password: l.password,
 					name: u.name,
@@ -41,7 +41,7 @@ export const typeDefs = gql`
 				statement: """
 				MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {email: $data.email})
 				WITH {
-					userId: u.userId,
+					nodeId: u.nodeId,
 					email: u.email,
 					password: l.password,
 					name: u.name,
@@ -68,7 +68,7 @@ export const typeDefs = gql`
 				"""
 			)
 
-		ChangePassComplete(data: CodeAndPassInput!): RedirectUri!
+		ChangePassComplete(data: newPassInput!): RedirectUri!
 			@cypher(
 				statement: """
 				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {code: $data.code})
@@ -81,12 +81,16 @@ export const typeDefs = gql`
 			@isAuthenticated
 			@cypher(
 				statement: """
-				MATCH (u:User {userId: $cypherParams.currentUserId})
-				CREATE (q:Question)<-[:ASKED]-(u)
-				SET q += {title: $data.title, text: $data.text, questionId: apoc.create.uuid(), createdAt: DateTime()}
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})
+				CREATE (q:Question:CanBeCommented)<-[:ASKED]-(u)
+				SET q += {title: $data.title, text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
 				WITH q
-				MATCH (t:Tag) where t.name IN $data.tags
-				CREATE (t)-[r:TAGGED]->(q)
+				CALL {
+					WITH q
+					MATCH (t:Tag) where t.name IN $data.tags
+					MERGE (t)-[r:TAGGED]->(q)
+					RETURN count(t) as added_tags
+				}
 				RETURN q
 				"""
 			)
@@ -95,7 +99,7 @@ export const typeDefs = gql`
 			@isAuthenticated
 			@cypher(
 				statement: """
-				MATCH (q:Question {questionId:$data.questionId})<-[:ASKED]-(u:User)
+				MATCH (q:Question {nodeId:$data.nodeId})<-[:ASKED]-(u:User {nodeId: $cypherParams.currentUserId})
 				SET q += {title: $data.title, text: $data.text, updatedAt: DateTime()}
 				WITH q
 				CALL {
@@ -115,18 +119,90 @@ export const typeDefs = gql`
 				"""
 			)
 
-		DeleteQuestion(data: IdInput!): Question! @isAuthenticated
+		#TODO: Delete related comments
+		DeleteQuestion(data: deleteNodeInput!): DeleteQuestionResponse!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (q:Question {nodeId:$data.nodeId})<-[:ASKED]-(u:User {nodeId: $cypherParams.currentUserId})
+				WITH q, properties(q) AS m
+				DETACH DELETE q
+				RETURN m
+				"""
+			)
+
+		AnswerQuestion(data: AnswerQuestionInput!): Answer!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})
+				CREATE (a:Answer:CanBeCommented)<-[:ANSWERED]-(u)
+				SET a += {text: $data.text, rate: 0, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+				WITH a
+				MATCH (q:Question {nodeId: $data.nodeId})
+				CREATE (q)-[r:HAS_ANSWER]->(a)
+				RETURN a
+				"""
+			)
+
+		EditAnswer(data: EditAnswerInput!): Answer!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (a:Answer {nodeId: $data.nodeId})<-[:ANSWERED]-(u:User {nodeId: $cypherParams.currentUserId})
+				SET a += {text: $data.text, updatedAt: DateTime()}
+				RETURN a
+				"""
+			)
+
+		#TODO: Delete related comments
+		DeleteAnswer(data: deleteNodeInput!): DeleteAnswerResponse!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (a:Answer {nodeId: $data.nodeId})<-[:ANSWERED]-(u:User {nodeId: $cypherParams.currentUserId})
+				WITH a, properties(a) AS m
+				DETACH DELETE a
+				RETURN m
+				"""
+			)
+
+		AddComment(data: AddCommentInput!): Comment!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})
+				CREATE (c:Comment)<-[:ADDED_COMMENT]-(u)
+				SET c += {text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+				WITH c
+				MATCH (t:CanBeCommented {nodeId: $data.nodeId})
+				CREATE (t)-[:HAS_COMMENT]->(c)
+				RETURN c
+				"""
+			)
 
 		AddTag(data: AddTagInput!): Tag!
 			@isAuthenticated
 			@cypher(
 				statement: """
-				MATCH (u:User {userId: $cypherParams.currentUserId})
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})
 				MERGE (t:Tag {
 					name: $data.name,
 					createdAt: DateTime()
 					})-[a:ADDED_BY]->(u)
 				RETURN t
+				"""
+			)
+
+		DeleteTag(data: deleteTagInput!): DeleteTagResponse!
+			@isAuthenticated
+			@hasRole(roles: [admin])
+			@cypher(
+				statement: """
+				MATCH (t:Tag {name: $data.name})
+				WITH t, properties(t) AS m
+				DETACH DELETE t
+				RETURN m
 				"""
 			)
 	}
@@ -150,15 +226,19 @@ export const typeDefs = gql`
 		email: String!
 	}
 
-	input IdInput {
-		itemId: ID!
+	input deleteNodeInput {
+		nodeId: ID!
+	}
+
+	input deleteTagInput {
+		name: String!
 	}
 
 	input CodeInput {
 		code: Int!
 	}
 
-	input CodeAndPassInput {
+	input newPassInput {
 		code: Int!
 		new_password: String!
 	}
@@ -170,13 +250,45 @@ export const typeDefs = gql`
 	}
 
 	input EditQuestionInput {
-		questionId: ID!
+		nodeId: ID!
 		title: String
 		text: String
 		tags: [String!]
 	}
 
+	input AnswerQuestionInput {
+		nodeId: ID!
+		text: String!
+	}
+
+	input AddCommentInput {
+		nodeId: ID!
+		text: String!
+	}
+
+	input EditAnswerInput {
+		nodeId: ID!
+		text: String!
+	}
+
 	input AddTagInput {
+		name: String!
+	}
+
+	# ----------- RESPONSE TYPES
+	type DeleteQuestionResponse {
+		nodeId: ID! @id
+		title: String!
+		text: String!
+	}
+
+	type DeleteAnswerResponse {
+		nodeId: ID! @id
+		text: String!
+		rate: Int!
+	}
+
+	type DeleteTagResponse {
 		name: String!
 	}
 
@@ -194,9 +306,9 @@ export const typeDefs = gql`
 	}
 
 	type LoginInfo {
-		userId: ID!
+		nodeId: ID!
 		email: String!
-		# password: String! #TODO: hide password from outside api
+		password: String! #TODO: hide password from outside api (required for compare in BCRYPT)
 		name: String!
 		surname: String!
 		token: String
@@ -204,7 +316,7 @@ export const typeDefs = gql`
 	}
 
 	type User {
-		userId: ID! @id
+		nodeId: ID! @id
 		email: LOCAL_ACCOUNT
 			@isAuthenticated
 			@relation(name: "AUTHENTICATED_WITH", direction: OUT)
@@ -213,8 +325,8 @@ export const typeDefs = gql`
 		rank: Rank!
 		questions: [Question] @relation(name: "ASKED", direction: OUT)
 		answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
-		comments: [Comment] @relation(name: "COMMENTED", direction: OUT)
 		tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
+		comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
 		createdAt: DateTime
 		token: String
 		roles: [String]
@@ -226,34 +338,40 @@ export const typeDefs = gql`
 		message: String
 	}
 
-	type Question @hasRole(roles: [reader]) {
-		questionId: ID! @id
-		owner: User! @relation(name: "ASKED", direction: IN)
+	interface CanBeCommented {
+		nodeId: ID!
+		text: String
+	}
+
+	type Question implements CanBeCommented @hasRole(roles: [reader]) {
+		nodeId: ID! @id
+		author: User! @relation(name: "ASKED", direction: IN)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		title: String!
 		text: String!
-		answers: [Answer] @relation(name: "HAS_ANSWER", direction: IN)
+		answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
 		tagged: [Tag] @relation(name: "TAGGED", direction: IN)
 		createdAt: DateTime
 		updatedAt: DateTime
 	}
 
-	type Answer {
-		answerId: ID! @id
-		question: Question! @relation(name: "HAS_ANSWER", direction: OUT)
-		owner: User! @relation(name: "ANSWERED", direction: IN)
-		comments: [Comment] @relation(name: "COMMENTED_ANSWER", direction: IN)
+	type Answer implements CanBeCommented {
+		nodeId: ID! @id
+		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
+		author: User! @relation(name: "ANSWERED", direction: IN)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		text: String!
-		rate: Int!
+		rate: Int
 		createdAt: DateTime
 		updatedAt: DateTime
 	}
 
 	type Comment {
-		commentId: ID! @id
-		owner: User! @relation(name: "COMMENTED", direction: IN)
-		answer: Answer! @relation(name: "COMMENTED_ANSWER", direction: OUT)
+		nodeId: ID! @id
+		author: User @relation(name: "ADDED_COMMENT", direction: IN)
+		topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
 		text: String!
-		createdAt: DateTime
+		createdAt: DateTime!
 		updatedAt: DateTime
 	}
 
@@ -264,9 +382,10 @@ export const typeDefs = gql`
 		addedBy: User @relation(name: "ADDED_BY", direction: OUT)
 	}
 
+	#TODO: How to like comments ?
 	type Liked @relation(name: "LIKED") {
 		from: User
-		to: Comment
+		# to: Comment
 		createdAt: DateTime
 	}
 

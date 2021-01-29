@@ -11,7 +11,6 @@ const questionResolvers: Resolvers<ApolloServerContext> = {
 	Mutation: {
 		async AskQuestion(parent, { data }, ctx, resolveInfo) {
 			//TODO: trim EVERY tag spaces and make uppercase
-
 			return neo4jgraphql(parent, { data }, ctx, resolveInfo)
 		},
 

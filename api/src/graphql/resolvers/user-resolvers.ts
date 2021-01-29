@@ -36,7 +36,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 
 			user.token = await createToken({
 				user: {
-					id: user.userId,
+					id: user.nodeId,
 					name: user.name,
 					surname: user.surname,
 				},
@@ -49,12 +49,14 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			const loginUser = await neo4jgraphql(parent, { data }, ctx, resolveInfo)
 			if (!loginUser) throw new Error('No user was found with this email')
 
+			//#TODO: !!! If password field not requested from client, it cannot authanticate ??
+
 			const valid = bcrypt.compareSync(data.password, loginUser.password)
 			if (!valid) throw new Error('Incorrect password')
 
 			loginUser.token = await createToken({
 				user: {
-					id: loginUser.userId,
+					id: loginUser.nodeId,
 					name: loginUser.name,
 					surname: loginUser.surname,
 				},

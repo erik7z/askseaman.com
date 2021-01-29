@@ -16,14 +16,25 @@ export const schema = makeAugmentedSchema({
 		// hasScope: HasScopeDirective,
 	},
 	config: {
+		debug: true,
+		experimental: true,
 		auth: {
 			isAuthenticated: true,
 			hasRole: true,
 			// hasScope: true,
 		},
-		experimental: true,
+
 		query: {
-			exclude: ['SignedToken', 'LoginInfo', 'RedirectUri', 'LOCAL_ACCOUNT'],
+			exclude: [
+				'SignedToken',
+				'LoginInfo',
+				'RedirectUri',
+				'LOCAL_ACCOUNT',
+				'DeleteQuestionResponse',
+				'DeleteAnswerResponse',
+				'DeleteTagResponse',
+				'CanBeCommented',
+			],
 		},
 		mutation: false,
 	},

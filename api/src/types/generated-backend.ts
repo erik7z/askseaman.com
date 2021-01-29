@@ -41,15 +41,19 @@ export type EmailInput = {
   email: Scalars['String'];
 };
 
-export type IdInput = {
-  itemId: Scalars['ID'];
+export type DeleteNodeInput = {
+  nodeId: Scalars['ID'];
+};
+
+export type DeleteTagInput = {
+  name: Scalars['String'];
 };
 
 export type CodeInput = {
   code: Scalars['Int'];
 };
 
-export type CodeAndPassInput = {
+export type NewPassInput = {
   code: Scalars['Int'];
   new_password: Scalars['String'];
 };
@@ -61,13 +65,47 @@ export type AskQuestionInput = {
 };
 
 export type EditQuestionInput = {
-  questionId: Scalars['ID'];
+  nodeId: Scalars['ID'];
   title?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
   tags?: Maybe<Array<Scalars['String']>>;
 };
 
+export type AnswerQuestionInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type AddCommentInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type EditAnswerInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
 export type AddTagInput = {
+  name: Scalars['String'];
+};
+
+export type DeleteQuestionResponse = {
+  __typename?: 'DeleteQuestionResponse';
+  nodeId: Scalars['ID'];
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type DeleteAnswerResponse = {
+  __typename?: 'DeleteAnswerResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+  rate: Scalars['Int'];
+};
+
+export type DeleteTagResponse = {
+  __typename?: 'DeleteTagResponse';
   name: Scalars['String'];
 };
 
@@ -91,8 +129,9 @@ export type Local_AccountUserArgs = {
 
 export type LoginInfo = {
   __typename?: 'LoginInfo';
-  userId: Scalars['ID'];
+  nodeId: Scalars['ID'];
   email: Scalars['String'];
+  password: Scalars['String'];
   name: Scalars['String'];
   surname: Scalars['String'];
   token?: Maybe<Scalars['String']>;
@@ -100,8 +139,8 @@ export type LoginInfo = {
 };
 
 export enum _UserOrdering {
-  UserIdAsc = 'userId_asc',
-  UserIdDesc = 'userId_desc',
+  NodeIdAsc = 'nodeId_asc',
+  NodeIdDesc = 'nodeId_desc',
   NameAsc = 'name_asc',
   NameDesc = 'name_desc',
   SurnameAsc = 'surname_asc',
@@ -119,17 +158,17 @@ export enum _UserOrdering {
 export type _UserFilter = {
   AND?: Maybe<Array<_UserFilter>>;
   OR?: Maybe<Array<_UserFilter>>;
-  userId?: Maybe<Scalars['ID']>;
-  userId_not?: Maybe<Scalars['ID']>;
-  userId_in?: Maybe<Array<Scalars['ID']>>;
-  userId_not_in?: Maybe<Array<Scalars['ID']>>;
-  userId_regexp?: Maybe<Scalars['ID']>;
-  userId_contains?: Maybe<Scalars['ID']>;
-  userId_not_contains?: Maybe<Scalars['ID']>;
-  userId_starts_with?: Maybe<Scalars['ID']>;
-  userId_not_starts_with?: Maybe<Scalars['ID']>;
-  userId_ends_with?: Maybe<Scalars['ID']>;
-  userId_not_ends_with?: Maybe<Scalars['ID']>;
+  nodeId?: Maybe<Scalars['ID']>;
+  nodeId_not?: Maybe<Scalars['ID']>;
+  nodeId_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_not_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_regexp?: Maybe<Scalars['ID']>;
+  nodeId_contains?: Maybe<Scalars['ID']>;
+  nodeId_not_contains?: Maybe<Scalars['ID']>;
+  nodeId_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_not_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_ends_with?: Maybe<Scalars['ID']>;
+  nodeId_not_ends_with?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   name_not?: Maybe<Scalars['String']>;
   name_in?: Maybe<Array<Scalars['String']>>;
@@ -172,14 +211,6 @@ export type _UserFilter = {
   answers_none?: Maybe<_AnswerFilter>;
   answers_single?: Maybe<_AnswerFilter>;
   answers_every?: Maybe<_AnswerFilter>;
-  comments?: Maybe<_CommentFilter>;
-  comments_not?: Maybe<_CommentFilter>;
-  comments_in?: Maybe<Array<_CommentFilter>>;
-  comments_not_in?: Maybe<Array<_CommentFilter>>;
-  comments_some?: Maybe<_CommentFilter>;
-  comments_none?: Maybe<_CommentFilter>;
-  comments_single?: Maybe<_CommentFilter>;
-  comments_every?: Maybe<_CommentFilter>;
   tags?: Maybe<_TagFilter>;
   tags_not?: Maybe<_TagFilter>;
   tags_in?: Maybe<Array<_TagFilter>>;
@@ -188,6 +219,14 @@ export type _UserFilter = {
   tags_none?: Maybe<_TagFilter>;
   tags_single?: Maybe<_TagFilter>;
   tags_every?: Maybe<_TagFilter>;
+  comments?: Maybe<_CommentFilter>;
+  comments_not?: Maybe<_CommentFilter>;
+  comments_in?: Maybe<Array<_CommentFilter>>;
+  comments_not_in?: Maybe<Array<_CommentFilter>>;
+  comments_some?: Maybe<_CommentFilter>;
+  comments_none?: Maybe<_CommentFilter>;
+  comments_single?: Maybe<_CommentFilter>;
+  comments_every?: Maybe<_CommentFilter>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -220,15 +259,15 @@ export type _UserFilter = {
 
 export type User = {
   __typename?: 'User';
-  userId: Scalars['ID'];
+  nodeId: Scalars['ID'];
   email?: Maybe<Local_Account>;
   name: Scalars['String'];
   surname: Scalars['String'];
   rank: Rank;
   questions?: Maybe<Array<Maybe<Question>>>;
   answers?: Maybe<Array<Maybe<Answer>>>;
-  comments?: Maybe<Array<Maybe<Comment>>>;
   tags?: Maybe<Array<Maybe<Tag>>>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
   createdAt?: Maybe<_Neo4jDateTime>;
   token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -253,19 +292,19 @@ export type UserAnswersArgs = {
 };
 
 
-export type UserCommentsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
-  filter?: Maybe<_CommentFilter>;
-};
-
-
 export type UserTagsArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_TagOrdering>>>;
   filter?: Maybe<_TagFilter>;
+};
+
+
+export type UserCommentsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
+  filter?: Maybe<_CommentFilter>;
 };
 
 export type RedirectUri = {
@@ -275,9 +314,43 @@ export type RedirectUri = {
   message?: Maybe<Scalars['String']>;
 };
 
+export enum _CanBeCommentedOrdering {
+  NodeIdAsc = 'nodeId_asc',
+  NodeIdDesc = 'nodeId_desc'
+}
+
+export type _CanBeCommentedFilter = {
+  AND?: Maybe<Array<_CanBeCommentedFilter>>;
+  OR?: Maybe<Array<_CanBeCommentedFilter>>;
+  nodeId?: Maybe<Scalars['ID']>;
+  nodeId_not?: Maybe<Scalars['ID']>;
+  nodeId_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_not_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_regexp?: Maybe<Scalars['ID']>;
+  nodeId_contains?: Maybe<Scalars['ID']>;
+  nodeId_not_contains?: Maybe<Scalars['ID']>;
+  nodeId_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_not_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_ends_with?: Maybe<Scalars['ID']>;
+  nodeId_not_ends_with?: Maybe<Scalars['ID']>;
+};
+
+export type CanBeCommented = {
+  nodeId: Scalars['ID'];
+  comments?: Maybe<Array<Maybe<Comment>>>;
+};
+
+
+export type CanBeCommentedCommentsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
+  filter?: Maybe<_CommentFilter>;
+};
+
 export enum _QuestionOrdering {
-  QuestionIdAsc = 'questionId_asc',
-  QuestionIdDesc = 'questionId_desc',
+  NodeIdAsc = 'nodeId_asc',
+  NodeIdDesc = 'nodeId_desc',
   TitleAsc = 'title_asc',
   TitleDesc = 'title_desc',
   TextAsc = 'text_asc',
@@ -293,21 +366,29 @@ export enum _QuestionOrdering {
 export type _QuestionFilter = {
   AND?: Maybe<Array<_QuestionFilter>>;
   OR?: Maybe<Array<_QuestionFilter>>;
-  questionId?: Maybe<Scalars['ID']>;
-  questionId_not?: Maybe<Scalars['ID']>;
-  questionId_in?: Maybe<Array<Scalars['ID']>>;
-  questionId_not_in?: Maybe<Array<Scalars['ID']>>;
-  questionId_regexp?: Maybe<Scalars['ID']>;
-  questionId_contains?: Maybe<Scalars['ID']>;
-  questionId_not_contains?: Maybe<Scalars['ID']>;
-  questionId_starts_with?: Maybe<Scalars['ID']>;
-  questionId_not_starts_with?: Maybe<Scalars['ID']>;
-  questionId_ends_with?: Maybe<Scalars['ID']>;
-  questionId_not_ends_with?: Maybe<Scalars['ID']>;
-  owner?: Maybe<_UserFilter>;
-  owner_not?: Maybe<_UserFilter>;
-  owner_in?: Maybe<Array<_UserFilter>>;
-  owner_not_in?: Maybe<Array<_UserFilter>>;
+  nodeId?: Maybe<Scalars['ID']>;
+  nodeId_not?: Maybe<Scalars['ID']>;
+  nodeId_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_not_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_regexp?: Maybe<Scalars['ID']>;
+  nodeId_contains?: Maybe<Scalars['ID']>;
+  nodeId_not_contains?: Maybe<Scalars['ID']>;
+  nodeId_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_not_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_ends_with?: Maybe<Scalars['ID']>;
+  nodeId_not_ends_with?: Maybe<Scalars['ID']>;
+  author?: Maybe<_UserFilter>;
+  author_not?: Maybe<_UserFilter>;
+  author_in?: Maybe<Array<_UserFilter>>;
+  author_not_in?: Maybe<Array<_UserFilter>>;
+  comments?: Maybe<_CommentFilter>;
+  comments_not?: Maybe<_CommentFilter>;
+  comments_in?: Maybe<Array<_CommentFilter>>;
+  comments_not_in?: Maybe<Array<_CommentFilter>>;
+  comments_some?: Maybe<_CommentFilter>;
+  comments_none?: Maybe<_CommentFilter>;
+  comments_single?: Maybe<_CommentFilter>;
+  comments_every?: Maybe<_CommentFilter>;
   title?: Maybe<Scalars['String']>;
   title_not?: Maybe<Scalars['String']>;
   title_in?: Maybe<Array<Scalars['String']>>;
@@ -364,10 +445,11 @@ export type _QuestionFilter = {
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
-export type Question = {
+export type Question = CanBeCommented & {
   __typename?: 'Question';
-  questionId: Scalars['ID'];
-  owner: User;
+  nodeId: Scalars['ID'];
+  author: User;
+  comments?: Maybe<Array<Maybe<Comment>>>;
   title: Scalars['String'];
   text: Scalars['String'];
   answers?: Maybe<Array<Maybe<Answer>>>;
@@ -379,8 +461,16 @@ export type Question = {
 };
 
 
-export type QuestionOwnerArgs = {
+export type QuestionAuthorArgs = {
   filter?: Maybe<_UserFilter>;
+};
+
+
+export type QuestionCommentsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
+  filter?: Maybe<_CommentFilter>;
 };
 
 
@@ -400,8 +490,8 @@ export type QuestionTaggedArgs = {
 };
 
 export enum _AnswerOrdering {
-  AnswerIdAsc = 'answerId_asc',
-  AnswerIdDesc = 'answerId_desc',
+  NodeIdAsc = 'nodeId_asc',
+  NodeIdDesc = 'nodeId_desc',
   TextAsc = 'text_asc',
   TextDesc = 'text_desc',
   RateAsc = 'rate_asc',
@@ -417,25 +507,25 @@ export enum _AnswerOrdering {
 export type _AnswerFilter = {
   AND?: Maybe<Array<_AnswerFilter>>;
   OR?: Maybe<Array<_AnswerFilter>>;
-  answerId?: Maybe<Scalars['ID']>;
-  answerId_not?: Maybe<Scalars['ID']>;
-  answerId_in?: Maybe<Array<Scalars['ID']>>;
-  answerId_not_in?: Maybe<Array<Scalars['ID']>>;
-  answerId_regexp?: Maybe<Scalars['ID']>;
-  answerId_contains?: Maybe<Scalars['ID']>;
-  answerId_not_contains?: Maybe<Scalars['ID']>;
-  answerId_starts_with?: Maybe<Scalars['ID']>;
-  answerId_not_starts_with?: Maybe<Scalars['ID']>;
-  answerId_ends_with?: Maybe<Scalars['ID']>;
-  answerId_not_ends_with?: Maybe<Scalars['ID']>;
+  nodeId?: Maybe<Scalars['ID']>;
+  nodeId_not?: Maybe<Scalars['ID']>;
+  nodeId_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_not_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_regexp?: Maybe<Scalars['ID']>;
+  nodeId_contains?: Maybe<Scalars['ID']>;
+  nodeId_not_contains?: Maybe<Scalars['ID']>;
+  nodeId_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_not_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_ends_with?: Maybe<Scalars['ID']>;
+  nodeId_not_ends_with?: Maybe<Scalars['ID']>;
   question?: Maybe<_QuestionFilter>;
   question_not?: Maybe<_QuestionFilter>;
   question_in?: Maybe<Array<_QuestionFilter>>;
   question_not_in?: Maybe<Array<_QuestionFilter>>;
-  owner?: Maybe<_UserFilter>;
-  owner_not?: Maybe<_UserFilter>;
-  owner_in?: Maybe<Array<_UserFilter>>;
-  owner_not_in?: Maybe<Array<_UserFilter>>;
+  author?: Maybe<_UserFilter>;
+  author_not?: Maybe<_UserFilter>;
+  author_in?: Maybe<Array<_UserFilter>>;
+  author_not_in?: Maybe<Array<_UserFilter>>;
   comments?: Maybe<_CommentFilter>;
   comments_not?: Maybe<_CommentFilter>;
   comments_in?: Maybe<Array<_CommentFilter>>;
@@ -481,14 +571,14 @@ export type _AnswerFilter = {
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
-export type Answer = {
+export type Answer = CanBeCommented & {
   __typename?: 'Answer';
-  answerId: Scalars['ID'];
+  nodeId: Scalars['ID'];
   question: Question;
-  owner: User;
+  author: User;
   comments?: Maybe<Array<Maybe<Comment>>>;
   text: Scalars['String'];
-  rate: Scalars['Int'];
+  rate?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<_Neo4jDateTime>;
   updatedAt?: Maybe<_Neo4jDateTime>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
@@ -501,7 +591,7 @@ export type AnswerQuestionArgs = {
 };
 
 
-export type AnswerOwnerArgs = {
+export type AnswerAuthorArgs = {
   filter?: Maybe<_UserFilter>;
 };
 
@@ -514,8 +604,8 @@ export type AnswerCommentsArgs = {
 };
 
 export enum _CommentOrdering {
-  CommentIdAsc = 'commentId_asc',
-  CommentIdDesc = 'commentId_desc',
+  NodeIdAsc = 'nodeId_asc',
+  NodeIdDesc = 'nodeId_desc',
   TextAsc = 'text_asc',
   TextDesc = 'text_desc',
   CreatedAtAsc = 'createdAt_asc',
@@ -529,25 +619,25 @@ export enum _CommentOrdering {
 export type _CommentFilter = {
   AND?: Maybe<Array<_CommentFilter>>;
   OR?: Maybe<Array<_CommentFilter>>;
-  commentId?: Maybe<Scalars['ID']>;
-  commentId_not?: Maybe<Scalars['ID']>;
-  commentId_in?: Maybe<Array<Scalars['ID']>>;
-  commentId_not_in?: Maybe<Array<Scalars['ID']>>;
-  commentId_regexp?: Maybe<Scalars['ID']>;
-  commentId_contains?: Maybe<Scalars['ID']>;
-  commentId_not_contains?: Maybe<Scalars['ID']>;
-  commentId_starts_with?: Maybe<Scalars['ID']>;
-  commentId_not_starts_with?: Maybe<Scalars['ID']>;
-  commentId_ends_with?: Maybe<Scalars['ID']>;
-  commentId_not_ends_with?: Maybe<Scalars['ID']>;
-  owner?: Maybe<_UserFilter>;
-  owner_not?: Maybe<_UserFilter>;
-  owner_in?: Maybe<Array<_UserFilter>>;
-  owner_not_in?: Maybe<Array<_UserFilter>>;
-  answer?: Maybe<_AnswerFilter>;
-  answer_not?: Maybe<_AnswerFilter>;
-  answer_in?: Maybe<Array<_AnswerFilter>>;
-  answer_not_in?: Maybe<Array<_AnswerFilter>>;
+  nodeId?: Maybe<Scalars['ID']>;
+  nodeId_not?: Maybe<Scalars['ID']>;
+  nodeId_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_not_in?: Maybe<Array<Scalars['ID']>>;
+  nodeId_regexp?: Maybe<Scalars['ID']>;
+  nodeId_contains?: Maybe<Scalars['ID']>;
+  nodeId_not_contains?: Maybe<Scalars['ID']>;
+  nodeId_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_not_starts_with?: Maybe<Scalars['ID']>;
+  nodeId_ends_with?: Maybe<Scalars['ID']>;
+  nodeId_not_ends_with?: Maybe<Scalars['ID']>;
+  author?: Maybe<_UserFilter>;
+  author_not?: Maybe<_UserFilter>;
+  author_in?: Maybe<Array<_UserFilter>>;
+  author_not_in?: Maybe<Array<_UserFilter>>;
+  topic?: Maybe<_CanBeCommentedFilter>;
+  topic_not?: Maybe<_CanBeCommentedFilter>;
+  topic_in?: Maybe<Array<_CanBeCommentedFilter>>;
+  topic_not_in?: Maybe<Array<_CanBeCommentedFilter>>;
   text?: Maybe<Scalars['String']>;
   text_not?: Maybe<Scalars['String']>;
   text_in?: Maybe<Array<Scalars['String']>>;
@@ -579,24 +669,24 @@ export type _CommentFilter = {
 
 export type Comment = {
   __typename?: 'Comment';
-  commentId: Scalars['ID'];
-  owner: User;
-  answer: Answer;
+  nodeId: Scalars['ID'];
+  author?: Maybe<User>;
+  topic?: Maybe<CanBeCommented>;
   text: Scalars['String'];
-  createdAt?: Maybe<_Neo4jDateTime>;
+  createdAt: _Neo4jDateTime;
   updatedAt?: Maybe<_Neo4jDateTime>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
 
 
-export type CommentOwnerArgs = {
+export type CommentAuthorArgs = {
   filter?: Maybe<_UserFilter>;
 };
 
 
-export type CommentAnswerArgs = {
-  filter?: Maybe<_AnswerFilter>;
+export type CommentTopicArgs = {
+  filter?: Maybe<_CanBeCommentedFilter>;
 };
 
 export enum _TagOrdering {
@@ -670,7 +760,6 @@ export type TagAddedByArgs = {
 export type Liked = {
   __typename?: 'Liked';
   from?: Maybe<User>;
-  to?: Maybe<Comment>;
   createdAt?: Maybe<_Neo4jDateTime>;
 };
 
@@ -866,6 +955,8 @@ export type Query = {
   currentUser?: Maybe<User>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for CanBeCommented type nodes. */
+  CanBeCommented?: Maybe<Array<Maybe<CanBeCommented>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Question type nodes. */
   Question?: Maybe<Array<Maybe<Question>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
@@ -878,7 +969,7 @@ export type Query = {
 
 
 export type QueryUserArgs = {
-  userId?: Maybe<Scalars['ID']>;
+  nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
   rank?: Maybe<Rank>;
@@ -893,8 +984,18 @@ export type QueryUserArgs = {
 };
 
 
+export type QueryCanBeCommentedArgs = {
+  nodeId?: Maybe<Scalars['ID']>;
+  _id?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CanBeCommentedOrdering>>>;
+  filter?: Maybe<_CanBeCommentedFilter>;
+};
+
+
 export type QueryQuestionArgs = {
-  questionId?: Maybe<Scalars['ID']>;
+  nodeId?: Maybe<Scalars['ID']>;
   title?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
@@ -908,7 +1009,7 @@ export type QueryQuestionArgs = {
 
 
 export type QueryAnswerArgs = {
-  answerId?: Maybe<Scalars['ID']>;
+  nodeId?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   rate?: Maybe<Scalars['Int']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
@@ -922,7 +1023,7 @@ export type QueryAnswerArgs = {
 
 
 export type QueryCommentArgs = {
-  commentId?: Maybe<Scalars['ID']>;
+  nodeId?: Maybe<Scalars['ID']>;
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
@@ -953,8 +1054,13 @@ export type Mutation = {
   ChangePassComplete: RedirectUri;
   AskQuestion: Question;
   EditQuestion: Question;
-  DeleteQuestion: Question;
+  DeleteQuestion: DeleteQuestionResponse;
+  AnswerQuestion: Answer;
+  EditAnswer: Answer;
+  DeleteAnswer: DeleteAnswerResponse;
+  AddComment: Comment;
   AddTag: Tag;
+  DeleteTag: DeleteTagResponse;
 };
 
 
@@ -979,7 +1085,7 @@ export type MutationChangePassConfirmArgs = {
 
 
 export type MutationChangePassCompleteArgs = {
-  data: CodeAndPassInput;
+  data: NewPassInput;
 };
 
 
@@ -994,12 +1100,37 @@ export type MutationEditQuestionArgs = {
 
 
 export type MutationDeleteQuestionArgs = {
-  data: IdInput;
+  data: DeleteNodeInput;
+};
+
+
+export type MutationAnswerQuestionArgs = {
+  data: AnswerQuestionInput;
+};
+
+
+export type MutationEditAnswerArgs = {
+  data: EditAnswerInput;
+};
+
+
+export type MutationDeleteAnswerArgs = {
+  data: DeleteNodeInput;
+};
+
+
+export type MutationAddCommentArgs = {
+  data: AddCommentInput;
 };
 
 
 export type MutationAddTagArgs = {
   data: AddTagInput;
+};
+
+
+export type MutationDeleteTagArgs = {
+  data: DeleteTagInput;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -1085,14 +1216,21 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
-  IdInput: IdInput;
+  deleteNodeInput: DeleteNodeInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  deleteTagInput: DeleteTagInput;
   CodeInput: CodeInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  CodeAndPassInput: CodeAndPassInput;
+  newPassInput: NewPassInput;
   AskQuestionInput: AskQuestionInput;
   EditQuestionInput: EditQuestionInput;
+  AnswerQuestionInput: AnswerQuestionInput;
+  AddCommentInput: AddCommentInput;
+  EditAnswerInput: EditAnswerInput;
   AddTagInput: AddTagInput;
+  DeleteQuestionResponse: ResolverTypeWrapper<DeleteQuestionResponse>;
+  DeleteAnswerResponse: ResolverTypeWrapper<DeleteAnswerResponse>;
+  DeleteTagResponse: ResolverTypeWrapper<DeleteTagResponse>;
   SignedToken: ResolverTypeWrapper<SignedToken>;
   LOCAL_ACCOUNT: ResolverTypeWrapper<Local_Account>;
   LoginInfo: ResolverTypeWrapper<LoginInfo>;
@@ -1100,6 +1238,9 @@ export type ResolversTypes = ResolversObject<{
   _UserFilter: _UserFilter;
   User: ResolverTypeWrapper<User>;
   RedirectUri: ResolverTypeWrapper<RedirectUri>;
+  _CanBeCommentedOrdering: _CanBeCommentedOrdering;
+  _CanBeCommentedFilter: _CanBeCommentedFilter;
+  CanBeCommented: ResolversTypes['Question'] | ResolversTypes['Answer'];
   _QuestionOrdering: _QuestionOrdering;
   _QuestionFilter: _QuestionFilter;
   Question: ResolverTypeWrapper<Question>;
@@ -1142,20 +1283,29 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
-  IdInput: IdInput;
+  deleteNodeInput: DeleteNodeInput;
   ID: Scalars['ID'];
+  deleteTagInput: DeleteTagInput;
   CodeInput: CodeInput;
   Int: Scalars['Int'];
-  CodeAndPassInput: CodeAndPassInput;
+  newPassInput: NewPassInput;
   AskQuestionInput: AskQuestionInput;
   EditQuestionInput: EditQuestionInput;
+  AnswerQuestionInput: AnswerQuestionInput;
+  AddCommentInput: AddCommentInput;
+  EditAnswerInput: EditAnswerInput;
   AddTagInput: AddTagInput;
+  DeleteQuestionResponse: DeleteQuestionResponse;
+  DeleteAnswerResponse: DeleteAnswerResponse;
+  DeleteTagResponse: DeleteTagResponse;
   SignedToken: SignedToken;
   LOCAL_ACCOUNT: Local_Account;
   LoginInfo: LoginInfo;
   _UserFilter: _UserFilter;
   User: User;
   RedirectUri: RedirectUri;
+  _CanBeCommentedFilter: _CanBeCommentedFilter;
+  CanBeCommented: ResolversParentTypes['Question'] | ResolversParentTypes['Answer'];
   _QuestionFilter: _QuestionFilter;
   Question: Question;
   _AnswerFilter: _AnswerFilter;
@@ -1233,6 +1383,25 @@ export type HasRoleDirectiveArgs = {   roles?: Maybe<Array<Maybe<Role>>>; };
 
 export type HasRoleDirectiveResolver<Result, Parent, ContextType = any, Args = HasRoleDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type DeleteQuestionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteQuestionResponse'] = ResolversParentTypes['DeleteQuestionResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteAnswerResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteAnswerResponse'] = ResolversParentTypes['DeleteAnswerResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteTagResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteTagResponse'] = ResolversParentTypes['DeleteTagResponse']> = ResolversObject<{
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type SignedTokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignedToken'] = ResolversParentTypes['SignedToken']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1247,8 +1416,9 @@ export type Local_AccountResolvers<ContextType = any, ParentType extends Resolve
 }>;
 
 export type LoginInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginInfo'] = ResolversParentTypes['LoginInfo']> = ResolversObject<{
-  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1257,15 +1427,15 @@ export type LoginInfoResolvers<ContextType = any, ParentType extends ResolversPa
 }>;
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['LOCAL_ACCOUNT']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['Rank'], ParentType, ContextType>;
   questions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<UserQuestionsArgs, never>>;
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<UserAnswersArgs, never>>;
-  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<UserCommentsArgs, never>>;
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<UserTagsArgs, never>>;
+  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<UserCommentsArgs, never>>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -1280,9 +1450,16 @@ export type RedirectUriResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type CanBeCommentedResolvers<ContextType = any, ParentType extends ResolversParentTypes['CanBeCommented'] = ResolversParentTypes['CanBeCommented']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Question' | 'Answer', ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<CanBeCommentedCommentsArgs, never>>;
+}>;
+
 export type QuestionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Question'] = ResolversParentTypes['Question']> = ResolversObject<{
-  questionId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  owner?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QuestionOwnerArgs, never>>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QuestionAuthorArgs, never>>;
+  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QuestionCommentsArgs, never>>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QuestionAnswersArgs, never>>;
@@ -1294,12 +1471,12 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type AnswerResolvers<ContextType = any, ParentType extends ResolversParentTypes['Answer'] = ResolversParentTypes['Answer']> = ResolversObject<{
-  answerId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   question?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<AnswerQuestionArgs, never>>;
-  owner?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<AnswerOwnerArgs, never>>;
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<AnswerAuthorArgs, never>>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<AnswerCommentsArgs, never>>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  rate?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1307,11 +1484,11 @@ export type AnswerResolvers<ContextType = any, ParentType extends ResolversParen
 }>;
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
-  commentId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  owner?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<CommentOwnerArgs, never>>;
-  answer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<CommentAnswerArgs, never>>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<CommentAuthorArgs, never>>;
+  topic?: Resolver<Maybe<ResolversTypes['CanBeCommented']>, ParentType, ContextType, RequireFields<CommentTopicArgs, never>>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['_Neo4jDateTime'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1328,7 +1505,6 @@ export type TagResolvers<ContextType = any, ParentType extends ResolversParentTy
 
 export type LikedResolvers<ContextType = any, ParentType extends ResolversParentTypes['Liked'] = ResolversParentTypes['Liked']> = ResolversObject<{
   from?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  to?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -1408,6 +1584,7 @@ export type _Neo4jPointResolvers<ContextType = any, ParentType extends Resolvers
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
+  CanBeCommented?: Resolver<Maybe<Array<Maybe<ResolversTypes['CanBeCommented']>>>, ParentType, ContextType, RequireFields<QueryCanBeCommentedArgs, never>>;
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
   Comment?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QueryCommentArgs, never>>;
@@ -1422,16 +1599,25 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   ChangePassComplete?: Resolver<ResolversTypes['RedirectUri'], ParentType, ContextType, RequireFields<MutationChangePassCompleteArgs, 'data'>>;
   AskQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationAskQuestionArgs, 'data'>>;
   EditQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationEditQuestionArgs, 'data'>>;
-  DeleteQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationDeleteQuestionArgs, 'data'>>;
+  DeleteQuestion?: Resolver<ResolversTypes['DeleteQuestionResponse'], ParentType, ContextType, RequireFields<MutationDeleteQuestionArgs, 'data'>>;
+  AnswerQuestion?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationAnswerQuestionArgs, 'data'>>;
+  EditAnswer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationEditAnswerArgs, 'data'>>;
+  DeleteAnswer?: Resolver<ResolversTypes['DeleteAnswerResponse'], ParentType, ContextType, RequireFields<MutationDeleteAnswerArgs, 'data'>>;
+  AddComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'data'>>;
   AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
+  DeleteTag?: Resolver<ResolversTypes['DeleteTagResponse'], ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'data'>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  DeleteQuestionResponse?: DeleteQuestionResponseResolvers<ContextType>;
+  DeleteAnswerResponse?: DeleteAnswerResponseResolvers<ContextType>;
+  DeleteTagResponse?: DeleteTagResponseResolvers<ContextType>;
   SignedToken?: SignedTokenResolvers<ContextType>;
   LOCAL_ACCOUNT?: Local_AccountResolvers<ContextType>;
   LoginInfo?: LoginInfoResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   RedirectUri?: RedirectUriResolvers<ContextType>;
+  CanBeCommented?: CanBeCommentedResolvers<ContextType>;
   Question?: QuestionResolvers<ContextType>;
   Answer?: AnswerResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
