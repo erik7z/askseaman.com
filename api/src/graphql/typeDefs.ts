@@ -238,10 +238,27 @@ export const typeDefs = gql`
 					MATCH (u)-[r:LIKED]->(t), (u)-[:LIKED]->(t)
 					DELETE r
 					RETURN t as g
-
 					UNION
-
 					MATCH (g:CanBeLiked {nodeId: $data.nodeId})
+					RETURN  g
+				}
+				RETURN g
+				"""
+			)
+
+		ToggleSubscribe(data: nodeIdInput!): Question!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:Question {nodeId: $data.nodeId})
+					CREATE (u)-[:SUBSCRIBED]->(t)
+					WITH u, t
+				CALL {
+					MATCH (u)-[r:SUBSCRIBED]->(t), (u)-[:SUBSCRIBED]->(t)
+					DELETE r
+					RETURN t as g
+					UNION
+					MATCH (g:Question {nodeId: $data.nodeId})
 					RETURN  g
 				}
 				RETURN g
@@ -369,20 +386,21 @@ export const typeDefs = gql`
 
 	type User {
 		nodeId: ID! @id
-		email: LOCAL_ACCOUNT
-			@isAuthenticated
-			@relation(name: "AUTHENTICATED_WITH", direction: OUT)
 		name: String!
 		surname: String!
 		rank: Rank!
+		createdAt: DateTime
+		token: String
+		roles: [String]
+		email: LOCAL_ACCOUNT
+			@isAuthenticated
+			@relation(name: "AUTHENTICATED_WITH", direction: OUT)
 		questions: [Question] @relation(name: "ASKED", direction: OUT)
 		answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
 		tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
 		comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
 		liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
-		createdAt: DateTime
-		token: String
-		roles: [String]
+		subscriptions: [User] @relation(name: "SUBSCRIBED", direction: OUT)
 	}
 
 	type RedirectUri {
@@ -406,42 +424,43 @@ export const typeDefs = gql`
 	type Question implements CanBeCommented & CanBeLiked
 		@hasRole(roles: [reader]) {
 		nodeId: ID! @id
-		author: User! @relation(name: "ASKED", direction: IN)
-		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		title: String!
 		text: String!
-		answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
-		tagged: [Tag] @relation(name: "TAGGED", direction: IN)
-		likes: [User] @relation(name: "LIKED", direction: IN)
 		createdAt: DateTime
 		updatedAt: DateTime
+		author: User! @relation(name: "ASKED", direction: IN)
+		answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
+		tags: [Tag] @relation(name: "TAGGED", direction: IN)
+		likes: [User] @relation(name: "LIKED", direction: IN)
+		subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
 	}
 
 	type Answer implements CanBeCommented {
 		nodeId: ID! @id
-		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
-		author: User! @relation(name: "ANSWERED", direction: IN)
-		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		text: String!
 		rate: Int
 		createdAt: DateTime
 		updatedAt: DateTime
+		author: User! @relation(name: "ANSWERED", direction: IN)
+		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 	}
 
 	type Comment implements CanBeLiked {
 		nodeId: ID! @id
-		author: User @relation(name: "ADDED_COMMENT", direction: IN)
-		topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
-		likes: [User] @relation(name: "LIKED", direction: IN)
 		text: String!
 		createdAt: DateTime!
 		updatedAt: DateTime
+		author: User @relation(name: "ADDED_COMMENT", direction: IN)
+		topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
+		likes: [User] @relation(name: "LIKED", direction: IN)
 	}
 
 	type Tag {
 		name: String! @unique
-		questions: [Question] @relation(name: "TAGGED", direction: OUT)
 		createdAt: DateTime
+		questions: [Question] @relation(name: "TAGGED", direction: OUT)
 		addedBy: User @relation(name: "ADDED_BY", direction: OUT)
 	}
 
