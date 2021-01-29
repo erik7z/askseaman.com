@@ -41,7 +41,7 @@ export type EmailInput = {
   email: Scalars['String'];
 };
 
-export type DeleteNodeInput = {
+export type NodeIdInput = {
   nodeId: Scalars['ID'];
 };
 
@@ -86,6 +86,11 @@ export type EditAnswerInput = {
   text: Scalars['String'];
 };
 
+export type EditCommentInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
 export type AddTagInput = {
   name: Scalars['String'];
 };
@@ -102,6 +107,12 @@ export type DeleteAnswerResponse = {
   nodeId: Scalars['ID'];
   text: Scalars['String'];
   rate: Scalars['Int'];
+};
+
+export type DeleteCommentResponse = {
+  __typename?: 'DeleteCommentResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
 };
 
 export type DeleteTagResponse = {
@@ -227,6 +238,14 @@ export type _UserFilter = {
   comments_none?: Maybe<_CommentFilter>;
   comments_single?: Maybe<_CommentFilter>;
   comments_every?: Maybe<_CommentFilter>;
+  liked?: Maybe<_CanBeLikedFilter>;
+  liked_not?: Maybe<_CanBeLikedFilter>;
+  liked_in?: Maybe<Array<_CanBeLikedFilter>>;
+  liked_not_in?: Maybe<Array<_CanBeLikedFilter>>;
+  liked_some?: Maybe<_CanBeLikedFilter>;
+  liked_none?: Maybe<_CanBeLikedFilter>;
+  liked_single?: Maybe<_CanBeLikedFilter>;
+  liked_every?: Maybe<_CanBeLikedFilter>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -268,6 +287,7 @@ export type User = {
   answers?: Maybe<Array<Maybe<Answer>>>;
   tags?: Maybe<Array<Maybe<Tag>>>;
   comments?: Maybe<Array<Maybe<Comment>>>;
+  liked?: Maybe<Array<Maybe<CanBeLiked>>>;
   createdAt?: Maybe<_Neo4jDateTime>;
   token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -307,6 +327,14 @@ export type UserCommentsArgs = {
   filter?: Maybe<_CommentFilter>;
 };
 
+
+export type UserLikedArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CanBeLikedOrdering>>>;
+  filter?: Maybe<_CanBeLikedFilter>;
+};
+
 export type RedirectUri = {
   __typename?: 'RedirectUri';
   redirect: Scalars['String'];
@@ -314,14 +342,20 @@ export type RedirectUri = {
   message?: Maybe<Scalars['String']>;
 };
 
-export enum _CanBeCommentedOrdering {
+export type CanBeCommented = {
+  nodeId: Scalars['ID'];
+};
+
+export enum _CanBeLikedOrdering {
   NodeIdAsc = 'nodeId_asc',
-  NodeIdDesc = 'nodeId_desc'
+  NodeIdDesc = 'nodeId_desc',
+  CreatedAtAsc = 'createdAt_asc',
+  CreatedAtDesc = 'createdAt_desc'
 }
 
-export type _CanBeCommentedFilter = {
-  AND?: Maybe<Array<_CanBeCommentedFilter>>;
-  OR?: Maybe<Array<_CanBeCommentedFilter>>;
+export type _CanBeLikedFilter = {
+  AND?: Maybe<Array<_CanBeLikedFilter>>;
+  OR?: Maybe<Array<_CanBeLikedFilter>>;
   nodeId?: Maybe<Scalars['ID']>;
   nodeId_not?: Maybe<Scalars['ID']>;
   nodeId_in?: Maybe<Array<Scalars['ID']>>;
@@ -333,20 +367,39 @@ export type _CanBeCommentedFilter = {
   nodeId_not_starts_with?: Maybe<Scalars['ID']>;
   nodeId_ends_with?: Maybe<Scalars['ID']>;
   nodeId_not_ends_with?: Maybe<Scalars['ID']>;
+  likes?: Maybe<_UserFilter>;
+  likes_not?: Maybe<_UserFilter>;
+  likes_in?: Maybe<Array<_UserFilter>>;
+  likes_not_in?: Maybe<Array<_UserFilter>>;
+  likes_some?: Maybe<_UserFilter>;
+  likes_none?: Maybe<_UserFilter>;
+  likes_single?: Maybe<_UserFilter>;
+  likes_every?: Maybe<_UserFilter>;
+  createdAt?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_not?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  createdAt_not_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  createdAt_lt?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
+  createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
-export type CanBeCommented = {
+export type CanBeLiked = {
   nodeId: Scalars['ID'];
-  comments?: Maybe<Array<Maybe<Comment>>>;
+  likes?: Maybe<Array<Maybe<User>>>;
+  createdAt?: Maybe<_Neo4jDateTime>;
 };
 
 
-export type CanBeCommentedCommentsArgs = {
+export type CanBeLikedLikesArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
-  filter?: Maybe<_CommentFilter>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
 };
+
+export type LikeResult = Question | Comment;
 
 export enum _QuestionOrdering {
   NodeIdAsc = 'nodeId_asc',
@@ -427,6 +480,14 @@ export type _QuestionFilter = {
   tagged_none?: Maybe<_TagFilter>;
   tagged_single?: Maybe<_TagFilter>;
   tagged_every?: Maybe<_TagFilter>;
+  likes?: Maybe<_UserFilter>;
+  likes_not?: Maybe<_UserFilter>;
+  likes_in?: Maybe<Array<_UserFilter>>;
+  likes_not_in?: Maybe<Array<_UserFilter>>;
+  likes_some?: Maybe<_UserFilter>;
+  likes_none?: Maybe<_UserFilter>;
+  likes_single?: Maybe<_UserFilter>;
+  likes_every?: Maybe<_UserFilter>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -445,7 +506,7 @@ export type _QuestionFilter = {
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
-export type Question = CanBeCommented & {
+export type Question = CanBeCommented & CanBeLiked & {
   __typename?: 'Question';
   nodeId: Scalars['ID'];
   author: User;
@@ -454,6 +515,7 @@ export type Question = CanBeCommented & {
   text: Scalars['String'];
   answers?: Maybe<Array<Maybe<Answer>>>;
   tagged?: Maybe<Array<Maybe<Tag>>>;
+  likes?: Maybe<Array<Maybe<User>>>;
   createdAt?: Maybe<_Neo4jDateTime>;
   updatedAt?: Maybe<_Neo4jDateTime>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
@@ -487,6 +549,14 @@ export type QuestionTaggedArgs = {
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_TagOrdering>>>;
   filter?: Maybe<_TagFilter>;
+};
+
+
+export type QuestionLikesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
 };
 
 export enum _AnswerOrdering {
@@ -634,10 +704,14 @@ export type _CommentFilter = {
   author_not?: Maybe<_UserFilter>;
   author_in?: Maybe<Array<_UserFilter>>;
   author_not_in?: Maybe<Array<_UserFilter>>;
-  topic?: Maybe<_CanBeCommentedFilter>;
-  topic_not?: Maybe<_CanBeCommentedFilter>;
-  topic_in?: Maybe<Array<_CanBeCommentedFilter>>;
-  topic_not_in?: Maybe<Array<_CanBeCommentedFilter>>;
+  likes?: Maybe<_UserFilter>;
+  likes_not?: Maybe<_UserFilter>;
+  likes_in?: Maybe<Array<_UserFilter>>;
+  likes_not_in?: Maybe<Array<_UserFilter>>;
+  likes_some?: Maybe<_UserFilter>;
+  likes_none?: Maybe<_UserFilter>;
+  likes_single?: Maybe<_UserFilter>;
+  likes_every?: Maybe<_UserFilter>;
   text?: Maybe<Scalars['String']>;
   text_not?: Maybe<Scalars['String']>;
   text_in?: Maybe<Array<Scalars['String']>>;
@@ -667,11 +741,12 @@ export type _CommentFilter = {
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
 };
 
-export type Comment = {
+export type Comment = CanBeLiked & {
   __typename?: 'Comment';
   nodeId: Scalars['ID'];
   author?: Maybe<User>;
   topic?: Maybe<CanBeCommented>;
+  likes?: Maybe<Array<Maybe<User>>>;
   text: Scalars['String'];
   createdAt: _Neo4jDateTime;
   updatedAt?: Maybe<_Neo4jDateTime>;
@@ -685,8 +760,11 @@ export type CommentAuthorArgs = {
 };
 
 
-export type CommentTopicArgs = {
-  filter?: Maybe<_CanBeCommentedFilter>;
+export type CommentLikesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
 };
 
 export enum _TagOrdering {
@@ -955,8 +1033,10 @@ export type Query = {
   currentUser?: Maybe<User>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for CanBeCommented type nodes. */
-  CanBeCommented?: Maybe<Array<Maybe<CanBeCommented>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for CanBeLiked type nodes. */
+  CanBeLiked?: Maybe<Array<Maybe<CanBeLiked>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for LikeResult type nodes. */
+  LikeResult?: Maybe<Array<Maybe<LikeResult>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Question type nodes. */
   Question?: Maybe<Array<Maybe<Question>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
@@ -984,13 +1064,20 @@ export type QueryUserArgs = {
 };
 
 
-export type QueryCanBeCommentedArgs = {
+export type QueryCanBeLikedArgs = {
   nodeId?: Maybe<Scalars['ID']>;
+  createdAt?: Maybe<_Neo4jDateTimeInput>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_CanBeCommentedOrdering>>>;
-  filter?: Maybe<_CanBeCommentedFilter>;
+  orderBy?: Maybe<Array<Maybe<_CanBeLikedOrdering>>>;
+  filter?: Maybe<_CanBeLikedFilter>;
+};
+
+
+export type QueryLikeResultArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 
@@ -1059,8 +1146,11 @@ export type Mutation = {
   EditAnswer: Answer;
   DeleteAnswer: DeleteAnswerResponse;
   AddComment: Comment;
+  EditComment: Comment;
+  DeleteComment: DeleteCommentResponse;
   AddTag: Tag;
   DeleteTag: DeleteTagResponse;
+  ToggleLike: LikeResult;
 };
 
 
@@ -1100,7 +1190,7 @@ export type MutationEditQuestionArgs = {
 
 
 export type MutationDeleteQuestionArgs = {
-  data: DeleteNodeInput;
+  data: NodeIdInput;
 };
 
 
@@ -1115,12 +1205,22 @@ export type MutationEditAnswerArgs = {
 
 
 export type MutationDeleteAnswerArgs = {
-  data: DeleteNodeInput;
+  data: NodeIdInput;
 };
 
 
 export type MutationAddCommentArgs = {
   data: AddCommentInput;
+};
+
+
+export type MutationEditCommentArgs = {
+  data: EditCommentInput;
+};
+
+
+export type MutationDeleteCommentArgs = {
+  data: NodeIdInput;
 };
 
 
@@ -1131,6 +1231,11 @@ export type MutationAddTagArgs = {
 
 export type MutationDeleteTagArgs = {
   data: DeleteTagInput;
+};
+
+
+export type MutationToggleLikeArgs = {
+  data: NodeIdInput;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -1216,7 +1321,7 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
-  deleteNodeInput: DeleteNodeInput;
+  nodeIdInput: NodeIdInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   deleteTagInput: DeleteTagInput;
   CodeInput: CodeInput;
@@ -1227,9 +1332,11 @@ export type ResolversTypes = ResolversObject<{
   AnswerQuestionInput: AnswerQuestionInput;
   AddCommentInput: AddCommentInput;
   EditAnswerInput: EditAnswerInput;
+  EditCommentInput: EditCommentInput;
   AddTagInput: AddTagInput;
   DeleteQuestionResponse: ResolverTypeWrapper<DeleteQuestionResponse>;
   DeleteAnswerResponse: ResolverTypeWrapper<DeleteAnswerResponse>;
+  DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
   DeleteTagResponse: ResolverTypeWrapper<DeleteTagResponse>;
   SignedToken: ResolverTypeWrapper<SignedToken>;
   LOCAL_ACCOUNT: ResolverTypeWrapper<Local_Account>;
@@ -1238,9 +1345,11 @@ export type ResolversTypes = ResolversObject<{
   _UserFilter: _UserFilter;
   User: ResolverTypeWrapper<User>;
   RedirectUri: ResolverTypeWrapper<RedirectUri>;
-  _CanBeCommentedOrdering: _CanBeCommentedOrdering;
-  _CanBeCommentedFilter: _CanBeCommentedFilter;
   CanBeCommented: ResolversTypes['Question'] | ResolversTypes['Answer'];
+  _CanBeLikedOrdering: _CanBeLikedOrdering;
+  _CanBeLikedFilter: _CanBeLikedFilter;
+  CanBeLiked: ResolversTypes['Question'] | ResolversTypes['Comment'];
+  LikeResult: ResolversTypes['Question'] | ResolversTypes['Comment'];
   _QuestionOrdering: _QuestionOrdering;
   _QuestionFilter: _QuestionFilter;
   Question: ResolverTypeWrapper<Question>;
@@ -1283,7 +1392,7 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
-  deleteNodeInput: DeleteNodeInput;
+  nodeIdInput: NodeIdInput;
   ID: Scalars['ID'];
   deleteTagInput: DeleteTagInput;
   CodeInput: CodeInput;
@@ -1294,9 +1403,11 @@ export type ResolversParentTypes = ResolversObject<{
   AnswerQuestionInput: AnswerQuestionInput;
   AddCommentInput: AddCommentInput;
   EditAnswerInput: EditAnswerInput;
+  EditCommentInput: EditCommentInput;
   AddTagInput: AddTagInput;
   DeleteQuestionResponse: DeleteQuestionResponse;
   DeleteAnswerResponse: DeleteAnswerResponse;
+  DeleteCommentResponse: DeleteCommentResponse;
   DeleteTagResponse: DeleteTagResponse;
   SignedToken: SignedToken;
   LOCAL_ACCOUNT: Local_Account;
@@ -1304,8 +1415,10 @@ export type ResolversParentTypes = ResolversObject<{
   _UserFilter: _UserFilter;
   User: User;
   RedirectUri: RedirectUri;
-  _CanBeCommentedFilter: _CanBeCommentedFilter;
   CanBeCommented: ResolversParentTypes['Question'] | ResolversParentTypes['Answer'];
+  _CanBeLikedFilter: _CanBeLikedFilter;
+  CanBeLiked: ResolversParentTypes['Question'] | ResolversParentTypes['Comment'];
+  LikeResult: ResolversParentTypes['Question'] | ResolversParentTypes['Comment'];
   _QuestionFilter: _QuestionFilter;
   Question: Question;
   _AnswerFilter: _AnswerFilter;
@@ -1397,6 +1510,12 @@ export type DeleteAnswerResponseResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type DeleteCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteCommentResponse'] = ResolversParentTypes['DeleteCommentResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type DeleteTagResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteTagResponse'] = ResolversParentTypes['DeleteTagResponse']> = ResolversObject<{
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1436,6 +1555,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<UserAnswersArgs, never>>;
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<UserTagsArgs, never>>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<UserCommentsArgs, never>>;
+  liked?: Resolver<Maybe<Array<Maybe<ResolversTypes['CanBeLiked']>>>, ParentType, ContextType, RequireFields<UserLikedArgs, never>>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -1453,7 +1573,17 @@ export type RedirectUriResolvers<ContextType = any, ParentType extends Resolvers
 export type CanBeCommentedResolvers<ContextType = any, ParentType extends ResolversParentTypes['CanBeCommented'] = ResolversParentTypes['CanBeCommented']> = ResolversObject<{
   __resolveType: TypeResolveFn<'Question' | 'Answer', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<CanBeCommentedCommentsArgs, never>>;
+}>;
+
+export type CanBeLikedResolvers<ContextType = any, ParentType extends ResolversParentTypes['CanBeLiked'] = ResolversParentTypes['CanBeLiked']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Question' | 'Comment', ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  likes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<CanBeLikedLikesArgs, never>>;
+  createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+}>;
+
+export type LikeResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['LikeResult'] = ResolversParentTypes['LikeResult']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Question' | 'Comment', ParentType, ContextType>;
 }>;
 
 export type QuestionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Question'] = ResolversParentTypes['Question']> = ResolversObject<{
@@ -1464,6 +1594,7 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QuestionAnswersArgs, never>>;
   tagged?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QuestionTaggedArgs, never>>;
+  likes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QuestionLikesArgs, never>>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1486,7 +1617,8 @@ export type AnswerResolvers<ContextType = any, ParentType extends ResolversParen
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<CommentAuthorArgs, never>>;
-  topic?: Resolver<Maybe<ResolversTypes['CanBeCommented']>, ParentType, ContextType, RequireFields<CommentTopicArgs, never>>;
+  topic?: Resolver<Maybe<ResolversTypes['CanBeCommented']>, ParentType, ContextType>;
+  likes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<CommentLikesArgs, never>>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['_Neo4jDateTime'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
@@ -1584,7 +1716,8 @@ export type _Neo4jPointResolvers<ContextType = any, ParentType extends Resolvers
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
-  CanBeCommented?: Resolver<Maybe<Array<Maybe<ResolversTypes['CanBeCommented']>>>, ParentType, ContextType, RequireFields<QueryCanBeCommentedArgs, never>>;
+  CanBeLiked?: Resolver<Maybe<Array<Maybe<ResolversTypes['CanBeLiked']>>>, ParentType, ContextType, RequireFields<QueryCanBeLikedArgs, never>>;
+  LikeResult?: Resolver<Maybe<Array<Maybe<ResolversTypes['LikeResult']>>>, ParentType, ContextType, RequireFields<QueryLikeResultArgs, never>>;
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
   Comment?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QueryCommentArgs, never>>;
@@ -1604,13 +1737,17 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   EditAnswer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationEditAnswerArgs, 'data'>>;
   DeleteAnswer?: Resolver<ResolversTypes['DeleteAnswerResponse'], ParentType, ContextType, RequireFields<MutationDeleteAnswerArgs, 'data'>>;
   AddComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'data'>>;
+  EditComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationEditCommentArgs, 'data'>>;
+  DeleteComment?: Resolver<ResolversTypes['DeleteCommentResponse'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'data'>>;
   AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
   DeleteTag?: Resolver<ResolversTypes['DeleteTagResponse'], ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'data'>>;
+  ToggleLike?: Resolver<ResolversTypes['LikeResult'], ParentType, ContextType, RequireFields<MutationToggleLikeArgs, 'data'>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   DeleteQuestionResponse?: DeleteQuestionResponseResolvers<ContextType>;
   DeleteAnswerResponse?: DeleteAnswerResponseResolvers<ContextType>;
+  DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
   DeleteTagResponse?: DeleteTagResponseResolvers<ContextType>;
   SignedToken?: SignedTokenResolvers<ContextType>;
   LOCAL_ACCOUNT?: Local_AccountResolvers<ContextType>;
@@ -1618,6 +1755,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   User?: UserResolvers<ContextType>;
   RedirectUri?: RedirectUriResolvers<ContextType>;
   CanBeCommented?: CanBeCommentedResolvers<ContextType>;
+  CanBeLiked?: CanBeLikedResolvers<ContextType>;
+  LikeResult?: LikeResultResolvers<ContextType>;
   Question?: QuestionResolvers<ContextType>;
   Answer?: AnswerResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;

@@ -120,7 +120,7 @@ export const typeDefs = gql`
 			)
 
 		#TODO: Delete related comments
-		DeleteQuestion(data: deleteNodeInput!): DeleteQuestionResponse!
+		DeleteQuestion(data: nodeIdInput!): DeleteQuestionResponse!
 			@isAuthenticated
 			@cypher(
 				statement: """
@@ -156,7 +156,7 @@ export const typeDefs = gql`
 			)
 
 		#TODO: Delete related comments
-		DeleteAnswer(data: deleteNodeInput!): DeleteAnswerResponse!
+		DeleteAnswer(data: nodeIdInput!): DeleteAnswerResponse!
 			@isAuthenticated
 			@cypher(
 				statement: """
@@ -178,6 +178,27 @@ export const typeDefs = gql`
 				MATCH (t:CanBeCommented {nodeId: $data.nodeId})
 				CREATE (t)-[:HAS_COMMENT]->(c)
 				RETURN c
+				"""
+			)
+
+		EditComment(data: EditCommentInput!): Comment!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (c:Comment {nodeId: $data.nodeId})<-[:ADDED_COMMENT]-(u:User {nodeId: $cypherParams.currentUserId})
+				SET c += {text: $data.text, updatedAt: DateTime()}
+				RETURN c
+				"""
+			)
+
+		DeleteComment(data: nodeIdInput!): DeleteCommentResponse!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (c:Comment {nodeId: $data.nodeId})<-[:ADDED_COMMENT]-(u:User {nodeId: $cypherParams.currentUserId})
+				WITH c, properties(c) AS m
+				DETACH DELETE c
+				RETURN m
 				"""
 			)
 
@@ -205,6 +226,27 @@ export const typeDefs = gql`
 				RETURN m
 				"""
 			)
+
+		ToggleLike(data: nodeIdInput!): LikeResult!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeLiked {nodeId: $data.nodeId})
+					CREATE (u)-[:LIKED]->(t)
+					WITH u, t
+				CALL {
+					MATCH (u)-[r:LIKED]->(t), (u)-[:LIKED]->(t)
+					DELETE r
+					RETURN t as g
+
+					UNION
+
+					MATCH (g:CanBeLiked {nodeId: $data.nodeId})
+					RETURN  g
+				}
+				RETURN g
+				"""
+			)
 	}
 
 	# ----------- INPUTS
@@ -226,7 +268,7 @@ export const typeDefs = gql`
 		email: String!
 	}
 
-	input deleteNodeInput {
+	input nodeIdInput {
 		nodeId: ID!
 	}
 
@@ -271,6 +313,11 @@ export const typeDefs = gql`
 		text: String!
 	}
 
+	input EditCommentInput {
+		nodeId: ID!
+		text: String!
+	}
+
 	input AddTagInput {
 		name: String!
 	}
@@ -286,6 +333,11 @@ export const typeDefs = gql`
 		nodeId: ID! @id
 		text: String!
 		rate: Int!
+	}
+
+	type DeleteCommentResponse {
+		nodeId: ID! @id
+		text: String!
 	}
 
 	type DeleteTagResponse {
@@ -327,6 +379,7 @@ export const typeDefs = gql`
 		answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
 		tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
 		comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
+		liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
 		createdAt: DateTime
 		token: String
 		roles: [String]
@@ -342,7 +395,16 @@ export const typeDefs = gql`
 		nodeId: ID!
 	}
 
-	type Question implements CanBeCommented @hasRole(roles: [reader]) {
+	interface CanBeLiked {
+		nodeId: ID!
+		likes: [User] @relation(name: "LIKED", direction: IN)
+		createdAt: DateTime
+	}
+
+	union LikeResult = Question | Comment
+
+	type Question implements CanBeCommented & CanBeLiked
+		@hasRole(roles: [reader]) {
 		nodeId: ID! @id
 		author: User! @relation(name: "ASKED", direction: IN)
 		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
@@ -350,6 +412,7 @@ export const typeDefs = gql`
 		text: String!
 		answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
 		tagged: [Tag] @relation(name: "TAGGED", direction: IN)
+		likes: [User] @relation(name: "LIKED", direction: IN)
 		createdAt: DateTime
 		updatedAt: DateTime
 	}
@@ -365,10 +428,11 @@ export const typeDefs = gql`
 		updatedAt: DateTime
 	}
 
-	type Comment {
+	type Comment implements CanBeLiked {
 		nodeId: ID! @id
 		author: User @relation(name: "ADDED_COMMENT", direction: IN)
 		topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
+		likes: [User] @relation(name: "LIKED", direction: IN)
 		text: String!
 		createdAt: DateTime!
 		updatedAt: DateTime
