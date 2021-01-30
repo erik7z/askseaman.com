@@ -13,10 +13,10 @@ export const typeDefs = gql`
 	}
 
 	type Mutation {
-		Register(data: RegisterUserInput!): LoginInfo!
+		Register(data: RegisterUserInput!): LoginResponse!
 			@cypher(
 				statement: """
-				CREATE (l:LOCAL_ACCOUNT {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {
+				CREATE (l:LocalAccount {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {
 					nodeId: apoc.create.uuid(),
 					email: $data.email,
 					name: $data.name,
@@ -31,15 +31,15 @@ export const typeDefs = gql`
 					name: u.name,
 					surname: u.surname,
 					roles: u.roles
-				} as LoginInfo
-				RETURN LoginInfo
+				} as LoginResponse
+				RETURN LoginResponse
 				"""
 			)
 
-		SignIn(data: LoginUserInput!): LoginInfo!
+		SignIn(data: LoginUserInput!): LoginResponse!
 			@cypher(
 				statement: """
-				MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {email: $data.email})
+				MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
 				WITH {
 					nodeId: u.nodeId,
 					email: u.email,
@@ -47,15 +47,15 @@ export const typeDefs = gql`
 					name: u.name,
 					surname: u.surname,
 					roles: u.roles
-				} as LoginInfo
-				RETURN LoginInfo
+				} as LoginResponse
+				RETURN LoginResponse
 				"""
 			)
 
 		ChangePassRequest(data: EmailInput!): RedirectUri!
 			@cypher(
 				statement: """
-				MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {email: $data.email})
+				MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
 				SET l.code = $cypherParams.code
 				RETURN u
 				"""
@@ -63,7 +63,7 @@ export const typeDefs = gql`
 		ChangePassConfirm(data: CodeInput!): RedirectUri!
 			@cypher(
 				statement: """
-				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {code: $data.code})
+				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
 				RETURN u
 				"""
 			)
@@ -71,7 +71,7 @@ export const typeDefs = gql`
 		ChangePassComplete(data: newPassInput!): RedirectUri!
 			@cypher(
 				statement: """
-				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LOCAL_ACCOUNT {code: $data.code})
+				MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
 				SET l.password = $data.new_password, l.code = null
 				RETURN u
 				"""
@@ -82,7 +82,7 @@ export const typeDefs = gql`
 			@cypher(
 				statement: """
 				MATCH (u:User {nodeId: $cypherParams.currentUserId})
-				CREATE (q:Question:CanBeCommented)<-[:ASKED]-(u)
+				CREATE (q:Question:CanBeCommented:CanBeVoted)<-[:ASKED]-(u)
 				SET q += {title: $data.title, text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
 				WITH q
 				CALL {
@@ -136,7 +136,7 @@ export const typeDefs = gql`
 			@cypher(
 				statement: """
 				MATCH (u:User {nodeId: $cypherParams.currentUserId})
-				CREATE (a:Answer:CanBeCommented)<-[:ANSWERED]-(u)
+				CREATE (a:Answer:CanBeCommented:CanBeVoted)<-[:ANSWERED]-(u)
 				SET a += {text: $data.text, rate: 0, nodeId: apoc.create.uuid(), createdAt: DateTime()}
 				WITH a
 				MATCH (q:Question {nodeId: $data.nodeId})
@@ -264,6 +264,41 @@ export const typeDefs = gql`
 				RETURN g
 				"""
 			)
+
+		Vote(data: VoteInput!): VoteResult!
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeVoted {nodeId: $data.nodeId})
+					WHERE $data.action = "upVote"
+					CREATE (u)-[:VOTED_UP]->(t)
+					WITH u, t
+				CALL {
+					MATCH (u)-[r:VOTED_UP|VOTED_DOWN]->(t), (u)-[:VOTED_UP]->(t)
+					DELETE r
+					RETURN t as g
+				}
+				RETURN g
+
+				UNION
+
+				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeVoted {nodeId: $data.nodeId})
+					WHERE $data.action = "downVote"
+					CREATE (u)-[:VOTED_DOWN]->(t)
+					WITH u, t
+				CALL {
+					MATCH (u)-[r:VOTED_UP|VOTED_DOWN]->(t), (u)-[:VOTED_DOWN]->(t)
+					DELETE r
+					RETURN t as g
+				}
+				RETURN g
+
+				UNION
+
+				MATCH (g:CanBeVoted {nodeId: $data.nodeId})
+				RETURN  g
+				"""
+			)
 	}
 
 	# ----------- INPUTS
@@ -339,6 +374,11 @@ export const typeDefs = gql`
 		name: String!
 	}
 
+	input VoteInput {
+		nodeId: ID!
+		action: VoteIntention!
+	}
+
 	# ----------- RESPONSE TYPES
 	type DeleteQuestionResponse {
 		nodeId: ID! @id
@@ -367,14 +407,14 @@ export const typeDefs = gql`
 		token: String!
 	}
 
-	type LOCAL_ACCOUNT @isAuthenticated {
+	type LocalAccount @isAuthenticated {
 		user: User! @relation(name: "AUTHENTICATED_WITH", direction: IN)
 		email: String! @unique
 		password: String
 		code: Int
 	}
 
-	type LoginInfo {
+	type LoginResponse {
 		nodeId: ID!
 		email: String!
 		password: String! #TODO: hide password from outside api (required for compare in BCRYPT)
@@ -392,7 +432,7 @@ export const typeDefs = gql`
 		createdAt: DateTime
 		token: String
 		roles: [String]
-		email: LOCAL_ACCOUNT
+		email: LocalAccount
 			@isAuthenticated
 			@relation(name: "AUTHENTICATED_WITH", direction: OUT)
 		questions: [Question] @relation(name: "ASKED", direction: OUT)
@@ -415,13 +455,20 @@ export const typeDefs = gql`
 
 	interface CanBeLiked {
 		nodeId: ID!
-		likes: [User] @relation(name: "LIKED", direction: IN)
+		likes: [User]
 		createdAt: DateTime
 	}
 
-	union LikeResult = Question | Comment
+	interface CanBeVoted {
+		nodeId: ID!
+		upVotes: Int
+		downVotes: Int
+	}
 
-	type Question implements CanBeCommented & CanBeLiked
+	union LikeResult = Question | Comment
+	union VoteResult = Question | Answer
+
+	type Question implements CanBeCommented & CanBeLiked & CanBeVoted
 		@hasRole(roles: [reader]) {
 		nodeId: ID! @id
 		title: String!
@@ -434,17 +481,30 @@ export const typeDefs = gql`
 		tags: [Tag] @relation(name: "TAGGED", direction: IN)
 		likes: [User] @relation(name: "LIKED", direction: IN)
 		subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
+		upVotes: Int
+			@cypher(statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upvotes")
+		downVotes: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downvotes"
+			)
 	}
 
-	type Answer implements CanBeCommented {
+	type Answer implements CanBeCommented & CanBeVoted {
 		nodeId: ID! @id
 		text: String!
-		rate: Int
+		accepted: Boolean!
 		createdAt: DateTime
 		updatedAt: DateTime
 		author: User! @relation(name: "ANSWERED", direction: IN)
 		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
 		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
+
+		upVotes: Int
+			@cypher(statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upvotes")
+		downVotes: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downvotes"
+			)
 	}
 
 	type Comment implements CanBeLiked {
@@ -475,6 +535,11 @@ export const typeDefs = gql`
 		Master
 		Chief_Officer
 		AB
+	}
+
+	enum VoteIntention {
+		upVote
+		downVote
 	}
 
 	enum Role {
