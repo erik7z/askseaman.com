@@ -82,7 +82,7 @@ export const typeDefs = gql`
 			@cypher(
 				statement: """
 				MATCH (u:User {nodeId: $cypherParams.currentUserId})
-				CREATE (q:Question:CanBeCommented:CanBeVoted)<-[:ASKED]-(u)
+				CREATE (q:Question:CanBeCommented:CanBeVoted:CanBeSubscribed)<-[:ASKED]-(u)
 				SET q += {title: $data.title, text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
 				WITH q
 				CALL {
@@ -137,7 +137,7 @@ export const typeDefs = gql`
 				statement: """
 				MATCH (u:User {nodeId: $cypherParams.currentUserId})
 				CREATE (a:Answer:CanBeCommented:CanBeVoted)<-[:ANSWERED]-(u)
-				SET a += {text: $data.text, rate: 0, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+				SET a += {text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
 				WITH a
 				MATCH (q:Question {nodeId: $data.nodeId})
 				CREATE (q)-[r:HAS_ANSWER]->(a)
@@ -207,7 +207,8 @@ export const typeDefs = gql`
 			@cypher(
 				statement: """
 				MATCH (u:User {nodeId: $cypherParams.currentUserId})
-				MERGE (t:Tag {
+				MERGE (t:Tag:CanBeSubscribed {
+					nodeId: apoc.create.uuid(),
 					name: $data.name,
 					createdAt: DateTime()
 					})-[a:ADDED_BY]->(u)
@@ -246,11 +247,11 @@ export const typeDefs = gql`
 				"""
 			)
 
-		ToggleSubscribe(data: nodeIdInput!): Question!
+		ToggleSubscribe(data: nodeIdInput!): SubscribeResult!
 			@isAuthenticated
 			@cypher(
 				statement: """
-				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:Question {nodeId: $data.nodeId})
+				MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeSubscribed {nodeId: $data.nodeId})
 					CREATE (u)-[:SUBSCRIBED]->(t)
 					WITH u, t
 				CALL {
@@ -258,7 +259,26 @@ export const typeDefs = gql`
 					DELETE r
 					RETURN t as g
 					UNION
-					MATCH (g:Question {nodeId: $data.nodeId})
+					MATCH (g:CanBeSubscribed {nodeId: $data.nodeId})
+					RETURN  g
+				}
+				RETURN g
+				"""
+			)
+
+		ToggleAcceptAnswer(data: nodeIdInput!): Answer
+			@isAuthenticated
+			@cypher(
+				statement: """
+				MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:ASKED]->(:Question)-[:HAS_ANSWER]->(t:Answer {nodeId: $data.nodeId})
+					CREATE (u)-[:ACCEPTED]->(t)
+					WITH u, t
+				CALL {
+					MATCH (u)-[r:ACCEPTED]->(t), (u)-[:ACCEPTED]->(t)
+					DELETE r
+					RETURN t as g
+					UNION
+					MATCH (g:Answer {nodeId: $data.nodeId})
 					RETURN  g
 				}
 				RETURN g
@@ -372,6 +392,7 @@ export const typeDefs = gql`
 
 	input AddTagInput {
 		name: String!
+		description: String
 	}
 
 	input VoteInput {
@@ -389,7 +410,6 @@ export const typeDefs = gql`
 	type DeleteAnswerResponse {
 		nodeId: ID! @id
 		text: String!
-		rate: Int!
 	}
 
 	type DeleteCommentResponse {
@@ -459,6 +479,11 @@ export const typeDefs = gql`
 		createdAt: DateTime
 	}
 
+	interface CanBeSubscribed {
+		nodeId: ID!
+		subscribers: [User]
+	}
+
 	interface CanBeVoted {
 		nodeId: ID!
 		upVotes: Int
@@ -467,8 +492,9 @@ export const typeDefs = gql`
 
 	union LikeResult = Question | Comment
 	union VoteResult = Question | Answer
+	union SubscribeResult = Question | Tag
 
-	type Question implements CanBeCommented & CanBeLiked & CanBeVoted
+	type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribed
 		@hasRole(roles: [reader]) {
 		nodeId: ID! @id
 		title: String!
@@ -492,19 +518,28 @@ export const typeDefs = gql`
 	type Answer implements CanBeCommented & CanBeVoted {
 		nodeId: ID! @id
 		text: String!
-		accepted: Boolean!
 		createdAt: DateTime
 		updatedAt: DateTime
-		author: User! @relation(name: "ANSWERED", direction: IN)
-		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
-		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 
+		canAccept: Boolean
+			@isAuthenticated
+			@cypher(
+				statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:ASKED]->(:Question)-[:HAS_ANSWER]->(this) RETURN count(u) > 0 as canAccept"
+			)
+		accepted: Boolean
+			@cypher(
+				statement: "MATCH (this)<-[r:ACCEPTED]-(:User) RETURN count(r) > 0 as accepted"
+			)
 		upVotes: Int
 			@cypher(statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upvotes")
 		downVotes: Int
 			@cypher(
 				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downvotes"
 			)
+
+		author: User! @relation(name: "ANSWERED", direction: IN)
+		question: Question! @relation(name: "HAS_ANSWER", direction: IN)
+		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 	}
 
 	type Comment implements CanBeLiked {
@@ -517,11 +552,14 @@ export const typeDefs = gql`
 		likes: [User] @relation(name: "LIKED", direction: IN)
 	}
 
-	type Tag {
+	type Tag implements CanBeSubscribed {
+		nodeId: ID! @id
 		name: String! @unique
+		description: String
 		createdAt: DateTime
 		questions: [Question] @relation(name: "TAGGED", direction: OUT)
 		addedBy: User @relation(name: "ADDED_BY", direction: OUT)
+		subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
 	}
 
 	#TODO: How to like comments ?
