@@ -228,7 +228,7 @@ export const typeDefs = gql`
 				"""
 			)
 
-		ToggleLike(data: nodeIdInput!): LikeResult!
+		ToggleLike(data: nodeIdInput!): LikeResponse!
 			@isAuthenticated
 			@cypher(
 				statement: """
@@ -247,7 +247,7 @@ export const typeDefs = gql`
 				"""
 			)
 
-		ToggleSubscribe(data: nodeIdInput!): SubscribeResult!
+		ToggleSubscribe(data: nodeIdInput!): SubscribeResponse!
 			@isAuthenticated
 			@cypher(
 				statement: """
@@ -285,7 +285,7 @@ export const typeDefs = gql`
 				"""
 			)
 
-		Vote(data: VoteInput!): VoteResult!
+		Vote(data: VoteInput!): VoteResponse!
 			@isAuthenticated
 			@cypher(
 				statement: """
@@ -437,7 +437,7 @@ export const typeDefs = gql`
 	type LoginResponse {
 		nodeId: ID!
 		email: String!
-		password: String! #TODO: hide password from outside api (required for compare in BCRYPT)
+		password: String! #TODO: hide password from outside api (which is required in resolver to compare with BCRYPT)
 		name: String!
 		surname: String!
 		token: String
@@ -452,7 +452,31 @@ export const typeDefs = gql`
 		createdAt: DateTime
 		token: String
 		roles: [String]
-		email: LocalAccount
+		location: String
+
+		questionsCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:ASKED]->(:Question)) as questionsCount"
+			)
+		answersCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:ANSWERED]->(:Answer)) as answersCount"
+			)
+		solvedQuestionsCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:ANSWERED]->(:Answer)<-[:ACCEPTED]-(:User)) as solvedQuestionsCount"
+			)
+		#TODO: logic to select favorite tags
+		favoriteTags: [Tag]
+			@cypher(
+				statement: """
+				MATCH (this)-[:ASKED]->(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+				UNION
+				MATCH (this)-[:ANSWERED]->(:Answer)<-[:HAS_ANSWER]-(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+				"""
+			)
+
+		email: LocalAccount  #TODO: hide email from outer world
 			@isAuthenticated
 			@relation(name: "AUTHENTICATED_WITH", direction: OUT)
 		questions: [Question] @relation(name: "ASKED", direction: OUT)
@@ -460,7 +484,9 @@ export const typeDefs = gql`
 		tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
 		comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
 		liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
-		subscriptions: [User] @relation(name: "SUBSCRIBED", direction: OUT)
+		subscriptions: [CanBeSubscribed]
+			@relation(name: "SUBSCRIBED", direction: OUT)
+		moderatingTags: [Tag] @relation(name: "MODERATED_BY", direction: IN)
 	}
 
 	type RedirectUri {
@@ -471,28 +497,31 @@ export const typeDefs = gql`
 
 	interface CanBeCommented {
 		nodeId: ID!
+		commentsCount: Int
+		comments: [Comment]
 	}
 
 	interface CanBeLiked {
 		nodeId: ID!
+		likesCount: Int
 		likes: [User]
-		createdAt: DateTime
 	}
 
 	interface CanBeSubscribed {
 		nodeId: ID!
+		subscribersCount: Int
 		subscribers: [User]
 	}
 
 	interface CanBeVoted {
 		nodeId: ID!
-		upVotes: Int
-		downVotes: Int
+		upVotesCount: Int
+		downVotesCount: Int
 	}
 
-	union LikeResult = Question | Comment
-	union VoteResult = Question | Answer
-	union SubscribeResult = Question | Tag
+	union LikeResponse = Question | Comment
+	union VoteResponse = Question | Answer
+	union SubscribeResponse = Question | Tag
 
 	type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribed
 		@hasRole(roles: [reader]) {
@@ -501,18 +530,37 @@ export const typeDefs = gql`
 		text: String!
 		createdAt: DateTime
 		updatedAt: DateTime
+		viewsCount: Int
+		canVote: Boolean #TODO:logic to decide if user can vote (depended on some rating)
+		upVotesCount: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upVotesCount"
+			)
+		downVotesCount: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downVotesCount"
+			)
+		answersCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:HAS_ANSWER]->(:Answer)) as answersCount"
+			)
+		commentsCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:HAS_COMMENT]->(:Comment)) as commentsCount"
+			)
+		likesCount: Int
+			@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
+		subscribersCount: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
+			)
+
 		author: User! @relation(name: "ASKED", direction: IN)
 		answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
 		comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 		tags: [Tag] @relation(name: "TAGGED", direction: IN)
 		likes: [User] @relation(name: "LIKED", direction: IN)
 		subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
-		upVotes: Int
-			@cypher(statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upvotes")
-		downVotes: Int
-			@cypher(
-				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downvotes"
-			)
 	}
 
 	type Answer implements CanBeCommented & CanBeVoted {
@@ -530,11 +578,17 @@ export const typeDefs = gql`
 			@cypher(
 				statement: "MATCH (this)<-[r:ACCEPTED]-(:User) RETURN count(r) > 0 as accepted"
 			)
-		upVotes: Int
-			@cypher(statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upvotes")
-		downVotes: Int
+		upVotesCount: Int
 			@cypher(
-				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downvotes"
+				statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upVotesCount"
+			)
+		downVotesCount: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downVotesCount"
+			)
+		commentsCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:HAS_COMMENT]->(:Comment)) as commentsCount"
 			)
 
 		author: User! @relation(name: "ANSWERED", direction: IN)
@@ -547,6 +601,10 @@ export const typeDefs = gql`
 		text: String!
 		createdAt: DateTime!
 		updatedAt: DateTime
+
+		likesCount: Int
+			@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
+
 		author: User @relation(name: "ADDED_COMMENT", direction: IN)
 		topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
 		likes: [User] @relation(name: "LIKED", direction: IN)
@@ -557,16 +615,43 @@ export const typeDefs = gql`
 		name: String! @unique
 		description: String
 		createdAt: DateTime
+		isSubscribed: Boolean
+			@isAuthenticated
+			@cypher(
+				statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:SUBSCRIBED]->(this) RETURN count(u) > 0 as isSubscribed"
+			)
+
+		questionsCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:TAGGED]->(:Question)) as questionsCount"
+			)
+		questionsSolvedCount: Int
+			@cypher(
+				statement: "RETURN size((this)-[:TAGGED]->(:Question)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
+			)
+		subscribersCount: Int
+			@cypher(
+				statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
+			)
+		topUsers: [User]  #TODO:complete logic to select top users
+			@cypher(
+				statement: """
+				MATCH (this)-[:TAGGED]->(:Question)<-[:ASKED]-(u:User) RETURN u as topUsers
+				UNION
+				MATCH (this)-[:TAGGED]->(:Question)-[:HAS_ANSWER]->(:Answer)<-[:ANSWERED]-(u:User) RETURN u as topUsers
+				"""
+			)
+
+		topQuestions: [Question]  #TODO:complete logic to select top questions
+			@cypher(
+				statement: """
+				MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN q as topQuestions
+				"""
+			)
 		questions: [Question] @relation(name: "TAGGED", direction: OUT)
 		addedBy: User @relation(name: "ADDED_BY", direction: OUT)
 		subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
-	}
-
-	#TODO: How to like comments ?
-	type Liked @relation(name: "LIKED") {
-		from: User
-		# to: Comment
-		createdAt: DateTime
+		moderators: [User] @relation(name: "MODERATED_BY", direction: OUT)
 	}
 
 	enum Rank {
