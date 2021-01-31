@@ -1,0 +1,18 @@
+type Rank {
+	rank: String! @unique
+	description: String
+}
+
+type Mutation {
+	AddRank(data: AddRankInput!): Rank!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			CREATE (r:Rank {
+				rank: $data.rank,
+			     description: $data.description
+				})
+			RETURN r
+			"""
+		)
+}

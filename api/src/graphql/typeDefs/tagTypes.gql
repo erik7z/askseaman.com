@@ -51,6 +51,7 @@ type Mutation {
 			MERGE (t:Tag:CanBeSubscribed {
 				nodeId: apoc.create.uuid(),
 				name: $data.name,
+				description: $data.description,
 				createdAt: DateTime()
 				})-[a:ADDED_BY]->(u)
 			RETURN t

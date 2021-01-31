@@ -1,9 +1,3 @@
-enum Rank {
-	Master
-	Chief_Officer
-	AB
-}
-
 enum VoteIntention {
 	upVote
 	downVote

@@ -3,7 +3,7 @@ input RegisterUserInput {
 	password: String!
 	name: String!
 	surname: String!
-	rank: Rank!
+	rank: String!
 }
 
 input LoginUserInput {
@@ -67,6 +67,11 @@ input EditCommentInput {
 
 input AddTagInput {
 	name: String!
+	description: String
+}
+
+input AddRankInput {
+	rank: String!
 	description: String
 }
 

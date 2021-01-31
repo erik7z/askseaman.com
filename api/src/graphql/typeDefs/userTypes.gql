@@ -2,7 +2,13 @@ type User {
 	nodeId: ID! @id
 	name: String!
 	surname: String!
-	rank: Rank!
+	rank: Rank
+		@cypher(
+			statement: """
+			MATCH (this)-[:HAS_RANK]->(r:Rank)
+			RETURN r as rank
+			"""
+		)
 	createdAt: DateTime
 	token: String
 	roles: [String]
@@ -69,7 +75,6 @@ type Mutation {
 				email: $data.email,
 				name: $data.name,
 				surname: $data.surname,
-				rank: $data.rank,
 				roles: $data.roles,
 				createdAt: DateTime()
 			}) WITH {
@@ -79,7 +84,9 @@ type Mutation {
 				name: u.name,
 				surname: u.surname,
 				roles: u.roles
-			} as LoginResponse
+			} as LoginResponse, u
+			MATCH (r:Rank {rank: $data.rank})
+			MERGE (u)-[:HAS_RANK]->(r)
 			RETURN LoginResponse
 			"""
 		)

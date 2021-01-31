@@ -15,12 +15,6 @@ const AUTH_CHANGE_PASS_UI_URI =
 	process.env.AUTH_CHANGE_PASS_UI_URI || '/auth/change-pass?code='
 
 const userResolvers: Resolvers<ApolloServerContext> = {
-	Query: {
-		User(parent, params, ctx, resolveInfo) {
-			return neo4jgraphql(parent, params, ctx, resolveInfo)
-		},
-	},
-
 	Mutation: {
 		async Register(parent, { data }, ctx, resolveInfo) {
 			const salt = bcrypt.genSaltSync(10)
