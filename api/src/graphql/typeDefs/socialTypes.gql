@@ -1,0 +1,74 @@
+type Mutation {
+	ToggleLike(data: nodeIdInput!): LikeResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeLiked {nodeId: $data.nodeId})
+				CREATE (u)-[:LIKED]->(t)
+				WITH u, t
+			CALL {
+				MATCH (u)-[r:LIKED]->(t), (u)-[:LIKED]->(t)
+				DELETE r
+				RETURN t as g
+				UNION
+				MATCH (g:CanBeLiked {nodeId: $data.nodeId})
+				RETURN  g
+			}
+			RETURN g
+			"""
+		)
+
+	ToggleSubscribe(data: nodeIdInput!): SubscribeResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeSubscribed {nodeId: $data.nodeId})
+				CREATE (u)-[:SUBSCRIBED]->(t)
+				WITH u, t
+			CALL {
+				MATCH (u)-[r:SUBSCRIBED]->(t), (u)-[:SUBSCRIBED]->(t)
+				DELETE r
+				RETURN t as g
+				UNION
+				MATCH (g:CanBeSubscribed {nodeId: $data.nodeId})
+				RETURN  g
+			}
+			RETURN g
+			"""
+		)
+
+	Vote(data: VoteInput!): VoteResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeVoted {nodeId: $data.nodeId})
+				WHERE $data.action = "upVote"
+				CREATE (u)-[:VOTED_UP]->(t)
+				WITH u, t
+			CALL {
+				MATCH (u)-[r:VOTED_UP|VOTED_DOWN]->(t), (u)-[:VOTED_UP]->(t)
+				DELETE r
+				RETURN t as g
+			}
+			RETURN g
+
+			UNION
+
+			MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeVoted {nodeId: $data.nodeId})
+				WHERE $data.action = "downVote"
+				CREATE (u)-[:VOTED_DOWN]->(t)
+				WITH u, t
+			CALL {
+				MATCH (u)-[r:VOTED_UP|VOTED_DOWN]->(t), (u)-[:VOTED_DOWN]->(t)
+				DELETE r
+				RETURN t as g
+			}
+			RETURN g
+
+			UNION
+
+			MATCH (g:CanBeVoted {nodeId: $data.nodeId})
+			RETURN  g
+			"""
+		)
+}

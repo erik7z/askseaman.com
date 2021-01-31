@@ -1,0 +1,21 @@
+enum Rank {
+	Master
+	Chief_Officer
+	AB
+}
+
+enum VoteIntention {
+	upVote
+	downVote
+}
+
+enum Role {
+	user
+	admin
+	reader
+}
+
+enum ResponseStatus {
+	success
+	fail
+}

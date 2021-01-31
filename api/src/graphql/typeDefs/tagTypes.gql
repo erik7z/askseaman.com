@@ -1,0 +1,71 @@
+type Tag implements CanBeSubscribed {
+	nodeId: ID! @id
+	name: String! @unique
+	description: String
+	createdAt: DateTime
+	isSubscribed: Boolean
+		@isAuthenticated
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:SUBSCRIBED]->(this) RETURN count(u) > 0 as isSubscribed"
+		)
+
+	questionsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:TAGGED]->(:Question)) as questionsCount"
+		)
+	questionsSolvedCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:TAGGED]->(:Question)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
+		)
+	subscribersCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
+		)
+	topUsers: [User]  #TODO:complete logic to select top users
+		@cypher(
+			statement: """
+			MATCH (this)-[:TAGGED]->(:Question)<-[:ASKED]-(u:User) RETURN u as topUsers
+			UNION
+			MATCH (this)-[:TAGGED]->(:Question)-[:HAS_ANSWER]->(:Answer)<-[:ANSWERED]-(u:User) RETURN u as topUsers
+			"""
+		)
+
+	topQuestions: [Question]  #TODO:complete logic to select top questions
+		@cypher(
+			statement: """
+			MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN q as topQuestions
+			"""
+		)
+	questions: [Question] @relation(name: "TAGGED", direction: OUT)
+	addedBy: User @relation(name: "ADDED_BY", direction: OUT)
+	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
+	moderators: [User] @relation(name: "MODERATED_BY", direction: OUT)
+}
+
+type Mutation {
+	AddTag(data: AddTagInput!): Tag!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			MERGE (t:Tag:CanBeSubscribed {
+				nodeId: apoc.create.uuid(),
+				name: $data.name,
+				createdAt: DateTime()
+				})-[a:ADDED_BY]->(u)
+			RETURN t
+			"""
+		)
+
+	DeleteTag(data: deleteTagInput!): DeleteTagResponse!
+		@isAuthenticated
+		@hasRole(roles: [admin])
+		@cypher(
+			statement: """
+			MATCH (t:Tag {name: $data.name})
+			WITH t, properties(t) AS m
+			DETACH DELETE t
+			RETURN m
+			"""
+		)
+}

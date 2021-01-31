@@ -1,0 +1,89 @@
+type Answer implements CanBeCommented & CanBeVoted {
+	nodeId: ID! @id
+	text: String!
+	createdAt: DateTime
+	updatedAt: DateTime
+
+	canAccept: Boolean
+		@isAuthenticated
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:ASKED]->(:Question)-[:HAS_ANSWER]->(this) RETURN count(u) > 0 as canAccept"
+		)
+	accepted: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:ACCEPTED]-(:User) RETURN count(r) > 0 as accepted"
+		)
+	upVotesCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upVotesCount"
+		)
+	downVotesCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downVotesCount"
+		)
+	commentsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:HAS_COMMENT]->(:Comment)) as commentsCount"
+		)
+
+	author: User! @relation(name: "ANSWERED", direction: IN)
+	question: Question! @relation(name: "HAS_ANSWER", direction: IN)
+	comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
+}
+
+type Mutation {
+	AnswerQuestion(data: AnswerQuestionInput!): Answer!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			CREATE (a:Answer:CanBeCommented:CanBeVoted)<-[:ANSWERED]-(u)
+			SET a += {text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+			WITH a
+			MATCH (q:Question {nodeId: $data.nodeId})
+			CREATE (q)-[r:HAS_ANSWER]->(a)
+			RETURN a
+			"""
+		)
+
+	EditAnswer(data: EditAnswerInput!): Answer!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (a:Answer {nodeId: $data.nodeId})<-[:ANSWERED]-(u:User {nodeId: $cypherParams.currentUserId})
+			SET a += {text: $data.text, updatedAt: DateTime()}
+			RETURN a
+			"""
+		)
+
+	#TODO: Delete related comments
+	DeleteAnswer(data: nodeIdInput!): DeleteAnswerResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (a:Answer {nodeId: $data.nodeId})<-[:ANSWERED]-(u:User {nodeId: $cypherParams.currentUserId})
+			WITH a, properties(a) AS m
+			DETACH DELETE a
+			RETURN m
+			"""
+		)
+
+	ToggleAcceptAnswer(data: nodeIdInput!): Answer
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:ASKED]->(:Question)-[:HAS_ANSWER]->(t:Answer {nodeId: $data.nodeId})
+				CREATE (u)-[:ACCEPTED]->(t)
+				WITH u, t
+			CALL {
+				MATCH (u)-[r:ACCEPTED]->(t), (u)-[:ACCEPTED]->(t)
+				DELETE r
+				RETURN t as g
+				UNION
+				MATCH (g:Answer {nodeId: $data.nodeId})
+				RETURN  g
+			}
+			RETURN g
+			"""
+		)
+}

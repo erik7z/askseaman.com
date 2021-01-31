@@ -1,0 +1,127 @@
+type User {
+	nodeId: ID! @id
+	name: String!
+	surname: String!
+	rank: Rank!
+	createdAt: DateTime
+	token: String
+	roles: [String]
+	location: String
+
+	questionsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:ASKED]->(:Question)) as questionsCount"
+		)
+	answersCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)) as answersCount"
+		)
+	solvedQuestionsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)<-[:ACCEPTED]-(:User)) as solvedQuestionsCount"
+		)
+	#TODO: logic to select favorite tags
+	favoriteTags: [Tag]
+		@cypher(
+			statement: """
+			MATCH (this)-[:ASKED]->(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+			UNION
+			MATCH (this)-[:ANSWERED]->(:Answer)<-[:HAS_ANSWER]-(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+			"""
+		)
+
+	email: LocalAccount  #TODO: hide email from outer world
+		@isAuthenticated
+		@relation(name: "AUTHENTICATED_WITH", direction: OUT)
+	questions: [Question] @relation(name: "ASKED", direction: OUT)
+	answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
+	tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
+	comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
+	liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
+	subscriptions: [CanBeSubscribed] @relation(name: "SUBSCRIBED", direction: OUT)
+	moderatingTags: [Tag] @relation(name: "MODERATED_BY", direction: IN)
+}
+
+type LocalAccount @isAuthenticated {
+	user: User! @relation(name: "AUTHENTICATED_WITH", direction: IN)
+	email: String! @unique
+	password: String
+	code: Int
+}
+
+type Query {
+	currentUser: User
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			RETURN u
+			"""
+		)
+}
+
+type Mutation {
+	Register(data: RegisterUserInput!): LoginResponse!
+		@cypher(
+			statement: """
+			CREATE (l:LocalAccount {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {
+				nodeId: apoc.create.uuid(),
+				email: $data.email,
+				name: $data.name,
+				surname: $data.surname,
+				rank: $data.rank,
+				roles: $data.roles,
+				createdAt: DateTime()
+			}) WITH {
+				nodeId: u.nodeId,
+				email: u.email,
+				password: l.password,
+				name: u.name,
+				surname: u.surname,
+				roles: u.roles
+			} as LoginResponse
+			RETURN LoginResponse
+			"""
+		)
+
+	SignIn(data: LoginUserInput!): LoginResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
+			WITH {
+				nodeId: u.nodeId,
+				email: u.email,
+				password: l.password,
+				name: u.name,
+				surname: u.surname,
+				roles: u.roles
+			} as LoginResponse
+			RETURN LoginResponse
+			"""
+		)
+
+	ChangePassRequest(data: EmailInput!): RedirectUriResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
+			SET l.code = $cypherParams.code
+			RETURN u
+			"""
+		)
+	ChangePassConfirm(data: CodeInput!): RedirectUriResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
+			RETURN u
+			"""
+		)
+
+	ChangePassComplete(data: newPassInput!): RedirectUriResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
+			SET l.password = $data.new_password, l.code = null
+			RETURN u
+			"""
+		)
+}
