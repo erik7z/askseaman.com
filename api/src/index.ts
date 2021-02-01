@@ -8,7 +8,10 @@ import bodyParser from 'body-parser'
 import { schema, driver } from './database'
 import { getUserFromToken } from './utils/auth'
 
-const HOST_URI = process.env.HOST_URI || 'http://localhost:4000'
+const PORT = process.env.GRAPHQL_SERVER_PORT || 4000
+const PATH = process.env.GRAPHQL_SERVER_PATH || '/'
+const HOST = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
+const HOST_URI = process.env.HOST_URI || `http://${HOST}:${PORT}`
 const AUTH_LOGIN_UI_URI = process.env.AUTH_LOGIN_UI_URI || '/auth'
 const AUTH_NEW_PASS_UI_URI =
 	process.env.AUTH_NEW_PASS_UI_URI || '/auth/new_pass'
@@ -80,12 +83,8 @@ const server = new ApolloServer({
 	},
 })
 
-server.applyMiddleware({ app, path: '/' })
+server.applyMiddleware({ app, path: PATH })
 
-const port = process.env.GRAPHQL_SERVER_PORT || 4000
-const path = process.env.GRAPHQL_SERVER_PATH || '/'
-const host = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
-
-app.listen({ host, port, path }, () => {
-	console.log(`GraphQL server ready at http://${host}:${port}${path}`)
+app.listen({ host: HOST, port: PORT, path: PATH }, () => {
+	console.log(`GraphQL server ready at http://${HOST}:${PORT}${PATH}`)
 })
