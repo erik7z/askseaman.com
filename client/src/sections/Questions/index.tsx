@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useQuestionQuery } from '../../generated/graphql'
+import { useQuestionQuery } from '../../__generated/graphql'
 
 export const Questions = () => {
 	const { data, loading, error } = useQuestionQuery()

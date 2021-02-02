@@ -5,6 +5,5 @@
 /neo4j/logs
 /neo4j/plugins
 /client/node_modules
-/client/public
 /_html
 /client/.eslintcache
