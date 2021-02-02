@@ -1,0 +1,6 @@
+query Question {
+	Question {
+		nodeId
+		title
+	}
+}

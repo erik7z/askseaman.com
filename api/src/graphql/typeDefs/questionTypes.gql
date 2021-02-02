@@ -1,5 +1,4 @@
-type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribed
-	@hasRole(roles: [reader]) {
+type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribed {
 	nodeId: ID! @id
 	title: String!
 	text: String!
