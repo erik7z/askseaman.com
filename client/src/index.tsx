@@ -9,6 +9,13 @@ import './styles.css'
 
 import Layout from './Layout'
 import { Auth, Me, NotFound, Questions, Tags, Users } from './sections'
+
+import { Tag } from './sections/Tags/Tag'
+import { User } from './sections/Users/User'
+import { Question } from './sections/Questions/Question'
+import { AskQuestion } from './sections/Questions/AskQuestion'
+import { Notifications } from './sections/Me/Notifications'
+
 import reportWebVitals from './reportWebVitals'
 
 const client = new ApolloClient({
@@ -24,8 +31,17 @@ export const App = () => {
 					<Route exact path='/'>
 						<Questions />
 					</Route>
+					<Route exact path='/question'>
+						<Question />
+					</Route>
+					<Route exact path='/ask-question'>
+						<AskQuestion />
+					</Route>
 					<Route exact path='/me'>
 						<Me />
+					</Route>
+					<Route exact path='/me/notifications'>
+						<Notifications />
 					</Route>
 					<Route exact path='/auth'>
 						<Auth />
@@ -33,8 +49,14 @@ export const App = () => {
 					<Route exact path='/tags'>
 						<Tags />
 					</Route>
+					<Route exact path='/tag'>
+						<Tag />
+					</Route>
 					<Route exact path='/users'>
 						<Users />
+					</Route>
+					<Route exact path='/user'>
+						<User />
 					</Route>
 					<Route>
 						<NotFound />
