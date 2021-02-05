@@ -1,44 +1,41 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 
 export const Auth = () => {
 	return (
 		<>
-			<form action='#' method='POST'>
-				<div className='form-group'>
-					<label htmlFor='email' className='form-label'>
-						E-mail
-					</label>
-					<input type='email' className='form-control' id='email' />
-				</div>
-				<div className='form-group'>
-					<label htmlFor='password' className='form-label'>
-						Password
-					</label>
-					<input type='password' className='form-control' id='password' />
-				</div>
+			<Form>
+				<Form.Group>
+					<Form.Label htmlFor='email'>E-mail</Form.Label>
+					<Form.Control type='email' className='form-control' id='email' />
+				</Form.Group>
+				<Form.Group>
+					<Form.Label htmlFor='password'>Password</Form.Label>
+					<Form.Control type='password' id='password' />
+				</Form.Group>
 
-				<div className='form-group text-right'>
-					<button type='submit' className='btn btn-primary btn-lg px-5'>
+				<Form.Group className='text-right'>
+					<Button variant='primary' size='lg' type='submit' className='px-5'>
 						Sign In
-					</button>
-				</div>
+					</Button>
+				</Form.Group>
 
-				<div className='form-group'>
+				<Form.Group>
 					<small>New on this website ? </small>
 					<Link to='/register'>
 						<i>Register</i>
 					</Link>
-				</div>
+				</Form.Group>
 				<hr />
-				<div className='form-group text-right'>
+				<Form.Group className='text-right'>
 					<small>
 						<Link to='/forgotpass'>
 							<i>Forgot Password ?</i>
 						</Link>
 					</small>
-				</div>
-			</form>
+				</Form.Group>
+			</Form>
 		</>
 	)
 }

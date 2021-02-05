@@ -1,97 +1,72 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Col, Form, Button } from 'react-bootstrap'
 
 export const Register = () => {
 	return (
 		<>
-			<form action='#' method='POST'>
-				<div className='form-row mb-3'>
-					<div className='col-md-12'>
-						<label htmlFor='email' className='form-label'>
-							E-mail
-						</label>
-						<input
-							type='email'
-							className='form-control medium-input'
-							id='email'
-						/>
-					</div>
-				</div>
+			<Form>
+				<Form.Row className='mb-3'>
+					<Col md={12}>
+						<Form.Label htmlFor='email'>E-mail</Form.Label>
+						<Form.Control type='email' className='medium-input' id='email' />
+					</Col>
+				</Form.Row>
 
-				<div className='form-row mb-3'>
-					<div className='col-md-6'>
-						<label htmlFor='name' className='form-label'>
-							Name
-						</label>
-						<input
-							type='text'
-							className='form-control medium-input'
-							id='name'
-						/>
-					</div>
-					<div className='col-md-6'>
-						<label htmlFor='surname' className='form-label'>
+				<Form.Row className='mb-3'>
+					<Col md={6}>
+						<Form.Label htmlFor='name'>Name</Form.Label>
+						<Form.Control type='text' className='medium-input' id='name' />
+					</Col>
+					<Col md={6}>
+						<Form.Label htmlFor='surname' className='form-label'>
 							Surname
-						</label>
-						<input
-							type='text'
-							className='form-control medium-input'
-							id='surname'
-						/>
-					</div>
-				</div>
+						</Form.Label>
+						<Form.Control type='text' className='medium-input' id='surname' />
+					</Col>
+				</Form.Row>
 
-				<div className='form-row mb-3'>
-					<div className='col-md-12'>
-						<label htmlFor='rank' className='form-label'>
-							Rank
-						</label>
-						<input
-							type='text'
-							className='form-control medium-input'
-							id='rank'
-						/>
-					</div>
-				</div>
+				<Form.Row className='mb-3'>
+					<Col md={12}>
+						<Form.Label htmlFor='rank'>Rank</Form.Label>
+						<Form.Control type='text' className='medium-input' id='rank' />
+					</Col>
+				</Form.Row>
 
-				<div className='form-row mb-3'>
-					<div className='col-md-6'>
-						<label htmlFor='password' className='form-label'>
-							Password
-						</label>
-						<input
+				<Form.Row className='mb-3'>
+					<Col md={6}>
+						<Form.Label htmlFor='password'>Password</Form.Label>
+						<Form.Control
 							type='password'
-							className='form-control medium-input'
+							className='medium-input'
 							id='password'
 						/>
-					</div>
-					<div className='col-md-6'>
-						<label htmlFor='password2' className='form-label'>
-							Repeat Password
-						</label>
-						<input
+					</Col>
+					<Col md={6}>
+						<Form.Label htmlFor='password2'>Repeat Password</Form.Label>
+						<Form.Control
 							type='password'
-							className='form-control medium-input'
+							className='medium-input'
 							id='password2'
 						/>
-					</div>
-				</div>
+					</Col>
+				</Form.Row>
 
-				<div className='form-row mb3 text-right'>
-					<div className='col-md-12'>
-						<button type='submit' className='btn btn-primary px-3'>
+				<Form.Row className='mb3 text-right'>
+					<Col md={12}>
+						<Button variant='primary' type='submit' className='px-3'>
 							Register
-						</button>
-					</div>
-				</div>
+						</Button>
+					</Col>
+				</Form.Row>
 
-				<div className='form-group'>
+				<Form.Group>
 					<small>Already have account ? </small>
 					<Link to='/auth'>
 						<i>Sign In</i>
 					</Link>
-				</div>
-			</form>
+				</Form.Group>
+			</Form>
 		</>
 	)
 }

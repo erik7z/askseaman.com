@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { Container, Row } from 'react-bootstrap'
+
 import Aside from './Aside'
 
 interface IProps {
@@ -16,9 +18,9 @@ const Layout = ({ children }: IProps) => {
 				</Link>
 				<Aside />
 				<div id='as-main'>
-					<div className='container'>
-						<div className='row d-flex'>{children}</div>
-					</div>
+					<Container>
+						<Row className='d-flex'>{children}</Row>
+					</Container>
 				</div>
 			</div>
 		</>
