@@ -58,7 +58,7 @@ export const Users = () => {
 											<Link
 												to='user.html'
 												className='img author-avatar author-avatar-lg'
-												style={{ backgroundImage: 'url(images/img_1.jpg)' }}
+												style={{ backgroundImage: 'url(images/person_3.jpg)' }}
 											></Link>
 
 											<h5 className='author-name'>
@@ -90,7 +90,7 @@ export const Users = () => {
 											<Link
 												to='user.html'
 												className='img author-avatar author-avatar-lg'
-												style={{ backgroundImage: 'url(images/img_1.jpg)' }}
+												style={{ backgroundImage: 'url(images/person_3.jpg)' }}
 											></Link>
 											<h5 className='author-name'>
 												<Link to='#'>Gena Davydov</Link>
@@ -121,7 +121,7 @@ export const Users = () => {
 											<Link
 												to='user.html'
 												className='img author-avatar author-avatar-lg'
-												style={{ backgroundImage: 'url(images/img_1.jpg)' }}
+												style={{ backgroundImage: 'url(images/person_3.jpg)' }}
 											></Link>
 											<h5 className='author-name'>
 												<Link to='#'>Gsrisha Ptichkin</Link>
@@ -152,7 +152,7 @@ export const Users = () => {
 											<Link
 												to='user.html'
 												className='img author-avatar author-avatar-lg'
-												style={{ backgroundImage: 'url(images/img_1.jpg)' }}
+												style={{ backgroundImage: 'url(images/person_3.jpg)' }}
 											></Link>
 											<h5 className='author-name'>
 												<Link to='#'>Misha Vovkin</Link>
@@ -211,12 +211,12 @@ export const Users = () => {
 					</div>
 				</div>
 			</div>
-			<div className='col-xl-4 sidebar  bg-blue'>
+			<div className='col-xl-4 sidebar bg-blue'>
 				<div className='row'>
 					<div className='col-md-12'>
 						<div
 							className='sidebar-box subs-wrap img py-4 px-4'
-							style={{ backgroundImage: 'url(images/img_1.jpg)' }}
+							style={{ backgroundImage: 'url(images/person_3.jpg)' }}
 						>
 							<div className='overlay'></div>
 							<h3 className='sidebar-heading'>Advertisement</h3>
@@ -236,7 +236,7 @@ export const Users = () => {
 								</div>
 							</form>
 						</div>
-						<div className='sidebar-box '>
+						<div className='sidebar-box'>
 							<h3 className='sidebar-heading'>Top for last 24 hours</h3>
 							<div className='d-flex'>
 								<div className='text'>

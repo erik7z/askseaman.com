@@ -16,11 +16,9 @@ const Layout = ({ children }: IProps) => {
 				</Link>
 				<Aside />
 				<div id='as-main'>
-					<section className='ftco-section ftco-no-pt ftco-no-pb'>
-						<div className='container'>
-							<div className='row d-flex'>{children}</div>
-						</div>
-					</section>
+					<div className='container'>
+						<div className='row d-flex'>{children}</div>
+					</div>
 				</div>
 			</div>
 		</>

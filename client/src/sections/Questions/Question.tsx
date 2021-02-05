@@ -7,20 +7,6 @@ export const Question = () => {
 			<div className='main-content col-xl-8'>
 				<div className='row'>
 					<div className='col-md-12'>
-						<form action='#' className='search-form'>
-							<div className='form-group'>
-								<span className='icon icon-search'></span>
-								<input
-									type='text'
-									className='form-control'
-									placeholder='Search for question or #tag'
-								/>
-							</div>
-						</form>
-					</div>
-				</div>
-				<div className='row'>
-					<div className='col-md-12'>
 						<h5 className='module-header'>
 							&gt; Question:
 							<span className='text-dark'>
