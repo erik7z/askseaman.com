@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import { Row, Col, Jumbotron, ListGroup } from 'react-bootstrap'
 import {
 	QuestionSearch,
-	Advertisement,
-	SideNews,
+	SideAdvertBox,
+	SideNewsBox,
 	TagCardItem,
+	AvatarLink,
 } from '../../components'
 
 export const User = () => {
@@ -20,13 +21,8 @@ export const User = () => {
 							<span className='text-dark'>Vasya Batareykin</span>
 						</h5>
 						<hr className='hr-header hr-bold' />
-
 						<Jumbotron className='text-center'>
-							<Link
-								to='user.html'
-								className='img author-avatar author-avatar-lg'
-								style={{ backgroundImage: 'url(images/author.jpg)' }}
-							></Link>
+							<AvatarLink size='lg' />
 							<h3>Vasya Batareykin</h3>
 							<p className='lead'>Master</p>
 
@@ -48,7 +44,6 @@ export const User = () => {
 									</Link>
 								</ListGroup.Item>
 							</ListGroup>
-
 							<hr />
 							<p>
 								Working more than 10 years at sea. Different ships from Bulk
@@ -71,7 +66,6 @@ export const User = () => {
 								<dd className='col-sm-9'>Odessa / Ukraine</dd>
 							</dl>
 						</Jumbotron>
-
 						<h5 className='module-header text-right'>Favorite tags &lt;</h5>
 						<hr className='hr-header hr-bold' />
 						<Row className='tags-list text-center'>
@@ -83,12 +77,8 @@ export const User = () => {
 				</Row>
 			</Col>
 			<Col xl={4} className='sidebar bg-blue'>
-				<Row>
-					<Col md={12}>
-						<Advertisement />
-						<SideNews />
-					</Col>
-				</Row>
+				<SideAdvertBox />
+				<SideNewsBox />
 			</Col>
 		</>
 	)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form } from 'react-bootstrap'
 
-export const Advertisement = () => {
+export const SideAdvertBox = () => {
 	return (
 		<div
 			className='sidebar-box subs-wrap img'
@@ -9,7 +9,7 @@ export const Advertisement = () => {
 		>
 			<div className='overlay'></div>
 			<h3 className='sidebar-heading'>Advertisement</h3>
-			<p>Send your CV to our cool crewing !</p>
+			<p>Send your CV to our cool crewing 2!</p>
 			<Form className='subscribe-form'>
 				<Form.Group>
 					<Form.Control type='text' placeholder='Email Address' />

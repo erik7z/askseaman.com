@@ -1,16 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
+import { AvatarLink } from '../'
 
 export const UserCardItem = () => {
 	return (
 		<Card>
 			<Card.Body className='text-center'>
-				<Link
-					to='user.html'
-					className='img author-avatar author-avatar-lg'
-					style={{ backgroundImage: 'url(images/bg_1.jpg)' }}
-				></Link>
+				<AvatarLink size='lg' />
 				<h5 className='author-name'>
 					<Link to='#'>Misha Vovkin</Link>
 					<br />

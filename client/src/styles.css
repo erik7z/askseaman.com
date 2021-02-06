@@ -1836,8 +1836,8 @@ div.meta {
 	margin-bottom: 0;
 }
 
-.section-tags-list-page .card-title,
-.section-tags-list-page .card-title a {
+.section-tags-list .card-title,
+.section-tags-list .card-title a {
 	font-family: 'Poppins', Arial, sans-serif !important;
 	font-weight: bold !important;
 	color: #8a8a8a !important;
