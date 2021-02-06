@@ -1,15 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Formik } from 'formik'
 import { Link } from 'react-router-dom'
 import { Col, Form, Button } from 'react-bootstrap'
 
 export const Register = () => {
+	const [value, setValue] = useState<string>(''),
+		onInput = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+			setValue(value)
+		},
+		onFormSubmit = (e: React.FormEvent) => {
+			e.preventDefault()
+			console.log(value)
+		}
+
 	return (
 		<>
-			<Form>
+			<Form onSubmit={onFormSubmit}>
 				<Form.Row className='mb-3'>
 					<Col md={12}>
 						<Form.Label htmlFor='email'>E-mail</Form.Label>
-						<Form.Control type='email' className='medium-input' id='email' />
+						<Form.Control
+							type='email'
+							className='medium-input'
+							id='email'
+							onChange={onInput}
+							value={value}
+						/>
 					</Col>
 				</Form.Row>
 
