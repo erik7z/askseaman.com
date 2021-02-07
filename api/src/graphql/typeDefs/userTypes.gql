@@ -85,8 +85,12 @@ type Mutation {
 				surname: u.surname,
 				roles: u.roles
 			} as LoginResponse, u
-			MATCH (r:Rank {rank: $data.rank})
-			MERGE (u)-[:HAS_RANK]->(r)
+			CALL {
+				WITH LoginResponse, u
+				MATCH (r:Rank {rank: $data.rank})
+				MERGE (u)-[:HAS_RANK]->(r)
+				RETURN count(r) as added_rank
+			}
 			RETURN LoginResponse
 			"""
 		)
