@@ -4,8 +4,6 @@ import { Request } from 'express'
 export interface AuthUserParams {
 	user: {
 		id: string
-		name: string
-		surname: string
 	}
 	roles: string[]
 }
