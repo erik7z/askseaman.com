@@ -62,7 +62,7 @@ export const driver = neo4j.driver(
 
 schema._typeMap.AuthResponse.resolveType = (obj: any) => {
 	if (obj.message) return 'FormError'
-	else return 'User'
+	else return 'TokenResponse'
 }
 
 assertSchema({ schema, driver })

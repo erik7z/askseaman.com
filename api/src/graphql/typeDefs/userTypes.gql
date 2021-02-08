@@ -80,7 +80,9 @@ type Mutation {
 				createdAt: DateTime()
 			})
 
-			RETURN u
+			RETURN apoc.convert.toNode({
+				token: u.token
+			}) as TokenResponse
 			"""
 		)
 
