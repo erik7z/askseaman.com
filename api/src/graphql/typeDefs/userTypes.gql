@@ -82,7 +82,7 @@ type Mutation {
 
 			RETURN apoc.convert.toNode({
 				token: u.token
-			})
+			}) as TokenResponse
 			"""
 		)
 
