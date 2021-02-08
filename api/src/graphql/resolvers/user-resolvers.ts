@@ -1,9 +1,4 @@
-import {
-	ResponseStatus,
-	RegisterResponse,
-	FormSuccess,
-	FormError,
-} from './../../types/generated-backend'
+import { ResponseStatus } from './../../types/generated-backend'
 import { createToken } from '../../utils/auth'
 import { neo4jgraphql } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
