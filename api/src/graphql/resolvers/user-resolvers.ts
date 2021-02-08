@@ -23,24 +23,28 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			const newData = { ...data, roles }
 
 			try {
-				const user = await neo4jgraphql(
+				const tokenResponse = await neo4jgraphql(
 					parent,
 					{ data: newData },
 					ctx,
 					resolveInfo
 				)
 
-				user.token = await createToken({
-					user: {
-						id: user.nodeId,
-					},
-					roles,
-				})
+				// const token = await createToken({
+				// 	user: {
+				// 		id: tokenResponse.nodeId,
+				// 	},
+				// 	roles,
+				// })
 
-				return user
+				const token = '12345'
+
+				return {
+					token,
+				}
 			} catch (e) {
 				return {
-					message: e,
+					message: e.message,
 				}
 			}
 		},
