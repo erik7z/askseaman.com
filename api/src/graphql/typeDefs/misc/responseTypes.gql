@@ -1,7 +1,7 @@
 union LikeResponse = Question | Comment
 union VoteResponse = Question | Answer
 union SubscribeResponse = Question | Tag
-union RegisterResponse = LoginResponse | FormError
+union AuthResponse = User | FormError
 
 # type FieldError {
 # 	field: String!
@@ -24,6 +24,10 @@ type LoginResponse {
 	surname: String!
 	token: String
 	roles: [Role]
+}
+
+type TokenResponse {
+	token: String!
 }
 
 type RedirectUriResponse {

@@ -37,6 +37,7 @@ app.get(AUTH_VERIFY_CODE_URI + '/:code', async (req, res) => {
 	let uri = AUTH_NEW_PASS_UI_URI
 
 	const session = driver.session()
+
 	try {
 		if (!req.params.code) throw new Error('Confirmation code is not correct')
 		const req_code = parseInt(req.params.code)
@@ -49,9 +50,9 @@ app.get(AUTH_VERIFY_CODE_URI + '/:code', async (req, res) => {
 	`
 		user = await session
 			.run(query, { req_code })
-			.then((res) => res.records.map((rec) => rec.get(0).properties))
+			.then((res) => res.records.map((rec) => rec.get(0).properties)[0])
 
-		if (!user[0]) throw new Error('Confirmation code is not correct')
+		if (!user) throw new Error('Confirmation code is not correct')
 	} catch (e) {
 		status = ResponseStatus.Fail
 		message = e.message

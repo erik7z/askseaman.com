@@ -33,8 +33,6 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 				user.token = await createToken({
 					user: {
 						id: user.nodeId,
-						name: user.name,
-						surname: user.surname,
 					},
 					roles,
 				})
@@ -42,7 +40,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 				return user
 			} catch (e) {
 				return {
-					message: e.message,
+					message: e,
 				}
 			}
 		},
@@ -58,8 +56,6 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			loginUser.token = await createToken({
 				user: {
 					id: loginUser.nodeId,
-					name: loginUser.name,
-					surname: loginUser.surname,
 				},
 				roles: loginUser.roles || [process.env.DEFAULT_ROLE || 'reader'],
 			})

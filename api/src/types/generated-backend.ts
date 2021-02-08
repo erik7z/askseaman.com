@@ -1028,7 +1028,7 @@ export type VoteResponse = Question | Answer;
 
 export type SubscribeResponse = Question | Tag;
 
-export type RegisterResponse = LoginResponse | FormError;
+export type AuthResponse = User | FormError;
 
 export type FormError = {
   __typename?: 'FormError';
@@ -1044,6 +1044,36 @@ export type LoginResponse = {
   surname: Scalars['String'];
   token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Role>>>;
+};
+
+export enum _TokenResponseOrdering {
+  TokenAsc = 'token_asc',
+  TokenDesc = 'token_desc',
+  IdAsc = '_id_asc',
+  IdDesc = '_id_desc'
+}
+
+export type _TokenResponseFilter = {
+  AND?: Maybe<Array<_TokenResponseFilter>>;
+  OR?: Maybe<Array<_TokenResponseFilter>>;
+  token?: Maybe<Scalars['String']>;
+  token_not?: Maybe<Scalars['String']>;
+  token_in?: Maybe<Array<Scalars['String']>>;
+  token_not_in?: Maybe<Array<Scalars['String']>>;
+  token_regexp?: Maybe<Scalars['String']>;
+  token_contains?: Maybe<Scalars['String']>;
+  token_not_contains?: Maybe<Scalars['String']>;
+  token_starts_with?: Maybe<Scalars['String']>;
+  token_not_starts_with?: Maybe<Scalars['String']>;
+  token_ends_with?: Maybe<Scalars['String']>;
+  token_not_ends_with?: Maybe<Scalars['String']>;
+};
+
+export type TokenResponse = {
+  __typename?: 'TokenResponse';
+  token: Scalars['String'];
+  /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
+  _id?: Maybe<Scalars['String']>;
 };
 
 export type RedirectUriResponse = {
@@ -1265,7 +1295,7 @@ export type Mutation = {
   Vote: VoteResponse;
   AddTag: Tag;
   DeleteTag: DeleteTagResponse;
-  Register: RegisterResponse;
+  Register: AuthResponse;
   SignIn: LoginResponse;
   ChangePassRequest: RedirectUriResponse;
   ChangePassConfirm: RedirectUriResponse;
@@ -1392,6 +1422,10 @@ export type Query = {
   Tag?: Maybe<Array<Maybe<Tag>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AuthResponse type nodes. */
+  AuthResponse?: Maybe<Array<Maybe<AuthResponse>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for TokenResponse type nodes. */
+  TokenResponse?: Maybe<Array<Maybe<TokenResponse>>>;
 };
 
 
@@ -1474,6 +1508,22 @@ export type QueryUserArgs = {
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
   filter?: Maybe<_UserFilter>;
+};
+
+
+export type QueryAuthResponseArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryTokenResponseArgs = {
+  token?: Maybe<Scalars['String']>;
+  _id?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_TokenResponseOrdering>>>;
+  filter?: Maybe<_TokenResponseFilter>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -1604,9 +1654,12 @@ export type ResolversTypes = ResolversObject<{
   LikeResponse: ResolversTypes['Question'] | ResolversTypes['Comment'];
   VoteResponse: ResolversTypes['Question'] | ResolversTypes['Answer'];
   SubscribeResponse: ResolversTypes['Question'] | ResolversTypes['Tag'];
-  RegisterResponse: ResolversTypes['LoginResponse'] | ResolversTypes['FormError'];
+  AuthResponse: ResolversTypes['User'] | ResolversTypes['FormError'];
   FormError: ResolverTypeWrapper<FormError>;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
+  _TokenResponseOrdering: _TokenResponseOrdering;
+  _TokenResponseFilter: _TokenResponseFilter;
+  TokenResponse: ResolverTypeWrapper<TokenResponse>;
   RedirectUriResponse: ResolverTypeWrapper<RedirectUriResponse>;
   DeleteQuestionResponse: ResolverTypeWrapper<DeleteQuestionResponse>;
   DeleteAnswerResponse: ResolverTypeWrapper<DeleteAnswerResponse>;
@@ -1673,9 +1726,11 @@ export type ResolversParentTypes = ResolversObject<{
   LikeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Comment'];
   VoteResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Answer'];
   SubscribeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Tag'];
-  RegisterResponse: ResolversParentTypes['LoginResponse'] | ResolversParentTypes['FormError'];
+  AuthResponse: ResolversParentTypes['User'] | ResolversParentTypes['FormError'];
   FormError: FormError;
   LoginResponse: LoginResponse;
+  _TokenResponseFilter: _TokenResponseFilter;
+  TokenResponse: TokenResponse;
   RedirectUriResponse: RedirectUriResponse;
   DeleteQuestionResponse: DeleteQuestionResponse;
   DeleteAnswerResponse: DeleteAnswerResponse;
@@ -1901,8 +1956,8 @@ export type SubscribeResponseResolvers<ContextType = any, ParentType extends Res
   __resolveType: TypeResolveFn<'Question' | 'Tag', ParentType, ContextType>;
 }>;
 
-export type RegisterResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegisterResponse'] = ResolversParentTypes['RegisterResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'LoginResponse' | 'FormError', ParentType, ContextType>;
+export type AuthResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'User' | 'FormError', ParentType, ContextType>;
 }>;
 
 export type FormErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['FormError'] = ResolversParentTypes['FormError']> = ResolversObject<{
@@ -1918,6 +1973,12 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type TokenResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['TokenResponse'] = ResolversParentTypes['TokenResponse']> = ResolversObject<{
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2041,7 +2102,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   Vote?: Resolver<ResolversTypes['VoteResponse'], ParentType, ContextType, RequireFields<MutationVoteArgs, 'data'>>;
   AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
   DeleteTag?: Resolver<ResolversTypes['DeleteTagResponse'], ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'data'>>;
-  Register?: Resolver<ResolversTypes['RegisterResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'data'>>;
+  Register?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'data'>>;
   SignIn?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'data'>>;
   ChangePassRequest?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassRequestArgs, 'data'>>;
   ChangePassConfirm?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassConfirmArgs, 'data'>>;
@@ -2056,6 +2117,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Rank?: Resolver<Maybe<Array<Maybe<ResolversTypes['Rank']>>>, ParentType, ContextType, RequireFields<QueryRankArgs, never>>;
   Tag?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QueryTagArgs, never>>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
+  AuthResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AuthResponse']>>>, ParentType, ContextType, RequireFields<QueryAuthResponseArgs, never>>;
+  TokenResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['TokenResponse']>>>, ParentType, ContextType, RequireFields<QueryTokenResponseArgs, never>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
@@ -2073,9 +2136,10 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LikeResponse?: LikeResponseResolvers<ContextType>;
   VoteResponse?: VoteResponseResolvers<ContextType>;
   SubscribeResponse?: SubscribeResponseResolvers<ContextType>;
-  RegisterResponse?: RegisterResponseResolvers<ContextType>;
+  AuthResponse?: AuthResponseResolvers<ContextType>;
   FormError?: FormErrorResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
+  TokenResponse?: TokenResponseResolvers<ContextType>;
   RedirectUriResponse?: RedirectUriResponseResolvers<ContextType>;
   DeleteQuestionResponse?: DeleteQuestionResponseResolvers<ContextType>;
   DeleteAnswerResponse?: DeleteAnswerResponseResolvers<ContextType>;

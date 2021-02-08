@@ -16,7 +16,7 @@ export const schema = makeAugmentedSchema({
 		// hasScope: HasScopeDirective,
 	},
 	config: {
-		debug: true,
+		// debug: true,
 		experimental: true,
 		auth: {
 			isAuthenticated: true,
@@ -60,10 +60,9 @@ export const driver = neo4j.driver(
 	)
 )
 
-schema._typeMap.RegisterResponse.resolveType = (obj: any) => {
-	if (obj.token) return 'LoginResponse'
+schema._typeMap.AuthResponse.resolveType = (obj: any) => {
 	if (obj.message) return 'FormError'
-	return null
+	else return 'User'
 }
 
 assertSchema({ schema, driver })
