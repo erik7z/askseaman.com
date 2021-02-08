@@ -10,7 +10,6 @@ type User {
 			"""
 		)
 	createdAt: DateTime
-	token: String
 	roles: [String]
 	location: String
 
@@ -68,23 +67,6 @@ type Query {
 
 type Mutation {
 	Register(data: RegisterUserInput!): AuthResponse!
-		@cypher(
-			statement: """
-			CREATE (l:LocalAccount {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {
-				nodeId: apoc.create.uuid(),
-				token: null,
-				email: $data.email,
-				name: $data.name,
-				surname: $data.surname,
-				roles: $data.roles,
-				createdAt: DateTime()
-			})
-
-			RETURN apoc.convert.toNode({
-				token: u.token
-			}) as TokenResponse
-			"""
-		)
 
 	SignIn(data: LoginUserInput!): LoginResponse!
 		@cypher(

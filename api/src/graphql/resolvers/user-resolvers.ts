@@ -16,31 +16,38 @@ const AUTH_CHANGE_PASS_UI_URI =
 
 const userResolvers: Resolvers<ApolloServerContext> = {
 	Mutation: {
-		async Register(parent, { data }, ctx, resolveInfo) {
+		async Register(_, { data }, ctx) {
 			const salt = bcrypt.genSaltSync(10)
 			data.password = bcrypt.hashSync(data.password, salt)
 			const roles = [process.env.DEFAULT_ROLE || 'reader']
 			const newData = { ...data, roles }
 
 			try {
-				const ttt = await neo4jgraphql(
-					parent,
-					{ data: newData },
-					ctx,
-					resolveInfo
-				)
+				const user = await ctx.driver
+					.session()
+					.run(
+						`CREATE (l:LocalAccount {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {
+						nodeId: apoc.create.uuid(),
+						email: $data.email,
+						name: $data.name,
+						surname: $data.surname,
+						roles: $data.roles,
+						createdAt: DateTime()
+					}) return u`,
+						{ data: newData }
+					)
+					.then((res) => res.records[0].get(0).properties)
 
-				console.log('KKKKKKKKKKKK')
-				console.log(ttt)
+				const token = await createToken({
+					user: {
+						id: user.nodeId,
+					},
+					roles,
+				})
 
-				// tokenResponse.token = await createToken({
-				// 	user: {
-				// 		id: tokenResponse.nodeId,
-				// 	},
-				// 	roles,
-				// })
-
-				return ttt
+				return {
+					token,
+				}
 			} catch (e) {
 				return {
 					message: e.message,
