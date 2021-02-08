@@ -67,7 +67,7 @@ type Query {
 }
 
 type Mutation {
-	Register(data: RegisterUserInput!): LoginResponse!
+	Register(data: RegisterUserInput!): RegisterResponse!
 		@cypher(
 			statement: """
 			CREATE (l:LocalAccount {password: $data.password, email: $data.email})<-[:AUTHENTICATED_WITH]-(u:User {

@@ -1,4 +1,9 @@
-import { ResponseStatus } from './../../types/generated-backend'
+import {
+	ResponseStatus,
+	RegisterResponse,
+	FormSuccess,
+	FormError,
+} from './../../types/generated-backend'
 import { createToken } from '../../utils/auth'
 import { neo4jgraphql } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
@@ -21,23 +26,30 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			data.password = bcrypt.hashSync(data.password, salt)
 			const roles = [process.env.DEFAULT_ROLE || 'reader']
 			const newData = { ...data, roles }
-			const user = await neo4jgraphql(
-				parent,
-				{ data: newData },
-				ctx,
-				resolveInfo
-			)
 
-			user.token = await createToken({
-				user: {
-					id: user.nodeId,
-					name: user.name,
-					surname: user.surname,
-				},
-				roles,
-			})
+			try {
+				const user = await neo4jgraphql(
+					parent,
+					{ data: newData },
+					ctx,
+					resolveInfo
+				)
 
-			return user
+				user.token = await createToken({
+					user: {
+						id: user.nodeId,
+						name: user.name,
+						surname: user.surname,
+					},
+					roles,
+				})
+
+				return user
+			} catch (e) {
+				return {
+					message: e.message,
+				}
+			}
 		},
 		async SignIn(parent, { data }, ctx, resolveInfo) {
 			const loginUser = await neo4jgraphql(parent, { data }, ctx, resolveInfo)

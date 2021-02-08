@@ -2,21 +2,27 @@ import React from 'react'
 import { Formik } from 'formik'
 
 import { Link } from 'react-router-dom'
-import { Col, Form, Button, InputGroup } from 'react-bootstrap'
+import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
 import { useRegisterMutation } from '../../__generated/graphql'
-import { regValidation } from './../../lib/validation'
 
+import { regValidation } from './../../lib/validation'
 export const Register = () => {
 	const [registerMutation, { data, error }] = useRegisterMutation()
 
-	if (error) console.log(error)
+	const errorBanner = error && (
+		<Alert variant='danger'>
+			<Alert.Heading>Ooops! Something went wrong</Alert.Heading>
+			<p>{error.message}</p>
+		</Alert>
+	)
+
 	if (data) console.log(data)
 
 	return (
 		<>
 			<Formik
 				validationSchema={regValidation}
-				onSubmit={async (values, { setSubmitting }) => {
+				onSubmit={async (values, { setSubmitting, setErrors }) => {
 					setSubmitting(true)
 					await registerMutation({
 						variables: {
@@ -29,6 +35,7 @@ export const Register = () => {
 							},
 						},
 					})
+					// setErrors({ email: 'This email is already used' })
 					setSubmitting(false)
 				}}
 				initialValues={{
@@ -50,6 +57,7 @@ export const Register = () => {
 					getFieldProps,
 				}) => (
 					<Form noValidate onSubmit={handleSubmit}>
+						<Form.Row>{errorBanner}</Form.Row>
 						<Form.Row>
 							<Form.Group as={Col} md='12' controlId='email'>
 								<Form.Label>E-mail</Form.Label>
@@ -68,7 +76,6 @@ export const Register = () => {
 									</Form.Control.Feedback>
 								</InputGroup>
 							</Form.Group>
-
 							<Form.Group as={Col} md='6' controlId='name'>
 								<Form.Label>First name</Form.Label>
 								<Form.Control

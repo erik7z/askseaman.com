@@ -30,6 +30,11 @@ export const schema = makeAugmentedSchema({
 				'RedirectUri',
 				'LocalAccount',
 				'LoginResponse',
+				'RegisterResponse',
+				'RedirectUriResponse',
+				'FormError',
+				'FormSuccess',
+				'FieldError',
 				'LikeResponse',
 				'VoteResponse',
 				'SubscribeResponse',
@@ -54,5 +59,11 @@ export const driver = neo4j.driver(
 		process.env.NEO4J_PASSWORD || 'letmein'
 	)
 )
+
+schema._typeMap.RegisterResponse.resolveType = (obj: any) => {
+	if (obj.token) return 'LoginResponse'
+	if (obj.message) return 'FormError'
+	return null
+}
 
 assertSchema({ schema, driver })

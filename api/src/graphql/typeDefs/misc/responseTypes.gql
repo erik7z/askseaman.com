@@ -1,6 +1,20 @@
 union LikeResponse = Question | Comment
 union VoteResponse = Question | Answer
 union SubscribeResponse = Question | Tag
+union RegisterResponse = LoginResponse | FormError
+
+# type FieldError {
+# 	field: String!
+# 	message: String!
+# }
+
+# type FormSuccess {
+# 	text: String!
+# }
+
+type FormError {
+	message: String!
+}
 
 type LoginResponse {
 	nodeId: ID!

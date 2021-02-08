@@ -448,6 +448,50 @@ export type QuestionSubscribersArgs = {
   filter?: Maybe<_UserFilter>;
 };
 
+export enum _RankOrdering {
+  RankAsc = 'rank_asc',
+  RankDesc = 'rank_desc',
+  DescriptionAsc = 'description_asc',
+  DescriptionDesc = 'description_desc',
+  IdAsc = '_id_asc',
+  IdDesc = '_id_desc'
+}
+
+export type _RankFilter = {
+  AND?: Maybe<Array<_RankFilter>>;
+  OR?: Maybe<Array<_RankFilter>>;
+  rank?: Maybe<Scalars['String']>;
+  rank_not?: Maybe<Scalars['String']>;
+  rank_in?: Maybe<Array<Scalars['String']>>;
+  rank_not_in?: Maybe<Array<Scalars['String']>>;
+  rank_regexp?: Maybe<Scalars['String']>;
+  rank_contains?: Maybe<Scalars['String']>;
+  rank_not_contains?: Maybe<Scalars['String']>;
+  rank_starts_with?: Maybe<Scalars['String']>;
+  rank_not_starts_with?: Maybe<Scalars['String']>;
+  rank_ends_with?: Maybe<Scalars['String']>;
+  rank_not_ends_with?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  description_not?: Maybe<Scalars['String']>;
+  description_in?: Maybe<Array<Scalars['String']>>;
+  description_not_in?: Maybe<Array<Scalars['String']>>;
+  description_regexp?: Maybe<Scalars['String']>;
+  description_contains?: Maybe<Scalars['String']>;
+  description_not_contains?: Maybe<Scalars['String']>;
+  description_starts_with?: Maybe<Scalars['String']>;
+  description_not_starts_with?: Maybe<Scalars['String']>;
+  description_ends_with?: Maybe<Scalars['String']>;
+  description_not_ends_with?: Maybe<Scalars['String']>;
+};
+
+export type Rank = {
+  __typename?: 'Rank';
+  rank: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
+  _id?: Maybe<Scalars['String']>;
+};
+
 export enum _TagOrdering {
   NodeIdAsc = 'nodeId_asc',
   NodeIdDesc = 'nodeId_desc',
@@ -613,8 +657,6 @@ export enum _UserOrdering {
   NameDesc = 'name_desc',
   SurnameAsc = 'surname_asc',
   SurnameDesc = 'surname_desc',
-  RankAsc = 'rank_asc',
-  RankDesc = 'rank_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
   TokenAsc = 'token_asc',
@@ -667,10 +709,6 @@ export type _UserFilter = {
   surname_not_starts_with?: Maybe<Scalars['String']>;
   surname_ends_with?: Maybe<Scalars['String']>;
   surname_not_ends_with?: Maybe<Scalars['String']>;
-  rank?: Maybe<Rank>;
-  rank_not?: Maybe<Rank>;
-  rank_in?: Maybe<Array<Rank>>;
-  rank_not_in?: Maybe<Array<Rank>>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -757,7 +795,7 @@ export type User = {
   nodeId: Scalars['ID'];
   name: Scalars['String'];
   surname: Scalars['String'];
-  rank: Rank;
+  rank?: Maybe<Rank>;
   createdAt?: Maybe<_Neo4jDateTime>;
   token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -825,12 +863,41 @@ export type UserModeratingTagsArgs = {
   filter?: Maybe<_TagFilter>;
 };
 
+export type LocalAccount = {
+  __typename?: 'LocalAccount';
+  user: User;
+  email: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
+  code?: Maybe<Scalars['Int']>;
+};
+
+
+export type LocalAccountUserArgs = {
+  filter?: Maybe<_UserFilter>;
+};
+
+export enum VoteIntention {
+  UpVote = 'upVote',
+  DownVote = 'downVote'
+}
+
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+  Reader = 'reader'
+}
+
+export enum ResponseStatus {
+  Success = 'success',
+  Fail = 'fail'
+}
+
 export type RegisterUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   name: Scalars['String'];
   surname: Scalars['String'];
-  rank: Rank;
+  rank: Scalars['String'];
 };
 
 export type LoginUserInput = {
@@ -897,108 +964,14 @@ export type AddTagInput = {
   description?: Maybe<Scalars['String']>;
 };
 
+export type AddRankInput = {
+  rank: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
 export type VoteInput = {
   nodeId: Scalars['ID'];
   action: VoteIntention;
-};
-
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  nodeId: Scalars['ID'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  name: Scalars['String'];
-  surname: Scalars['String'];
-  token?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Maybe<Role>>>;
-};
-
-export enum _RedirectUriResponseOrdering {
-  RedirectAsc = 'redirect_asc',
-  RedirectDesc = 'redirect_desc',
-  StatusAsc = 'status_asc',
-  StatusDesc = 'status_desc',
-  MessageAsc = 'message_asc',
-  MessageDesc = 'message_desc',
-  IdAsc = '_id_asc',
-  IdDesc = '_id_desc'
-}
-
-export type _RedirectUriResponseFilter = {
-  AND?: Maybe<Array<_RedirectUriResponseFilter>>;
-  OR?: Maybe<Array<_RedirectUriResponseFilter>>;
-  redirect?: Maybe<Scalars['String']>;
-  redirect_not?: Maybe<Scalars['String']>;
-  redirect_in?: Maybe<Array<Scalars['String']>>;
-  redirect_not_in?: Maybe<Array<Scalars['String']>>;
-  redirect_regexp?: Maybe<Scalars['String']>;
-  redirect_contains?: Maybe<Scalars['String']>;
-  redirect_not_contains?: Maybe<Scalars['String']>;
-  redirect_starts_with?: Maybe<Scalars['String']>;
-  redirect_not_starts_with?: Maybe<Scalars['String']>;
-  redirect_ends_with?: Maybe<Scalars['String']>;
-  redirect_not_ends_with?: Maybe<Scalars['String']>;
-  status?: Maybe<ResponseStatus>;
-  status_not?: Maybe<ResponseStatus>;
-  status_in?: Maybe<Array<ResponseStatus>>;
-  status_not_in?: Maybe<Array<ResponseStatus>>;
-  message?: Maybe<Scalars['String']>;
-  message_not?: Maybe<Scalars['String']>;
-  message_in?: Maybe<Array<Scalars['String']>>;
-  message_not_in?: Maybe<Array<Scalars['String']>>;
-  message_regexp?: Maybe<Scalars['String']>;
-  message_contains?: Maybe<Scalars['String']>;
-  message_not_contains?: Maybe<Scalars['String']>;
-  message_starts_with?: Maybe<Scalars['String']>;
-  message_not_starts_with?: Maybe<Scalars['String']>;
-  message_ends_with?: Maybe<Scalars['String']>;
-  message_not_ends_with?: Maybe<Scalars['String']>;
-};
-
-export type RedirectUriResponse = {
-  __typename?: 'RedirectUriResponse';
-  redirect: Scalars['String'];
-  status: ResponseStatus;
-  message?: Maybe<Scalars['String']>;
-  /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
-  _id?: Maybe<Scalars['String']>;
-};
-
-export type DeleteQuestionResponse = {
-  __typename?: 'DeleteQuestionResponse';
-  nodeId: Scalars['ID'];
-  title: Scalars['String'];
-  text: Scalars['String'];
-};
-
-export type DeleteAnswerResponse = {
-  __typename?: 'DeleteAnswerResponse';
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type DeleteCommentResponse = {
-  __typename?: 'DeleteCommentResponse';
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type DeleteTagResponse = {
-  __typename?: 'DeleteTagResponse';
-  name: Scalars['String'];
-};
-
-export type LocalAccount = {
-  __typename?: 'LocalAccount';
-  user: User;
-  email: Scalars['String'];
-  password?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['Int']>;
-};
-
-
-export type LocalAccountUserArgs = {
-  filter?: Maybe<_UserFilter>;
 };
 
 export type CanBeCommented = {
@@ -1055,27 +1028,54 @@ export type VoteResponse = Question | Answer;
 
 export type SubscribeResponse = Question | Tag;
 
-export enum Rank {
-  Master = 'Master',
-  ChiefOfficer = 'Chief_Officer',
-  Ab = 'AB'
-}
+export type RegisterResponse = LoginResponse | FormError;
 
-export enum VoteIntention {
-  UpVote = 'upVote',
-  DownVote = 'downVote'
-}
+export type FormError = {
+  __typename?: 'FormError';
+  message: Scalars['String'];
+};
 
-export enum Role {
-  User = 'user',
-  Admin = 'admin',
-  Reader = 'reader'
-}
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  nodeId: Scalars['ID'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  name: Scalars['String'];
+  surname: Scalars['String'];
+  token?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Role>>>;
+};
 
-export enum ResponseStatus {
-  Success = 'success',
-  Fail = 'fail'
-}
+export type RedirectUriResponse = {
+  __typename?: 'RedirectUriResponse';
+  redirect: Scalars['String'];
+  status: ResponseStatus;
+  message?: Maybe<Scalars['String']>;
+};
+
+export type DeleteQuestionResponse = {
+  __typename?: 'DeleteQuestionResponse';
+  nodeId: Scalars['ID'];
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type DeleteAnswerResponse = {
+  __typename?: 'DeleteAnswerResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type DeleteCommentResponse = {
+  __typename?: 'DeleteCommentResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type DeleteTagResponse = {
+  __typename?: 'DeleteTagResponse';
+  name: Scalars['String'];
+};
 
 /** Generated Time input object for Neo4j [Temporal field arguments](https://grandstack.io/docs/graphql-temporal-types-datetime/#temporal-query-arguments). */
 export type _Neo4jTimeInput = {
@@ -1259,12 +1259,13 @@ export type Mutation = {
   AskQuestion: Question;
   EditQuestion: Question;
   DeleteQuestion: DeleteQuestionResponse;
+  AddRank: Rank;
   ToggleLike: LikeResponse;
   ToggleSubscribe: SubscribeResponse;
   Vote: VoteResponse;
   AddTag: Tag;
   DeleteTag: DeleteTagResponse;
-  Register: LoginResponse;
+  Register: RegisterResponse;
   SignIn: LoginResponse;
   ChangePassRequest: RedirectUriResponse;
   ChangePassConfirm: RedirectUriResponse;
@@ -1319,6 +1320,11 @@ export type MutationEditQuestionArgs = {
 
 export type MutationDeleteQuestionArgs = {
   data: NodeIdInput;
+};
+
+
+export type MutationAddRankArgs = {
+  data: AddRankInput;
 };
 
 
@@ -1380,12 +1386,12 @@ export type Query = {
   Comment?: Maybe<Array<Maybe<Comment>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Question type nodes. */
   Question?: Maybe<Array<Maybe<Question>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Rank type nodes. */
+  Rank?: Maybe<Array<Maybe<Rank>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Tag type nodes. */
   Tag?: Maybe<Array<Maybe<Tag>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for RedirectUriResponse type nodes. */
-  RedirectUriResponse?: Maybe<Array<Maybe<RedirectUriResponse>>>;
 };
 
 
@@ -1431,6 +1437,17 @@ export type QueryQuestionArgs = {
 };
 
 
+export type QueryRankArgs = {
+  rank?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  _id?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_RankOrdering>>>;
+  filter?: Maybe<_RankFilter>;
+};
+
+
 export type QueryTagArgs = {
   nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
@@ -1448,7 +1465,6 @@ export type QueryUserArgs = {
   nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
-  rank?: Maybe<Rank>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -1458,18 +1474,6 @@ export type QueryUserArgs = {
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
   filter?: Maybe<_UserFilter>;
-};
-
-
-export type QueryRedirectUriResponseArgs = {
-  redirect?: Maybe<Scalars['String']>;
-  status?: Maybe<ResponseStatus>;
-  message?: Maybe<Scalars['String']>;
-  _id?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_RedirectUriResponseOrdering>>>;
-  filter?: Maybe<_RedirectUriResponseFilter>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -1564,12 +1568,19 @@ export type ResolversTypes = ResolversObject<{
   _QuestionOrdering: _QuestionOrdering;
   _QuestionFilter: _QuestionFilter;
   Question: ResolverTypeWrapper<Question>;
+  _RankOrdering: _RankOrdering;
+  _RankFilter: _RankFilter;
+  Rank: ResolverTypeWrapper<Rank>;
   _TagOrdering: _TagOrdering;
   _TagFilter: _TagFilter;
   Tag: ResolverTypeWrapper<Tag>;
   _UserOrdering: _UserOrdering;
   _UserFilter: _UserFilter;
   User: ResolverTypeWrapper<User>;
+  LocalAccount: ResolverTypeWrapper<LocalAccount>;
+  VoteIntention: VoteIntention;
+  Role: Role;
+  ResponseStatus: ResponseStatus;
   RegisterUserInput: RegisterUserInput;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
@@ -1584,16 +1595,8 @@ export type ResolversTypes = ResolversObject<{
   EditAnswerInput: EditAnswerInput;
   EditCommentInput: EditCommentInput;
   AddTagInput: AddTagInput;
+  AddRankInput: AddRankInput;
   VoteInput: VoteInput;
-  LoginResponse: ResolverTypeWrapper<LoginResponse>;
-  _RedirectUriResponseOrdering: _RedirectUriResponseOrdering;
-  _RedirectUriResponseFilter: _RedirectUriResponseFilter;
-  RedirectUriResponse: ResolverTypeWrapper<RedirectUriResponse>;
-  DeleteQuestionResponse: ResolverTypeWrapper<DeleteQuestionResponse>;
-  DeleteAnswerResponse: ResolverTypeWrapper<DeleteAnswerResponse>;
-  DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
-  DeleteTagResponse: ResolverTypeWrapper<DeleteTagResponse>;
-  LocalAccount: ResolverTypeWrapper<LocalAccount>;
   CanBeCommented: ResolversTypes['Answer'] | ResolversTypes['Question'];
   CanBeLiked: ResolversTypes['Comment'] | ResolversTypes['Question'];
   CanBeSubscribed: ResolversTypes['Question'] | ResolversTypes['Tag'];
@@ -1601,10 +1604,14 @@ export type ResolversTypes = ResolversObject<{
   LikeResponse: ResolversTypes['Question'] | ResolversTypes['Comment'];
   VoteResponse: ResolversTypes['Question'] | ResolversTypes['Answer'];
   SubscribeResponse: ResolversTypes['Question'] | ResolversTypes['Tag'];
-  Rank: Rank;
-  VoteIntention: VoteIntention;
-  Role: Role;
-  ResponseStatus: ResponseStatus;
+  RegisterResponse: ResolversTypes['LoginResponse'] | ResolversTypes['FormError'];
+  FormError: ResolverTypeWrapper<FormError>;
+  LoginResponse: ResolverTypeWrapper<LoginResponse>;
+  RedirectUriResponse: ResolverTypeWrapper<RedirectUriResponse>;
+  DeleteQuestionResponse: ResolverTypeWrapper<DeleteQuestionResponse>;
+  DeleteAnswerResponse: ResolverTypeWrapper<DeleteAnswerResponse>;
+  DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
+  DeleteTagResponse: ResolverTypeWrapper<DeleteTagResponse>;
   _Neo4jTimeInput: _Neo4jTimeInput;
   _Neo4jTime: ResolverTypeWrapper<_Neo4jTime>;
   _Neo4jDateInput: _Neo4jDateInput;
@@ -1636,10 +1643,13 @@ export type ResolversParentTypes = ResolversObject<{
   Comment: Comment;
   _QuestionFilter: _QuestionFilter;
   Question: Question;
+  _RankFilter: _RankFilter;
+  Rank: Rank;
   _TagFilter: _TagFilter;
   Tag: Tag;
   _UserFilter: _UserFilter;
   User: User;
+  LocalAccount: LocalAccount;
   RegisterUserInput: RegisterUserInput;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
@@ -1654,15 +1664,8 @@ export type ResolversParentTypes = ResolversObject<{
   EditAnswerInput: EditAnswerInput;
   EditCommentInput: EditCommentInput;
   AddTagInput: AddTagInput;
+  AddRankInput: AddRankInput;
   VoteInput: VoteInput;
-  LoginResponse: LoginResponse;
-  _RedirectUriResponseFilter: _RedirectUriResponseFilter;
-  RedirectUriResponse: RedirectUriResponse;
-  DeleteQuestionResponse: DeleteQuestionResponse;
-  DeleteAnswerResponse: DeleteAnswerResponse;
-  DeleteCommentResponse: DeleteCommentResponse;
-  DeleteTagResponse: DeleteTagResponse;
-  LocalAccount: LocalAccount;
   CanBeCommented: ResolversParentTypes['Answer'] | ResolversParentTypes['Question'];
   CanBeLiked: ResolversParentTypes['Comment'] | ResolversParentTypes['Question'];
   CanBeSubscribed: ResolversParentTypes['Question'] | ResolversParentTypes['Tag'];
@@ -1670,6 +1673,14 @@ export type ResolversParentTypes = ResolversObject<{
   LikeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Comment'];
   VoteResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Answer'];
   SubscribeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Tag'];
+  RegisterResponse: ResolversParentTypes['LoginResponse'] | ResolversParentTypes['FormError'];
+  FormError: FormError;
+  LoginResponse: LoginResponse;
+  RedirectUriResponse: RedirectUriResponse;
+  DeleteQuestionResponse: DeleteQuestionResponse;
+  DeleteAnswerResponse: DeleteAnswerResponse;
+  DeleteCommentResponse: DeleteCommentResponse;
+  DeleteTagResponse: DeleteTagResponse;
   _Neo4jTimeInput: _Neo4jTimeInput;
   _Neo4jTime: _Neo4jTime;
   _Neo4jDateInput: _Neo4jDateInput;
@@ -1791,6 +1802,13 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type RankResolvers<ContextType = any, ParentType extends ResolversParentTypes['Rank'] = ResolversParentTypes['Rank']> = ResolversObject<{
+  rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type TagResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = ResolversObject<{
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1814,7 +1832,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rank?: Resolver<ResolversTypes['Rank'], ParentType, ContextType>;
+  rank?: Resolver<Maybe<ResolversTypes['Rank']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -1832,49 +1850,6 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   subscriptions?: Resolver<Maybe<Array<Maybe<ResolversTypes['CanBeSubscribed']>>>, ParentType, ContextType>;
   moderatingTags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<UserModeratingTagsArgs, never>>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type LoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = ResolversObject<{
-  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type RedirectUriResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedirectUriResponse'] = ResolversParentTypes['RedirectUriResponse']> = ResolversObject<{
-  redirect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['ResponseStatus'], ParentType, ContextType>;
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type DeleteQuestionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteQuestionResponse'] = ResolversParentTypes['DeleteQuestionResponse']> = ResolversObject<{
-  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type DeleteAnswerResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteAnswerResponse'] = ResolversParentTypes['DeleteAnswerResponse']> = ResolversObject<{
-  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type DeleteCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteCommentResponse'] = ResolversParentTypes['DeleteCommentResponse']> = ResolversObject<{
-  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type DeleteTagResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteTagResponse'] = ResolversParentTypes['DeleteTagResponse']> = ResolversObject<{
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1924,6 +1899,57 @@ export type VoteResponseResolvers<ContextType = any, ParentType extends Resolver
 
 export type SubscribeResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubscribeResponse'] = ResolversParentTypes['SubscribeResponse']> = ResolversObject<{
   __resolveType: TypeResolveFn<'Question' | 'Tag', ParentType, ContextType>;
+}>;
+
+export type RegisterResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegisterResponse'] = ResolversParentTypes['RegisterResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'LoginResponse' | 'FormError', ParentType, ContextType>;
+}>;
+
+export type FormErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['FormError'] = ResolversParentTypes['FormError']> = ResolversObject<{
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type LoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type RedirectUriResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedirectUriResponse'] = ResolversParentTypes['RedirectUriResponse']> = ResolversObject<{
+  redirect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['ResponseStatus'], ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteQuestionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteQuestionResponse'] = ResolversParentTypes['DeleteQuestionResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteAnswerResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteAnswerResponse'] = ResolversParentTypes['DeleteAnswerResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteCommentResponse'] = ResolversParentTypes['DeleteCommentResponse']> = ResolversObject<{
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DeleteTagResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteTagResponse'] = ResolversParentTypes['DeleteTagResponse']> = ResolversObject<{
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type _Neo4jTimeResolvers<ContextType = any, ParentType extends ResolversParentTypes['_Neo4jTime'] = ResolversParentTypes['_Neo4jTime']> = ResolversObject<{
@@ -2009,12 +2035,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   AskQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationAskQuestionArgs, 'data'>>;
   EditQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationEditQuestionArgs, 'data'>>;
   DeleteQuestion?: Resolver<ResolversTypes['DeleteQuestionResponse'], ParentType, ContextType, RequireFields<MutationDeleteQuestionArgs, 'data'>>;
+  AddRank?: Resolver<ResolversTypes['Rank'], ParentType, ContextType, RequireFields<MutationAddRankArgs, 'data'>>;
   ToggleLike?: Resolver<ResolversTypes['LikeResponse'], ParentType, ContextType, RequireFields<MutationToggleLikeArgs, 'data'>>;
   ToggleSubscribe?: Resolver<ResolversTypes['SubscribeResponse'], ParentType, ContextType, RequireFields<MutationToggleSubscribeArgs, 'data'>>;
   Vote?: Resolver<ResolversTypes['VoteResponse'], ParentType, ContextType, RequireFields<MutationVoteArgs, 'data'>>;
   AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
   DeleteTag?: Resolver<ResolversTypes['DeleteTagResponse'], ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'data'>>;
-  Register?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'data'>>;
+  Register?: Resolver<ResolversTypes['RegisterResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'data'>>;
   SignIn?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'data'>>;
   ChangePassRequest?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassRequestArgs, 'data'>>;
   ChangePassConfirm?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassConfirmArgs, 'data'>>;
@@ -2026,23 +2053,18 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
   Comment?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QueryCommentArgs, never>>;
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
+  Rank?: Resolver<Maybe<Array<Maybe<ResolversTypes['Rank']>>>, ParentType, ContextType, RequireFields<QueryRankArgs, never>>;
   Tag?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QueryTagArgs, never>>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
-  RedirectUriResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['RedirectUriResponse']>>>, ParentType, ContextType, RequireFields<QueryRedirectUriResponseArgs, never>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   Answer?: AnswerResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
   Question?: QuestionResolvers<ContextType>;
+  Rank?: RankResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
-  LoginResponse?: LoginResponseResolvers<ContextType>;
-  RedirectUriResponse?: RedirectUriResponseResolvers<ContextType>;
-  DeleteQuestionResponse?: DeleteQuestionResponseResolvers<ContextType>;
-  DeleteAnswerResponse?: DeleteAnswerResponseResolvers<ContextType>;
-  DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
-  DeleteTagResponse?: DeleteTagResponseResolvers<ContextType>;
   LocalAccount?: LocalAccountResolvers<ContextType>;
   CanBeCommented?: CanBeCommentedResolvers<ContextType>;
   CanBeLiked?: CanBeLikedResolvers<ContextType>;
@@ -2051,6 +2073,14 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LikeResponse?: LikeResponseResolvers<ContextType>;
   VoteResponse?: VoteResponseResolvers<ContextType>;
   SubscribeResponse?: SubscribeResponseResolvers<ContextType>;
+  RegisterResponse?: RegisterResponseResolvers<ContextType>;
+  FormError?: FormErrorResolvers<ContextType>;
+  LoginResponse?: LoginResponseResolvers<ContextType>;
+  RedirectUriResponse?: RedirectUriResponseResolvers<ContextType>;
+  DeleteQuestionResponse?: DeleteQuestionResponseResolvers<ContextType>;
+  DeleteAnswerResponse?: DeleteAnswerResponseResolvers<ContextType>;
+  DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
+  DeleteTagResponse?: DeleteTagResponseResolvers<ContextType>;
   _Neo4jTime?: _Neo4jTimeResolvers<ContextType>;
   _Neo4jDate?: _Neo4jDateResolvers<ContextType>;
   _Neo4jDateTime?: _Neo4jDateTimeResolvers<ContextType>;

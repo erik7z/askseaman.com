@@ -5,7 +5,7 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true nodemon src/index.ts -e js,ts,json,gql",
+		"start": "TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true DEBUG=neo4j-graphql-js nodemon src/index.ts -e js,ts,json,gql",
 		"build": "tsc -p ./",
 		"typesgen": "graphql-codegen --config typesgen.yml"
 	},
