@@ -3,20 +3,23 @@ import { Formik } from 'formik'
 
 import { Link } from 'react-router-dom'
 import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
-import { useRegisterMutation } from '../../__generated/graphql'
+import { useRegisterMutation, FieldError } from '../../__generated/graphql'
 
 import { regValidation } from './../../lib/validation'
-export const Register = () => {
-	const [registerMutation, { data, error }] = useRegisterMutation()
+import { normalizeErrors } from './../../lib/helpers'
 
-	const errorBanner = error && (
+export const Register = () => {
+	const [
+		registerMutation,
+		{ data: regResponse, error: connErrors },
+	] = useRegisterMutation()
+
+	const errorBanner = connErrors && (
 		<Alert variant='danger'>
 			<Alert.Heading>Ooops! Something went wrong</Alert.Heading>
-			<p>{error.message}</p>
+			<p>{connErrors.message}</p>
 		</Alert>
 	)
-
-	if (data) console.log(data)
 
 	return (
 		<>
@@ -35,7 +38,11 @@ export const Register = () => {
 							},
 						},
 					})
-					// setErrors({ email: 'This email is already used' })
+					if (regResponse && regResponse.Register.__typename === 'FormError') {
+						const formErrors = regResponse.Register.errors as FieldError[]
+						setErrors(normalizeErrors(formErrors))
+					}
+
 					setSubmitting(false)
 				}}
 				initialValues={{
