@@ -6,13 +6,12 @@ import bcrypt from 'bcryptjs'
 import { ApolloServerContext } from './../../types/backend'
 import { Resolvers } from '../../types/generated-backend'
 
-const HOST_URI = process.env.HOST_URI || 'http://localhost:4000'
-const AUTH_LOGIN_UI_URI = process.env.AUTH_LOGIN_UI_URI || '/auth'
-// const AUTH_VERIFY_CODE_URI = process.env.AUTH_VERIFY_CODE_URI || '/auth/verify'
-const AUTH_CONFIRM_CODE_UI_URI =
-	process.env.AUTH_CONFIRM_CODE_UI_URI || '/auth/confirm-code'
-const AUTH_CHANGE_PASS_UI_URI =
-	process.env.AUTH_CHANGE_PASS_UI_URI || '/auth/change-pass?code='
+import {
+	HOST_URI,
+	AUTH_CONFIRM_CODE_UI_URI,
+	AUTH_CHANGE_PASS_UI_URI,
+	AUTH_LOGIN_UI_URI,
+} from '../../index'
 
 const userResolvers: Resolvers<ApolloServerContext> = {
 	Mutation: {
