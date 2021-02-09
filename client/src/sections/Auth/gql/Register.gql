@@ -1,9 +1,15 @@
 mutation Register($data: RegisterUserInput!) {
 	Register(data: $data) {
-		nodeId
-		name
-		surname
-		token
-		roles
+		__typename
+		... on TokenResponse {
+			token
+		}
+		... on FormError {
+			message
+			errors {
+				field
+				message
+			}
+		}
 	}
 }

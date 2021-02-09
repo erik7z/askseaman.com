@@ -659,8 +659,6 @@ export enum _UserOrdering {
   SurnameDesc = 'surname_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
-  TokenAsc = 'token_asc',
-  TokenDesc = 'token_desc',
   LocationAsc = 'location_asc',
   LocationDesc = 'location_desc',
   QuestionsCountAsc = 'questionsCount_asc',
@@ -717,17 +715,6 @@ export type _UserFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
-  token?: Maybe<Scalars['String']>;
-  token_not?: Maybe<Scalars['String']>;
-  token_in?: Maybe<Array<Scalars['String']>>;
-  token_not_in?: Maybe<Array<Scalars['String']>>;
-  token_regexp?: Maybe<Scalars['String']>;
-  token_contains?: Maybe<Scalars['String']>;
-  token_not_contains?: Maybe<Scalars['String']>;
-  token_starts_with?: Maybe<Scalars['String']>;
-  token_not_starts_with?: Maybe<Scalars['String']>;
-  token_ends_with?: Maybe<Scalars['String']>;
-  token_not_ends_with?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Scalars['String']>>;
   roles_not?: Maybe<Array<Scalars['String']>>;
   roles_regexp?: Maybe<Scalars['String']>;
@@ -797,7 +784,6 @@ export type User = {
   surname: Scalars['String'];
   rank?: Maybe<Rank>;
   createdAt?: Maybe<_Neo4jDateTime>;
-  token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
   questionsCount?: Maybe<Scalars['Int']>;
@@ -1028,6 +1014,20 @@ export type VoteResponse = Question | Answer;
 
 export type SubscribeResponse = Question | Tag;
 
+export type AuthResponse = TokenResponse | FormError;
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type FormError = {
+  __typename?: 'FormError';
+  message?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<Maybe<FieldError>>>;
+};
+
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   nodeId: Scalars['ID'];
@@ -1039,46 +1039,9 @@ export type LoginResponse = {
   roles?: Maybe<Array<Maybe<Role>>>;
 };
 
-export enum _RedirectUriResponseOrdering {
-  RedirectAsc = 'redirect_asc',
-  RedirectDesc = 'redirect_desc',
-  StatusAsc = 'status_asc',
-  StatusDesc = 'status_desc',
-  MessageAsc = 'message_asc',
-  MessageDesc = 'message_desc',
-  IdAsc = '_id_asc',
-  IdDesc = '_id_desc'
-}
-
-export type _RedirectUriResponseFilter = {
-  AND?: Maybe<Array<_RedirectUriResponseFilter>>;
-  OR?: Maybe<Array<_RedirectUriResponseFilter>>;
-  redirect?: Maybe<Scalars['String']>;
-  redirect_not?: Maybe<Scalars['String']>;
-  redirect_in?: Maybe<Array<Scalars['String']>>;
-  redirect_not_in?: Maybe<Array<Scalars['String']>>;
-  redirect_regexp?: Maybe<Scalars['String']>;
-  redirect_contains?: Maybe<Scalars['String']>;
-  redirect_not_contains?: Maybe<Scalars['String']>;
-  redirect_starts_with?: Maybe<Scalars['String']>;
-  redirect_not_starts_with?: Maybe<Scalars['String']>;
-  redirect_ends_with?: Maybe<Scalars['String']>;
-  redirect_not_ends_with?: Maybe<Scalars['String']>;
-  status?: Maybe<ResponseStatus>;
-  status_not?: Maybe<ResponseStatus>;
-  status_in?: Maybe<Array<ResponseStatus>>;
-  status_not_in?: Maybe<Array<ResponseStatus>>;
-  message?: Maybe<Scalars['String']>;
-  message_not?: Maybe<Scalars['String']>;
-  message_in?: Maybe<Array<Scalars['String']>>;
-  message_not_in?: Maybe<Array<Scalars['String']>>;
-  message_regexp?: Maybe<Scalars['String']>;
-  message_contains?: Maybe<Scalars['String']>;
-  message_not_contains?: Maybe<Scalars['String']>;
-  message_starts_with?: Maybe<Scalars['String']>;
-  message_not_starts_with?: Maybe<Scalars['String']>;
-  message_ends_with?: Maybe<Scalars['String']>;
-  message_not_ends_with?: Maybe<Scalars['String']>;
+export type TokenResponse = {
+  __typename?: 'TokenResponse';
+  token?: Maybe<Scalars['String']>;
 };
 
 export type RedirectUriResponse = {
@@ -1086,8 +1049,6 @@ export type RedirectUriResponse = {
   redirect: Scalars['String'];
   status: ResponseStatus;
   message?: Maybe<Scalars['String']>;
-  /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
-  _id?: Maybe<Scalars['String']>;
 };
 
 export type DeleteQuestionResponse = {
@@ -1302,7 +1263,7 @@ export type Mutation = {
   Vote: VoteResponse;
   AddTag: Tag;
   DeleteTag: DeleteTagResponse;
-  Register: LoginResponse;
+  Register: AuthResponse;
   SignIn: LoginResponse;
   ChangePassRequest: RedirectUriResponse;
   ChangePassConfirm: RedirectUriResponse;
@@ -1429,8 +1390,6 @@ export type Query = {
   Tag?: Maybe<Array<Maybe<Tag>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for RedirectUriResponse type nodes. */
-  RedirectUriResponse?: Maybe<Array<Maybe<RedirectUriResponse>>>;
 };
 
 
@@ -1505,7 +1464,6 @@ export type QueryUserArgs = {
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
-  token?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
@@ -1513,18 +1471,6 @@ export type QueryUserArgs = {
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
   filter?: Maybe<_UserFilter>;
-};
-
-
-export type QueryRedirectUriResponseArgs = {
-  redirect?: Maybe<Scalars['String']>;
-  status?: Maybe<ResponseStatus>;
-  message?: Maybe<Scalars['String']>;
-  _id?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_RedirectUriResponseOrdering>>>;
-  filter?: Maybe<_RedirectUriResponseFilter>;
 };
 
 export type RegisterMutationVariables = Exact<{
@@ -1535,8 +1481,15 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { Register: (
-    { __typename?: 'LoginResponse' }
-    & Pick<LoginResponse, 'nodeId' | 'name' | 'surname' | 'token' | 'roles'>
+    { __typename: 'TokenResponse' }
+    & Pick<TokenResponse, 'token'>
+  ) | (
+    { __typename: 'FormError' }
+    & Pick<FormError, 'message'>
+    & { errors?: Maybe<Array<Maybe<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>> }
   ) }
 );
 
@@ -1555,11 +1508,17 @@ export type QuestionQuery = (
 export const RegisterDocument = gql`
     mutation Register($data: RegisterUserInput!) {
   Register(data: $data) {
-    nodeId
-    name
-    surname
-    token
-    roles
+    __typename
+    ... on TokenResponse {
+      token
+    }
+    ... on FormError {
+      message
+      errors {
+        field
+        message
+      }
+    }
   }
 }
     `;
