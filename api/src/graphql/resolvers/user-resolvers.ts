@@ -1,4 +1,4 @@
-import { ResponseStatus } from './../../types/generated-backend'
+import { ResponseStatus, FieldError } from './../../types/generated-backend'
 import { createToken } from '../../utils/auth'
 import { neo4jgraphql } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
@@ -12,6 +12,10 @@ import {
 	AUTH_CHANGE_PASS_UI_URI,
 	AUTH_LOGIN_UI_URI,
 } from '../../index'
+
+enum errorCodes {
+	NODE_EXISTS = 'Neo.ClientError.Schema.ConstraintValidationFailed',
+}
 
 const userResolvers: Resolvers<ApolloServerContext> = {
 	Mutation: {
@@ -48,8 +52,17 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 					token,
 				}
 			} catch (e) {
+				const errors: FieldError[] = []
+				if (e.code === errorCodes.NODE_EXISTS) {
+					errors.push({
+						field: 'email',
+						message: 'User with such email already exists',
+					})
+				}
+
 				return {
 					message: e.message,
+					errors,
 				}
 			}
 		},

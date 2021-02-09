@@ -3,17 +3,14 @@ union VoteResponse = Question | Answer
 union SubscribeResponse = Question | Tag
 union AuthResponse = TokenResponse | FormError
 
-# type FieldError {
-# 	field: String!
-# 	message: String!
-# }
-
-# type FormSuccess {
-# 	text: String!
-# }
+type FieldError {
+	field: String!
+	message: String!
+}
 
 type FormError {
-	message: String!
+	message: String
+	errors: [FieldError]
 }
 
 type LoginResponse {
