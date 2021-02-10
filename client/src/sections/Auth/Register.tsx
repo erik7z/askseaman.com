@@ -29,7 +29,7 @@ export const Register: FC<RegisterComponentProps> = ({ history }) => {
 								password: values.password,
 								name: values.name,
 								surname: values.surname,
-								rank: values.rank,
+								// rank: values.rank, //TODO: use ranks from enums
 							},
 						},
 					})

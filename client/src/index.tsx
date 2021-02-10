@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import {
 	ApolloClient,
@@ -24,6 +24,11 @@ import { Question } from './sections/Questions/Question'
 import { AskQuestion } from './sections/Questions/AskQuestion'
 import { Notifications } from './sections/Me/Notifications'
 import { Register } from './sections/Auth/Register'
+
+import {
+	useCurrentUserLazyQuery,
+	User as UserType,
+} from './__generated/graphql'
 
 import reportWebVitals from './reportWebVitals'
 
@@ -55,7 +60,26 @@ const client = new ApolloClient({
 	link: concat(authMiddleware, httpLink),
 })
 
+const initialUser: UserType = {
+	nodeId: '',
+	name: '',
+	surname: '',
+	rank: null,
+}
+
 export const App = () => {
+	const [currentUser, setCurrentUser] = useState(initialUser)
+	const [getCurrentUser, { data }] = useCurrentUserLazyQuery()
+
+	const CurrUserRef = useRef(getCurrentUser)
+
+	useEffect(() => {
+		CurrUserRef.current()
+		if (data?.CurrentUser) setCurrentUser(data.CurrentUser)
+	}, [data?.CurrentUser])
+
+	console.log(currentUser)
+
 	return (
 		<Router>
 			<Switch>
