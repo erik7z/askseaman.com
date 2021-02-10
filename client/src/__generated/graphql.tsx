@@ -895,6 +895,10 @@ export type EmailInput = {
   email: Scalars['String'];
 };
 
+export type TokenInput = {
+  token: Scalars['String'];
+};
+
 export type NodeIdInput = {
   nodeId: Scalars['ID'];
 };

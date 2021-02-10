@@ -15,6 +15,10 @@ input EmailInput {
 	email: String!
 }
 
+input TokenInput {
+	token: String!
+}
+
 input nodeIdInput {
 	nodeId: ID!
 }

@@ -1,7 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { ApolloProvider } from '@apollo/client'
+import {
+	ApolloClient,
+	HttpLink,
+	ApolloLink,
+	InMemoryCache,
+	concat,
+} from '@apollo/client'
+
+import { ApolloProvider } from '@apollo/react-hooks'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -20,8 +27,21 @@ import { Register } from './sections/Auth/Register'
 
 import reportWebVitals from './reportWebVitals'
 
+const HOST_URI = 'http://localhost:4000'
+
+const httpLink = new HttpLink({ uri: HOST_URI })
+
+const authMiddleware = new ApolloLink((operation, forward) => {
+	operation.setContext({
+		headers: {
+			Authorization: `Bearer ${localStorage.getItem('token')}` || null,
+		},
+	})
+
+	return forward(operation)
+})
+
 const client = new ApolloClient({
-	uri: 'http://localhost:4000',
 	cache: new InMemoryCache({
 		typePolicies: {
 			TokenResponse: {
@@ -32,6 +52,7 @@ const client = new ApolloClient({
 			},
 		},
 	}),
+	link: concat(authMiddleware, httpLink),
 })
 
 export const App = () => {
@@ -44,9 +65,7 @@ export const App = () => {
 							<Route exact path='/auth'>
 								<Auth />
 							</Route>
-							<Route exact path='/register'>
-								<Register />
-							</Route>
+							<Route exact path='/register' component={Register} />
 						</Switch>
 					</AuthLayout>
 				</Route>

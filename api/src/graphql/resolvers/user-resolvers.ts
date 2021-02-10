@@ -66,6 +66,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 				}
 			}
 		},
+
 		async SignIn(parent, { data }, ctx, resolveInfo) {
 			const loginUser = await neo4jgraphql(parent, { data }, ctx, resolveInfo)
 			if (!loginUser) throw new Error('No user was found with this email')
