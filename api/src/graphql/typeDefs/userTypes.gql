@@ -2,13 +2,7 @@ type User {
 	nodeId: ID! @id
 	name: String!
 	surname: String!
-	rank: Rank
-		@cypher(
-			statement: """
-			MATCH (this)-[:HAS_RANK]->(r:Rank)
-			RETURN r as rank
-			"""
-		)
+	rank: UserRank
 	createdAt: DateTime
 	roles: [String]
 	location: String
@@ -55,7 +49,7 @@ type LocalAccount {
 }
 
 type Query {
-	currentUser: User
+	CurrentUser: User
 		@isAuthenticated
 		@cypher(
 			statement: """

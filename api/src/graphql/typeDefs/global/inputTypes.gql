@@ -3,7 +3,7 @@ input RegisterUserInput {
 	password: String!
 	name: String!
 	surname: String!
-	rank: String!
+	rank: UserRank
 }
 
 input LoginUserInput {
@@ -13,10 +13,6 @@ input LoginUserInput {
 
 input EmailInput {
 	email: String!
-}
-
-input TokenInput {
-	token: String!
 }
 
 input nodeIdInput {

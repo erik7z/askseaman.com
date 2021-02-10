@@ -448,50 +448,6 @@ export type QuestionSubscribersArgs = {
   filter?: Maybe<_UserFilter>;
 };
 
-export enum _RankOrdering {
-  RankAsc = 'rank_asc',
-  RankDesc = 'rank_desc',
-  DescriptionAsc = 'description_asc',
-  DescriptionDesc = 'description_desc',
-  IdAsc = '_id_asc',
-  IdDesc = '_id_desc'
-}
-
-export type _RankFilter = {
-  AND?: Maybe<Array<_RankFilter>>;
-  OR?: Maybe<Array<_RankFilter>>;
-  rank?: Maybe<Scalars['String']>;
-  rank_not?: Maybe<Scalars['String']>;
-  rank_in?: Maybe<Array<Scalars['String']>>;
-  rank_not_in?: Maybe<Array<Scalars['String']>>;
-  rank_regexp?: Maybe<Scalars['String']>;
-  rank_contains?: Maybe<Scalars['String']>;
-  rank_not_contains?: Maybe<Scalars['String']>;
-  rank_starts_with?: Maybe<Scalars['String']>;
-  rank_not_starts_with?: Maybe<Scalars['String']>;
-  rank_ends_with?: Maybe<Scalars['String']>;
-  rank_not_ends_with?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  description_not?: Maybe<Scalars['String']>;
-  description_in?: Maybe<Array<Scalars['String']>>;
-  description_not_in?: Maybe<Array<Scalars['String']>>;
-  description_regexp?: Maybe<Scalars['String']>;
-  description_contains?: Maybe<Scalars['String']>;
-  description_not_contains?: Maybe<Scalars['String']>;
-  description_starts_with?: Maybe<Scalars['String']>;
-  description_not_starts_with?: Maybe<Scalars['String']>;
-  description_ends_with?: Maybe<Scalars['String']>;
-  description_not_ends_with?: Maybe<Scalars['String']>;
-};
-
-export type Rank = {
-  __typename?: 'Rank';
-  rank: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
-  _id?: Maybe<Scalars['String']>;
-};
-
 export enum _TagOrdering {
   NodeIdAsc = 'nodeId_asc',
   NodeIdDesc = 'nodeId_desc',
@@ -657,6 +613,8 @@ export enum _UserOrdering {
   NameDesc = 'name_desc',
   SurnameAsc = 'surname_asc',
   SurnameDesc = 'surname_desc',
+  RankAsc = 'rank_asc',
+  RankDesc = 'rank_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
   LocationAsc = 'location_asc',
@@ -707,6 +665,10 @@ export type _UserFilter = {
   surname_not_starts_with?: Maybe<Scalars['String']>;
   surname_ends_with?: Maybe<Scalars['String']>;
   surname_not_ends_with?: Maybe<Scalars['String']>;
+  rank?: Maybe<UserRank>;
+  rank_not?: Maybe<UserRank>;
+  rank_in?: Maybe<Array<UserRank>>;
+  rank_not_in?: Maybe<Array<UserRank>>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -782,7 +744,7 @@ export type User = {
   nodeId: Scalars['ID'];
   name: Scalars['String'];
   surname: Scalars['String'];
-  rank?: Maybe<Rank>;
+  rank?: Maybe<UserRank>;
   createdAt?: Maybe<_Neo4jDateTime>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
@@ -867,6 +829,301 @@ export enum VoteIntention {
   DownVote = 'downVote'
 }
 
+export enum UserRank {
+  ChiefOfficer = 'CHIEF_OFFICER',
+  RadioOfficer = 'RADIO_OFFICER',
+  SingleOfficer = 'SINGLE_OFFICER',
+  S2NdOfficer = 'S2ND_OFFICER',
+  T3RdOfficer = 'T3RD_OFFICER',
+  SeniorDpo = 'SENIOR_DPO',
+  JuniorDpo = 'JUNIOR_DPO',
+  Dpo = 'DPO',
+  TraineeOfficer = 'TRAINEE_OFFICER',
+  BosunBoatswain = 'BOSUN_BOATSWAIN',
+  AbAbleSeaman = 'AB_ABLE_SEAMAN',
+  OsOrdinarySeaman = 'OS_ORDINARY_SEAMAN',
+  CraneOperator = 'CRANE_OPERATOR',
+  DredgeMaster = 'DREDGE_MASTER',
+  DeckCadet = 'DECK_CADET',
+  Cook = 'COOK',
+  Messboy = 'MESSBOY',
+  Abcook = 'ABCOOK',
+  Abwelder = 'ABWELDER',
+  Cadettrainee = 'CADETTRAINEE',
+  ChiefEngineer = 'CHIEF_ENGINEER',
+  SingleEngineer = 'SINGLE_ENGINEER',
+  S2NdEngineer = 'S2ND_ENGINEER',
+  T3RdEngineer = 'T3RD_ENGINEER',
+  F4ThEngineer = 'F4TH_ENGINEER',
+  RefEngineer = 'REF_ENGINEER',
+  GasEngineer = 'GAS_ENGINEER',
+  ElectricalEngineer = 'ELECTRICAL_ENGINEER',
+  Eto = 'ETO_',
+  TraineeEngineer = 'TRAINEE_ENGINEER',
+  Motormanoiler = 'MOTORMANOILER',
+  Fitterwelder = 'FITTERWELDER',
+  Turner = 'TURNER',
+  Electrician = 'ELECTRICIAN',
+  Pumpman = 'PUMPMAN',
+  EngineCadet = 'ENGINE_CADET',
+  Superintendent = 'SUPERINTENDENT',
+  Abmm = 'ABMM',
+  ChiefCook = 'CHIEF_COOK',
+  S2NdCook = 'S2ND_COOK',
+  Diver = 'DIVER',
+  Wiper = 'WIPER',
+  Motormanelectrician = 'MOTORMANELECTRICIAN',
+  AssistantElectricalEngineer = 'ASSISTANT_ELECTRICAL_ENGINEER',
+  WatchEngineer = 'WATCH_ENGINEER',
+  StaffEngineer = 'STAFF_ENGINEER',
+  HotelAccommodationEngineer = 'HOTEL_ACCOMMODATION_ENGINEER',
+  Stewardess = 'STEWARDESS',
+  HydroAcousticOperator = 'HYDRO_ACOUSTIC_OPERATOR',
+  ChiefTrawlMaster = 'CHIEF_TRAWL_MASTER',
+  WatchTrawlMaster = 'WATCH_TRAWL_MASTER',
+  SeamanWinchman = 'SEAMAN_WINCHMAN',
+  TrawlSeaman = 'TRAWL_SEAMAN',
+  MasterOfTheProduct = 'MASTER_OF_THE_PRODUCT',
+  FishMaster = 'FISH_MASTER',
+  WorkersOfTheProductPlant = 'WORKERS_OF_THE_PRODUCT_PLANT',
+  EngineerAdjuster = 'ENGINEER_ADJUSTER',
+  FishmillOperator = 'FISHMILL_OPERATOR',
+  RefrigeratorOperator = 'REFRIGERATOR_OPERATOR',
+  LaundryOperator = 'LAUNDRY_OPERATOR',
+  GeneralManager = 'GENERAL_MANAGER',
+  HotelManager = 'HOTEL_MANAGER',
+  CasinoManager = 'CASINO_MANAGER',
+  ShopManager = 'SHOP_MANAGER',
+  ProvisionMaster = 'PROVISION_MASTER',
+  StoreManager = 'STORE_MANAGER',
+  Purser = 'PURSER',
+  Accountant = 'ACCOUNTANT',
+  CruiseDirector = 'CRUISE_DIRECTOR',
+  HotelManagerDirector = 'HOTEL_MANAGER_DIRECTOR',
+  HotelManagerSecretary = 'HOTEL_MANAGER_SECRETARY',
+  Receptionist = 'RECEPTIONIST',
+  Storekeeper = 'STOREKEEPER',
+  Cashier = 'CASHIER',
+  Photographer = 'PHOTOGRAPHER',
+  SecurityOfficer = 'SECURITY_OFFICER',
+  SecurityGuard = 'SECURITY_GUARD',
+  StewardHeadRoom = 'STEWARD_HEAD_ROOM',
+  StewardstewardessCabin = 'STEWARDSTEWARDESS_CABIN',
+  StewardstewardessAssistantCabin = 'STEWARDSTEWARDESS_ASSISTANT_CABIN',
+  BellCaptain = 'BELL_CAPTAIN',
+  BellBoy = 'BELL_BOY',
+  Cleaner = 'CLEANER',
+  LaundryMan = 'LAUNDRY_MAN',
+  LinenKeeper = 'LINEN_KEEPER',
+  Chambermaid = 'CHAMBERMAID',
+  PoolAttendant = 'POOL_ATTENDANT',
+  FoodbeverageManager = 'FOODBEVERAGE_MANAGER',
+  FoodbeverageAssistantManager = 'FOODBEVERAGE_ASSISTANT_MANAGER',
+  BarManager = 'BAR_MANAGER',
+  BarAssistantManager = 'BAR_ASSISTANT_MANAGER',
+  Bartender = 'BARTENDER',
+  BarWaiter = 'BAR_WAITER',
+  HeadWaiter = 'HEAD_WAITER',
+  Waiterwaitress = 'WAITERWAITRESS',
+  WineSteward = 'WINE_STEWARD',
+  Busboy = 'BUSBOY',
+  Plumber = 'PLUMBER',
+  Upholsterer = 'UPHOLSTERER',
+  Tailor = 'TAILOR',
+  Carpenter = 'CARPENTER',
+  AcRepairman = 'AC_REPAIRMAN',
+  GeneralPurposeRepairman = 'GENERAL_PURPOSE_REPAIRMAN',
+  Doctor = 'DOCTOR',
+  AdministrativeAssistant = 'ADMINISTRATIVE_ASSISTANT',
+  ArtAuctioneer = 'ART_AUCTIONEER',
+  AssistantCruiseDirector = 'ASSISTANT_CRUISE_DIRECTOR',
+  AssistantShoreExcursionsManager = 'ASSISTANT_SHORE_EXCURSIONS_MANAGER',
+  AudioVisualCoordinator = 'AUDIO_VISUAL_COORDINATOR',
+  Avit = 'AVIT',
+  Baker = 'BAKER',
+  BarSteward = 'BAR_STEWARD',
+  Beautician = 'BEAUTICIAN',
+  BeautyTherapist = 'BEAUTY_THERAPIST',
+  BedroomSteward = 'BEDROOM_STEWARD',
+  BookingAgent = 'BOOKING_AGENT',
+  Bookkeeper = 'BOOKKEEPER',
+  BrandManager = 'BRAND_MANAGER',
+  BuffetServer = 'BUFFET_SERVER',
+  Butcher = 'BUTCHER',
+  CabinStewardess = 'CABIN_STEWARDESS',
+  Ceto = 'CETO',
+  ChefDePartie = 'CHEF_DE_PARTIE',
+  ChiefCabinSteward = 'CHIEF_CABIN_STEWARD',
+  ChiefPurser = 'CHIEF_PURSER',
+  ChiefStewardhousekeeper = 'CHIEF_STEWARDHOUSEKEEPER',
+  ChiefStewardess = 'CHIEF_STEWARDESS',
+  CocktailServer = 'COCKTAIL_SERVER_',
+  ComputerSystemsManagerit = 'COMPUTER_SYSTEMS_MANAGERIT',
+  Cosmetologist = 'COSMETOLOGIST',
+  CruiseConsultant = 'CRUISE_CONSULTANT',
+  CustomerServiceRepresentative = 'CUSTOMER_SERVICE_REPRESENTATIVE',
+  Dancer = 'DANCER',
+  DanceInstructor = 'DANCE_INSTRUCTOR',
+  DeckHand = 'DECK_HAND',
+  DiningRoomHeadWaiter = 'DINING_ROOM_HEAD_WAITER',
+  DiningRoomManager = 'DINING_ROOM_MANAGER',
+  DiscJockey = 'DISC_JOCKEY',
+  DiveInstructor = 'DIVE_INSTRUCTOR',
+  Entertainer = 'ENTERTAINER',
+  ExpeditionLeader = 'EXPEDITION_LEADER',
+  FieldRepresentative = 'FIELD_REPRESENTATIVE',
+  FitnessDirector = 'FITNESS_DIRECTOR',
+  FitnessInstructor = 'FITNESS_INSTRUCTOR',
+  GalleyStewardess = 'GALLEY_STEWARDESS',
+  GeneralCook = 'GENERAL_COOK',
+  GentlemenHost = 'GENTLEMEN_HOST',
+  GiftShopManager = 'GIFT_SHOP_MANAGER',
+  GiftShopSalesAssistant = 'GIFT_SHOP_SALES_ASSISTANT',
+  HairStylist = 'HAIR_STYLIST',
+  HousekeeperAssistant = 'HOUSEKEEPER_ASSISTANT',
+  HousekeeperChief = 'HOUSEKEEPER_CHIEF',
+  HrManager = 'HR_MANAGER',
+  InsideSalesRepresentative = 'INSIDE_SALES_REPRESENTATIVE',
+  ItLeadDeveloper = 'IT_LEAD_DEVELOPER',
+  ItStaff = 'IT_STAFF',
+  LaundryHelper = 'LAUNDRY_HELPER',
+  LaundryKeeper = 'LAUNDRY_KEEPER',
+  LaundrySupervisor = 'LAUNDRY_SUPERVISOR',
+  LeadDeckhand = 'LEAD_DECKHAND_',
+  LecturerSpecialGuestSpeaker = 'LECTURER_SPECIAL_GUEST_SPEAKER',
+  Lifeguard = 'LIFEGUARD',
+  MaitreDHotel = 'MAITRE_D_HOTEL',
+  Manicurist = 'MANICURIST',
+  Marketingpr = 'MARKETINGPR',
+  MarketingResearchAnalyst = 'MARKETING_RESEARCH_ANALYST',
+  MassageTherapist = 'MASSAGE_THERAPIST',
+  Naturalist = 'NATURALIST',
+  Nursestewardess = 'NURSESTEWARDESS',
+  OperationsAdministrator = 'OPERATIONS_ADMINISTRATOR',
+  OperationsAnalyst = 'OPERATIONS_ANALYST',
+  OutsideSalesRepresentative = 'OUTSIDE_SALES_REPRESENTATIVE',
+  PayrollClerk = 'PAYROLL_CLERK',
+  PersonalTrainer = 'PERSONAL_TRAINER',
+  ProductionManager = 'PRODUCTION_MANAGER',
+  ProgramCoordinator = 'PROGRAM_COORDINATOR',
+  PurchasingAgent = 'PURCHASING_AGENT',
+  QuarterMaster = 'QUARTER_MASTER',
+  SafetyOfficer = 'SAFETY_OFFICER',
+  SeniorBusinessAnalyst = 'SENIOR_BUSINESS_ANALYST',
+  SeniorHousekeeper = 'SENIOR_HOUSEKEEPER',
+  SeniorStaffAccountant = 'SENIOR_STAFF_ACCOUNTANT',
+  SeniorStewardess = 'SENIOR_STEWARDESS',
+  ShoreExcursionsManager = 'SHORE_EXCURSIONS_MANAGER',
+  SocialHosthostess = 'SOCIAL_HOSTHOSTESS',
+  SoftwareEngineer = 'SOFTWARE_ENGINEER',
+  SoundAndLightTechnician = 'SOUND_AND_LIGHT_TECHNICIAN',
+  SpaAttendant = 'SPA_ATTENDANT',
+  SpaStewardess = 'SPA_STEWARDESS',
+  StaffAccountant = 'STAFF_ACCOUNTANT',
+  StaffCaptain = 'STAFF_CAPTAIN',
+  TourAccounting = 'TOUR_ACCOUNTING',
+  WaterSportsInstructor = 'WATER_SPORTS_INSTRUCTOR',
+  WorkerOfTheProductPlant = 'WORKER_OF_THE_PRODUCT_PLANT',
+  ContractsAdministrator = 'CONTRACTS_ADMINISTRATOR',
+  ContractsManager = 'CONTRACTS_MANAGER',
+  CharteringManager = 'CHARTERING_MANAGER',
+  SystemsEngineer = 'SYSTEMS_ENGINEER',
+  NavalArchitect = 'NAVAL_ARCHITECT',
+  SalesManager = 'SALES_MANAGER',
+  BusinessDevelopmentManager = 'BUSINESS_DEVELOPMENT_MANAGER',
+  SuperintendentElectrical = 'SUPERINTENDENT_ELECTRICAL',
+  Trader = 'TRADER',
+  Analyst = 'ANALYST',
+  PortManager = 'PORT_MANAGER',
+  EngineeringManager = 'ENGINEERING_MANAGER',
+  MaintenanceTechnician = 'MAINTENANCE_TECHNICIAN',
+  CadOperator = 'CAD_OPERATOR',
+  Sg1A = 'SG1A',
+  ServiceManager = 'SERVICE_MANAGER',
+  TechnicalManager = 'TECHNICAL_MANAGER',
+  Underwriter = 'UNDERWRITER',
+  HeadOfNetworkPlanning = 'HEAD_OF_NETWORK_PLANNING',
+  NetworkPlanningManager = 'NETWORK_PLANNING_MANAGER',
+  MarineSurveyor = 'MARINE_SURVEYOR',
+  MarineConsultant = 'MARINE_CONSULTANT',
+  Buyer = 'BUYER',
+  TerminalManager = 'TERMINAL_MANAGER',
+  SuperintendentTechnical = 'SUPERINTENDENT_TECHNICAL',
+  ItManager = 'IT_MANAGER',
+  TechnicalAssistant = 'TECHNICAL_ASSISTANT',
+  OperationsManager = 'OPERATIONS_MANAGER',
+  ShipPlanner = 'SHIP_PLANNER',
+  MarineManager = 'MARINE_MANAGER',
+  Associate = 'ASSOCIATE',
+  ShipOperator = 'SHIP_OPERATOR',
+  CrewingManager = 'CREWING_MANAGER',
+  ServiceEngineer = 'SERVICE_ENGINEER',
+  ControlsEngineer = 'CONTROLS_ENGINEER',
+  AccountExecutive = 'ACCOUNT_EXECUTIVE',
+  ClaimsExecutive = 'CLAIMS_EXECUTIVE',
+  RiskAdvisor = 'RISK_ADVISOR',
+  AccountManager = 'ACCOUNT_MANAGER',
+  CommercialManager = 'COMMERCIAL_MANAGER',
+  HumanResources = 'HUMAN_RESOURCES',
+  WeldingEngineer = 'WELDING_ENGINEER',
+  ExportClerk = 'EXPORT_CLERK',
+  ProjectManager = 'PROJECT_MANAGER',
+  VettingSuperintendent = 'VETTING_SUPERINTENDENT',
+  ProcurementOfficer = 'PROCUREMENT_OFFICER',
+  SuperintendentOperations = 'SUPERINTENDENT_OPERATIONS',
+  OperationsAssistant = 'OPERATIONS_ASSISTANT',
+  OperationsExecutive = 'OPERATIONS_EXECUTIVE',
+  LogisticsExecutive = 'LOGISTICS_EXECUTIVE',
+  QualityManager = 'QUALITY_MANAGER',
+  MarineEngineer = 'MARINE_ENGINEER',
+  OperationsOfficer = 'OPERATIONS_OFFICER',
+  SalesEngineer = 'SALES_ENGINEER',
+  CargoEngineer = 'CARGO_ENGINEER',
+  TechnicalDirector = 'TECHNICAL_DIRECTOR',
+  ProcurementManager = 'PROCUREMENT_MANAGER',
+  CustomerServiceExecutive = 'CUSTOMER_SERVICE_EXECUTIVE',
+  BunkerPurchaser = 'BUNKER_PURCHASER',
+  ProjectEngineer = 'PROJECT_ENGINEER',
+  BunkerTrader = 'BUNKER_TRADER',
+  RecruitmentConsultant = 'RECRUITMENT_CONSULTANT',
+  StructuralEngineer = 'STRUCTURAL_ENGINEER',
+  ProjectOfficer = 'PROJECT_OFFICER',
+  PortEngineer = 'PORT_ENGINEER',
+  ClientRepresentative = 'CLIENT_REPRESENTATIVE',
+  ShipsAgent = 'SHIPS_AGENT',
+  PortAgent = 'PORT_AGENT',
+  Charterer = 'CHARTERER',
+  SuperintendentCargo = 'SUPERINTENDENT_CARGO',
+  CrewingOfficer = 'CREWING_OFFICER',
+  OperationsDirector = 'OPERATIONS_DIRECTOR',
+  AssistantHseSuperintendent = 'ASSISTANT_HSE_SUPERINTENDENT',
+  EnvironmentalManager = 'ENVIRONMENTAL_MANAGER',
+  MarketingExecutive = 'MARKETING_EXECUTIVE',
+  PortCaptain = 'PORT_CAPTAIN',
+  Broker = 'BROKER',
+  HseManager = 'HSE_MANAGER',
+  Surveyor = 'SURVEYOR',
+  AdministrationManager = 'ADMINISTRATION_MANAGER',
+  Roustabout = 'ROUSTABOUT',
+  Derrickman = 'DERRICKMAN',
+  FloorMan = 'FLOOR_MAN',
+  Pipefitter = 'PIPEFITTER',
+  Fabricator = 'FABRICATOR',
+  Coxswain = 'COXSWAIN',
+  RepairEngineer = 'REPAIR_ENGINEER',
+  PersonalAssistantSecretary = 'PERSONAL_ASSISTANT_SECRETARY',
+  AdministrationSupport = 'ADMINISTRATION_SUPPORT',
+  InjectionMoldingMachineOperator = 'INJECTION_MOLDING_MACHINE_OPERATOR',
+  JuniorMechanicalEngineer = 'JUNIOR_MECHANICAL_ENGINEER',
+  SpringMachineOperator = 'SPRING_MACHINE_OPERATOR',
+  LatheMachineOperator = 'LATHE_MACHINE_OPERATOR',
+  SlotTechnician = 'SLOT_TECHNICIAN',
+  CommissioningEngineer = 'COMMISSIONING_ENGINEER',
+  CommunicationOfficer = 'COMMUNICATION_OFFICER',
+  HydrographicSurveyor = 'HYDROGRAPHIC_SURVEYOR',
+  PipeOperator = 'PIPE_OPERATOR'
+}
+
 export enum Role {
   User = 'user',
   Admin = 'admin',
@@ -883,7 +1140,7 @@ export type RegisterUserInput = {
   password: Scalars['String'];
   name: Scalars['String'];
   surname: Scalars['String'];
-  rank: Scalars['String'];
+  rank?: Maybe<UserRank>;
 };
 
 export type LoginUserInput = {
@@ -1257,7 +1514,6 @@ export type Mutation = {
   AskQuestion: Question;
   EditQuestion: Question;
   DeleteQuestion: DeleteQuestionResponse;
-  AddRank: Rank;
   ToggleLike: LikeResponse;
   ToggleSubscribe: SubscribeResponse;
   Vote: VoteResponse;
@@ -1321,11 +1577,6 @@ export type MutationDeleteQuestionArgs = {
 };
 
 
-export type MutationAddRankArgs = {
-  data: AddRankInput;
-};
-
-
 export type MutationToggleLikeArgs = {
   data: NodeIdInput;
 };
@@ -1377,15 +1628,13 @@ export type MutationChangePassCompleteArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  currentUser?: Maybe<User>;
+  CurrentUser?: Maybe<User>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
   Answer?: Maybe<Array<Maybe<Answer>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Comment type nodes. */
   Comment?: Maybe<Array<Maybe<Comment>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Question type nodes. */
   Question?: Maybe<Array<Maybe<Question>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Rank type nodes. */
-  Rank?: Maybe<Array<Maybe<Rank>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Tag type nodes. */
   Tag?: Maybe<Array<Maybe<Tag>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
@@ -1435,17 +1684,6 @@ export type QueryQuestionArgs = {
 };
 
 
-export type QueryRankArgs = {
-  rank?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  _id?: Maybe<Scalars['String']>;
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_RankOrdering>>>;
-  filter?: Maybe<_RankFilter>;
-};
-
-
 export type QueryTagArgs = {
   nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
@@ -1463,6 +1701,7 @@ export type QueryUserArgs = {
   nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
+  rank?: Maybe<UserRank>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
@@ -1565,9 +1804,6 @@ export type ResolversTypes = ResolversObject<{
   _QuestionOrdering: _QuestionOrdering;
   _QuestionFilter: _QuestionFilter;
   Question: ResolverTypeWrapper<Question>;
-  _RankOrdering: _RankOrdering;
-  _RankFilter: _RankFilter;
-  Rank: ResolverTypeWrapper<Rank>;
   _TagOrdering: _TagOrdering;
   _TagFilter: _TagFilter;
   Tag: ResolverTypeWrapper<Tag>;
@@ -1576,6 +1812,7 @@ export type ResolversTypes = ResolversObject<{
   User: ResolverTypeWrapper<User>;
   LocalAccount: ResolverTypeWrapper<LocalAccount>;
   VoteIntention: VoteIntention;
+  UserRank: UserRank;
   Role: Role;
   ResponseStatus: ResponseStatus;
   RegisterUserInput: RegisterUserInput;
@@ -1642,8 +1879,6 @@ export type ResolversParentTypes = ResolversObject<{
   Comment: Comment;
   _QuestionFilter: _QuestionFilter;
   Question: Question;
-  _RankFilter: _RankFilter;
-  Rank: Rank;
   _TagFilter: _TagFilter;
   Tag: Tag;
   _UserFilter: _UserFilter;
@@ -1803,13 +2038,6 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type RankResolvers<ContextType = any, ParentType extends ResolversParentTypes['Rank'] = ResolversParentTypes['Rank']> = ResolversObject<{
-  rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type TagResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = ResolversObject<{
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1833,7 +2061,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rank?: Resolver<Maybe<ResolversTypes['Rank']>, ParentType, ContextType>;
+  rank?: Resolver<Maybe<ResolversTypes['UserRank']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2047,7 +2275,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   AskQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationAskQuestionArgs, 'data'>>;
   EditQuestion?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<MutationEditQuestionArgs, 'data'>>;
   DeleteQuestion?: Resolver<ResolversTypes['DeleteQuestionResponse'], ParentType, ContextType, RequireFields<MutationDeleteQuestionArgs, 'data'>>;
-  AddRank?: Resolver<ResolversTypes['Rank'], ParentType, ContextType, RequireFields<MutationAddRankArgs, 'data'>>;
   ToggleLike?: Resolver<ResolversTypes['LikeResponse'], ParentType, ContextType, RequireFields<MutationToggleLikeArgs, 'data'>>;
   ToggleSubscribe?: Resolver<ResolversTypes['SubscribeResponse'], ParentType, ContextType, RequireFields<MutationToggleSubscribeArgs, 'data'>>;
   Vote?: Resolver<ResolversTypes['VoteResponse'], ParentType, ContextType, RequireFields<MutationVoteArgs, 'data'>>;
@@ -2061,11 +2288,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  CurrentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
   Comment?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QueryCommentArgs, never>>;
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
-  Rank?: Resolver<Maybe<Array<Maybe<ResolversTypes['Rank']>>>, ParentType, ContextType, RequireFields<QueryRankArgs, never>>;
   Tag?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QueryTagArgs, never>>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
 }>;
@@ -2074,7 +2300,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Answer?: AnswerResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
   Question?: QuestionResolvers<ContextType>;
-  Rank?: RankResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   LocalAccount?: LocalAccountResolvers<ContextType>;
