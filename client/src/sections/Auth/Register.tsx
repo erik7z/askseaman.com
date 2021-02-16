@@ -8,7 +8,7 @@ import { useRegisterMutation, FieldError } from '../../__generated/graphql'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
-import { useLocalStorage } from '../../hooks'
+import { useLocalStorage } from '../../lib/hooks'
 
 interface RegisterComponentProps {
 	history: History
@@ -43,6 +43,7 @@ export const Register: FC<RegisterComponentProps> = ({ history }) => {
 
 						if (regResponse.Register.__typename === 'TokenResponse') {
 							setToken(regResponse.Register.token)
+
 							history.push('/me')
 						}
 					}

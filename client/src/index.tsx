@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useContext } from 'react'
 import ReactDOM from 'react-dom'
 import {
 	ApolloClient,
@@ -14,8 +14,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles.css'
 
-import AuthLayout from './Layout/Auth'
-import MainLayout from './Layout'
+import { CurrentUserProvider, CurrentUserContext } from './lib/contexts'
+import AuthLayout from './components/Layout/Auth'
+import MainLayout from './components/Layout'
 import { Auth, Me, NotFound, Questions, Tags, Users } from './sections'
 
 import { Tag } from './sections/Tags/Tag'
@@ -61,24 +62,24 @@ const client = new ApolloClient({
 	link: concat(authMiddleware, httpLink),
 })
 
-const initialUser: UserType = {
-	nodeId: '',
-	name: '',
-	surname: '',
-	rank: null,
-}
-
 export const App = () => {
-	const [currentUser, setCurrentUser] = useState(initialUser)
+	const [currentUserState, setCurrentUserState] = useContext(CurrentUserContext)
 
 	const [getCurrentUser, { data: response }] = useCurrentUserLazyQuery()
 	const getCurrUserRef = useRef(getCurrentUser)
 	useEffect(() => {
 		getCurrUserRef.current()
-		if (response?.CurrentUser) setCurrentUser(response.CurrentUser)
-	}, [response?.CurrentUser])
+		if (response?.CurrentUser) {
+			const currentUser = response.CurrentUser as UserType
+			setCurrentUserState((state) => ({
+				isLoggedIn: true,
+				isLoading: false,
+				currentUser,
+			}))
+		}
+	}, [response?.CurrentUser, setCurrentUserState])
 
-	console.log(currentUser)
+	console.log(currentUserState)
 
 	return (
 		<Router>
@@ -151,7 +152,9 @@ export const App = () => {
 ReactDOM.render(
 	<React.StrictMode>
 		<ApolloProvider client={client}>
-			<App />
+			<CurrentUserProvider>
+				<App />
+			</CurrentUserProvider>
 		</ApolloProvider>
 	</React.StrictMode>,
 	document.getElementById('root')
