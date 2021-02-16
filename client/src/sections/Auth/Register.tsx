@@ -8,6 +8,7 @@ import { useRegisterMutation, FieldError } from '../../__generated/graphql'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
+import { useLocalStorage } from '../../hooks'
 
 interface RegisterComponentProps {
 	history: History
@@ -15,6 +16,7 @@ interface RegisterComponentProps {
 
 export const Register: FC<RegisterComponentProps> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
+	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
 
 	return (
 		<>
@@ -40,9 +42,7 @@ export const Register: FC<RegisterComponentProps> = ({ history }) => {
 						}
 
 						if (regResponse.Register.__typename === 'TokenResponse') {
-							const token = regResponse.Register.token as string
-							localStorage.setItem('token', token)
-
+							setToken(regResponse.Register.token)
 							history.push('/me')
 						}
 					}

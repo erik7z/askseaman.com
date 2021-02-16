@@ -37,12 +37,13 @@ const HOST_URI = 'http://localhost:4000'
 const httpLink = new HttpLink({ uri: HOST_URI })
 
 const authMiddleware = new ApolloLink((operation, forward) => {
+	const token = localStorage.getItem('token')
+
 	operation.setContext({
 		headers: {
-			Authorization: `Bearer ${localStorage.getItem('token')}` || null,
+			authorization: token ? `Bearer ${token}` : '',
 		},
 	})
-
 	return forward(operation)
 })
 
@@ -69,14 +70,13 @@ const initialUser: UserType = {
 
 export const App = () => {
 	const [currentUser, setCurrentUser] = useState(initialUser)
-	const [getCurrentUser, { data }] = useCurrentUserLazyQuery()
 
-	const CurrUserRef = useRef(getCurrentUser)
-
+	const [getCurrentUser, { data: response }] = useCurrentUserLazyQuery()
+	const getCurrUserRef = useRef(getCurrentUser)
 	useEffect(() => {
-		CurrUserRef.current()
-		if (data?.CurrentUser) setCurrentUser(data.CurrentUser)
-	}, [data?.CurrentUser])
+		getCurrUserRef.current()
+		if (response?.CurrentUser) setCurrentUser(response.CurrentUser)
+	}, [response?.CurrentUser])
 
 	console.log(currentUser)
 
