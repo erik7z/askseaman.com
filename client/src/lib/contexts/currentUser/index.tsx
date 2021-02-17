@@ -8,6 +8,7 @@ interface IProps {
 type IUserState = {
 	isLoading: boolean
 	isLoggedIn: boolean
+	token?: any
 	currentUser: UserType
 }
 
@@ -20,6 +21,7 @@ export const CurrentUserContext = createContext<ICurrentUserContext>([
 	{
 		isLoading: true,
 		isLoggedIn: false,
+		token: '',
 		currentUser: {
 			nodeId: '',
 			name: '',

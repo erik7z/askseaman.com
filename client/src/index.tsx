@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import ReactDOM from 'react-dom'
 import {
 	ApolloClient,
@@ -66,20 +66,24 @@ export const App = () => {
 	const [currentUserState, setCurrentUserState] = useContext(CurrentUserContext)
 
 	const [getCurrentUser, { data: response }] = useCurrentUserLazyQuery()
-	const getCurrUserRef = useRef(getCurrentUser)
+
 	useEffect(() => {
-		getCurrUserRef.current()
+		getCurrentUser()
 		if (response?.CurrentUser) {
 			const currentUser = response.CurrentUser as UserType
 			setCurrentUserState((state) => ({
+				...state,
 				isLoggedIn: true,
 				isLoading: false,
 				currentUser,
 			}))
 		}
-	}, [response?.CurrentUser, setCurrentUserState])
-
-	console.log(currentUserState)
+	}, [
+		response?.CurrentUser,
+		setCurrentUserState,
+		getCurrentUser,
+		currentUserState.token,
+	])
 
 	return (
 		<Router>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { History } from 'history'
 import { Formik } from 'formik'
 
@@ -9,6 +9,7 @@ import { useRegisterMutation, FieldError } from '../../__generated/graphql'
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
 import { useLocalStorage } from '../../lib/hooks'
+import { CurrentUserContext } from '../../lib/contexts'
 
 interface RegisterComponentProps {
 	history: History
@@ -17,6 +18,7 @@ interface RegisterComponentProps {
 export const Register: FC<RegisterComponentProps> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
 	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
+	const [, setCurrentUserState] = useContext(CurrentUserContext)
 
 	return (
 		<>
@@ -42,9 +44,12 @@ export const Register: FC<RegisterComponentProps> = ({ history }) => {
 						}
 
 						if (regResponse.Register.__typename === 'TokenResponse') {
-							setToken(regResponse.Register.token)
-
-							history.push('/me')
+							const token = regResponse.Register.token
+							setToken(token)
+							setCurrentUserState((state: any) => ({
+								...state,
+								token,
+							}))
 						}
 					}
 
