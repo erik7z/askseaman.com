@@ -1,7 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
+
 import { Link } from 'react-router-dom'
+import { Row, Col } from 'react-bootstrap'
+
+import { AvatarLink } from '../'
+
+import { CurrentUserContext } from '../../lib/contexts'
+import { ucFirstLetter } from '../../lib/helpers'
 
 const Aside = () => {
+	const [currentUserState] = useContext(CurrentUserContext)
+	const { currentUser } = currentUserState
+
 	return (
 		<>
 			<aside id='as-aside' className='js-fullheight'>
@@ -11,12 +21,58 @@ const Aside = () => {
 					</Link>
 				</h1>
 				<hr />
-				<div className='text-center'>
-					<Link to='/auth' className='btn btn-outline-success btn-sm px-5'>
-						Sign In
-					</Link>
-					<hr />
-				</div>
+
+				{currentUserState.isLoggedIn === false && (
+					<>
+						<Row className='text-center'>
+							<Col md={12}>
+								<Link
+									to='/auth'
+									className='btn btn-outline-success btn-sm px-5'
+								>
+									Sign In
+								</Link>
+								<hr />
+							</Col>
+						</Row>
+					</>
+				)}
+
+				{currentUserState.isLoggedIn && (
+					<>
+						<Row className='auth-module'>
+							<Col md={3} className='text-right pr-0 pt-1'>
+								<AvatarLink size='md' />
+							</Col>
+							<Col md={7}>
+								<Link to='#' className='text-secondary'>
+									<b>
+										{ucFirstLetter(currentUser.name)}{' '}
+										{ucFirstLetter(currentUser.surname)}
+									</b>
+								</Link>
+								<br />
+
+								<small>
+									{currentUser.rank && ucFirstLetter(currentUser.rank)}
+								</small>
+							</Col>
+							<Col md={1} className='pt-1'>
+								<Link to='#' className='text-secondary'>
+									<i className='icon-gear'></i>
+								</Link>
+								<br />
+								<Link to='#' className='text-secondary'>
+									<i className='icon-sign-out'></i>
+								</Link>
+							</Col>
+							<Col md={12}>
+								<hr />
+							</Col>
+						</Row>
+					</>
+				)}
+
 				<nav id='as-main-menu' role='navigation'>
 					<ul>
 						<li className='as-active'>

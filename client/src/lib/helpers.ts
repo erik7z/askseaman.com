@@ -7,3 +7,7 @@ export const normalizeErrors = (errors: FieldError[]) => {
 		return acc
 	}, {})
 }
+
+export const ucFirstLetter = (string: string) => {
+	return string.charAt(0).toUpperCase() + string.slice(1)
+}

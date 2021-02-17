@@ -127,7 +127,7 @@ export const App = () => {
 							<Route exact path='/me'>
 								<Me />
 							</Route>
-							<Route exact path='/notifications'>
+							<Route exact path='/me/notifications'>
 								<Notifications />
 							</Route>
 							<Route exact path='/tags'>

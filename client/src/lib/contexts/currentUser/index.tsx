@@ -26,19 +26,21 @@ export const CurrentUserContext = createContext<ICurrentUserContext>([
 			nodeId: '',
 			name: '',
 			surname: '',
+			rank: null,
 		},
 	},
 	() => null,
 ])
 
 export const CurrentUserProvider = ({ children }: IProps) => {
-	const [state, setState] = useState({
+	const [state, setState] = useState<IUserState>({
 		isLoading: false,
 		isLoggedIn: false,
 		currentUser: {
 			nodeId: '',
 			name: '',
 			surname: '',
+			rank: null,
 		},
 	})
 	return (
