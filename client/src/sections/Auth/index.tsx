@@ -1,41 +1,143 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
+import React, { FC, useContext } from 'react'
+import { Formik } from 'formik'
 
-export const Auth = () => {
+import { Link } from 'react-router-dom'
+import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
+import { useSignInMutation, FieldError } from '../../__generated/graphql'
+
+import { ComponentWithHistory } from '../../types/globals'
+
+import { signInValidation } from './../../lib/validation'
+import { normalizeErrors } from './../../lib/helpers'
+import { useLocalStorage } from '../../lib/hooks'
+import { CurrentUserContext } from '../../lib/contexts'
+
+export const Auth: FC<ComponentWithHistory> = ({ history }) => {
+	const [signInMutation, { error: connErrors }] = useSignInMutation()
+	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
+	const [, setCurrentUserState] = useContext(CurrentUserContext)
+
 	return (
 		<>
-			<Form>
-				<Form.Group>
-					<Form.Label htmlFor='email'>E-mail</Form.Label>
-					<Form.Control type='email' className='form-control' id='email' />
-				</Form.Group>
-				<Form.Group>
-					<Form.Label htmlFor='password'>Password</Form.Label>
-					<Form.Control type='password' id='password' />
-				</Form.Group>
+			<Formik
+				validationSchema={signInValidation}
+				onSubmit={async (values, { setSubmitting, setErrors }) => {
+					setSubmitting(true)
+					const { data: signInResponse } = await signInMutation({
+						variables: {
+							data: {
+								email: values.email,
+								password: values.password,
+							},
+						},
+					})
+					if (signInResponse) {
+						if (signInResponse.SignIn.__typename === 'FormError') {
+							const formErrors = signInResponse.SignIn.errors as FieldError[]
+							setErrors(normalizeErrors(formErrors))
+						}
 
-				<Form.Group className='text-right'>
-					<Button variant='primary' size='lg' type='submit' className='px-5'>
-						Sign In
-					</Button>
-				</Form.Group>
+						if (signInResponse.SignIn.__typename === 'TokenResponse') {
+							const token = signInResponse.SignIn.token
+							setToken(token)
+							setCurrentUserState((state: any) => ({
+								...state,
+								token,
+							}))
 
-				<Form.Group>
-					<small>New on this website ? </small>
-					<Link to='/register'>
-						<i>Register</i>
-					</Link>
-				</Form.Group>
-				<hr />
-				<Form.Group className='text-right'>
-					<small>
-						<Link to='/forgotpass'>
-							<i>Forgot Password ?</i>
-						</Link>
-					</small>
-				</Form.Group>
-			</Form>
+							history.push('/')
+						}
+					}
+
+					setSubmitting(false)
+				}}
+				initialValues={{
+					email: '',
+					password: '',
+				}}
+			>
+				{({
+					handleSubmit,
+					errors,
+					touched,
+					isSubmitting,
+					isValid,
+					getFieldProps,
+				}) => (
+					<Form noValidate onSubmit={handleSubmit}>
+						<Form.Row>
+							{connErrors && (
+								<Alert variant='danger'>
+									<Alert.Heading>Ooops! Something went wrong</Alert.Heading>
+									<p>{connErrors.message}</p>
+								</Alert>
+							)}
+						</Form.Row>
+						<Form.Row>
+							<Form.Group as={Col} md='12' controlId='email'>
+								<Form.Label>E-mail</Form.Label>
+								<InputGroup>
+									<InputGroup.Prepend>
+										<InputGroup.Text id='email'>@</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Form.Control
+										type='email'
+										{...getFieldProps('email')}
+										isInvalid={!!errors.email}
+										className='medium-input'
+									/>
+									<Form.Control.Feedback type='invalid'>
+										{errors.email}
+									</Form.Control.Feedback>
+								</InputGroup>
+							</Form.Group>
+						</Form.Row>
+
+						<Form.Row>
+							<Form.Group as={Col} md='12' controlId='password'>
+								<Form.Label>Password</Form.Label>
+								<Form.Control
+									type='password'
+									{...getFieldProps('password')}
+									isValid={touched.password && !errors.password}
+									isInvalid={!!errors.password}
+									className='medium-input'
+								/>
+								<Form.Control.Feedback type='invalid'>
+									{errors.password}
+								</Form.Control.Feedback>
+							</Form.Group>
+						</Form.Row>
+
+						<Form.Row className='mb3 text-right'>
+							<Col md={12}>
+								<Button
+									variant='primary'
+									type='submit'
+									disabled={isSubmitting || !isValid}
+									className='px-3'
+								>
+									SignIn
+								</Button>
+							</Col>
+						</Form.Row>
+						<Form.Group>
+							<small>New on this website ? </small>
+							<Link to='/register'>
+								<i>Register</i>
+							</Link>
+						</Form.Group>
+						<hr />
+						<Form.Group className='text-right'>
+							<small>
+								<Link to='/forgotpass'>
+									<i>Forgot Password ?</i>
+								</Link>
+							</small>
+						</Form.Group>
+					</Form>
+				)}
+			</Formik>
 		</>
 	)
 }

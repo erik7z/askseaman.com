@@ -1,0 +1,15 @@
+mutation SignIn($data: LoginUserInput!) {
+	SignIn(data: $data) {
+		__typename
+		... on TokenResponse {
+			token
+		}
+		... on FormError {
+			message
+			errors {
+				field
+				message
+			}
+		}
+	}
+}

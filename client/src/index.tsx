@@ -91,9 +91,7 @@ export const App = () => {
 				<Route path={['/auth', '/register']}>
 					<AuthLayout>
 						<Switch>
-							<Route exact path='/auth'>
-								<Auth />
-							</Route>
+							<Route exact path='/auth' component={Auth} />
 							<Route exact path='/register' component={Register} />
 						</Switch>
 					</AuthLayout>

@@ -1,21 +1,17 @@
 import React, { FC, useContext } from 'react'
-import { History } from 'history'
 import { Formik } from 'formik'
 
 import { Link } from 'react-router-dom'
 import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
 import { useRegisterMutation, FieldError } from '../../__generated/graphql'
+import { ComponentWithHistory } from '../../types/globals'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
 import { useLocalStorage } from '../../lib/hooks'
 import { CurrentUserContext } from '../../lib/contexts'
 
-interface RegisterComponentProps {
-	history: History
-}
-
-export const Register: FC<RegisterComponentProps> = ({ history }) => {
+export const Register: FC<ComponentWithHistory> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
 	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
 	const [, setCurrentUserState] = useContext(CurrentUserContext)

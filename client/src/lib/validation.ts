@@ -25,3 +25,12 @@ export const regValidation = yup.object({
 		.oneOf([yup.ref('password'), null], 'Passwords must match'),
 	terms: yup.bool().oneOf([true], 'Agreement approval is required'),
 })
+
+export const signInValidation = yup.object({
+	email: yup
+		.string()
+		.required('email is required')
+		.email('*Email is not valid'),
+	// .matches(emailRegexp, '*Email is not valid'),
+	password: yup.string().required('Password is required'),
+})
