@@ -20,6 +20,8 @@ enum errorCodes {
 const userResolvers: Resolvers<ApolloServerContext> = {
 	Mutation: {
 		async Register(_, { data }, ctx) {
+			let errorField = ''
+
 			const salt = bcrypt.genSaltSync(10)
 			data.password = bcrypt.hashSync(data.password, salt)
 			const roles = [process.env.DEFAULT_ROLE || 'reader']
@@ -54,8 +56,9 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			} catch (e) {
 				const errors: FieldError[] = []
 				if (e.code === errorCodes.NODE_EXISTS) {
+					errorField = 'email'
 					errors.push({
-						field: 'email',
+						field: errorField,
 						message: 'User with such email already exists',
 					})
 				}
@@ -67,23 +70,62 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			}
 		},
 
-		async SignIn(parent, { data }, ctx, resolveInfo) {
-			const loginUser = await neo4jgraphql(parent, { data }, ctx, resolveInfo)
-			if (!loginUser) throw new Error('No user was found with this email')
+		async SignIn(_, { data }, ctx) {
+			let errorField = ''
 
-			//#TODO: !!! If password field not requested from client, it cannot authanticate ??
+			try {
+				const user = await ctx.driver
+					.session()
+					.run(
+						`MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
+						WITH {
+							nodeId: u.nodeId,
+							email: u.email,
+							password: l.password,
+							roles: u.roles
+						} as LoginResponse
+						RETURN LoginResponse
+						`,
+						{ data }
+					)
+					.then((res) => res.records.map((rec) => rec.get(0))[0])
 
-			const valid = bcrypt.compareSync(data.password, loginUser.password)
-			if (!valid) throw new Error('Incorrect password')
+				if (!user) {
+					errorField = 'email'
+					throw new Error('No user was found with this email')
+				}
 
-			loginUser.token = await createToken({
-				user: {
-					id: loginUser.nodeId,
-				},
-				roles: loginUser.roles || [process.env.DEFAULT_ROLE || 'reader'],
-			})
+				const valid = bcrypt.compareSync(data.password, user.password)
+				if (!valid) {
+					errorField = 'password'
+					throw new Error('Incorrect password')
+				}
 
-			return loginUser
+				const roles = user.roles
+				const token = await createToken({
+					user: {
+						id: user.nodeId,
+					},
+					roles,
+				})
+
+				return {
+					token,
+				}
+			} catch (e) {
+				const errors: FieldError[] = []
+				errors.push({
+					field: errorField,
+					message: e.message,
+				})
+
+				console.log(e.code)
+
+				return {
+					message: e.message,
+					errors,
+				}
+			}
 		},
 
 		async ChangePassRequest(parent, { data }, ctx, resolveInfo) {

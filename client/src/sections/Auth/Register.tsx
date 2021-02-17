@@ -50,6 +50,8 @@ export const Register: FC<RegisterComponentProps> = ({ history }) => {
 								...state,
 								token,
 							}))
+
+							history.push('/')
 						}
 					}
 

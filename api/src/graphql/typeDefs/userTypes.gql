@@ -62,21 +62,7 @@ type Query {
 type Mutation {
 	Register(data: RegisterUserInput!): AuthResponse!
 
-	SignIn(data: LoginUserInput!): LoginResponse!
-		@cypher(
-			statement: """
-			MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
-			WITH {
-				nodeId: u.nodeId,
-				email: u.email,
-				password: l.password,
-				name: u.name,
-				surname: u.surname,
-				roles: u.roles
-			} as LoginResponse
-			RETURN LoginResponse
-			"""
-		)
+	SignIn(data: LoginUserInput!): AuthResponse!
 
 	ChangePassRequest(data: EmailInput!): RedirectUriResponse!
 		@cypher(

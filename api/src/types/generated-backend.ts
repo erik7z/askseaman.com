@@ -1520,7 +1520,7 @@ export type Mutation = {
   AddTag: Tag;
   DeleteTag: DeleteTagResponse;
   Register: AuthResponse;
-  SignIn: LoginResponse;
+  SignIn: AuthResponse;
   ChangePassRequest: RedirectUriResponse;
   ChangePassConfirm: RedirectUriResponse;
   ChangePassComplete: RedirectUriResponse;
@@ -2281,7 +2281,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
   DeleteTag?: Resolver<ResolversTypes['DeleteTagResponse'], ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'data'>>;
   Register?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'data'>>;
-  SignIn?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'data'>>;
+  SignIn?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'data'>>;
   ChangePassRequest?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassRequestArgs, 'data'>>;
   ChangePassConfirm?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassConfirmArgs, 'data'>>;
   ChangePassComplete?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassCompleteArgs, 'data'>>;

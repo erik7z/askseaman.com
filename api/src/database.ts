@@ -16,7 +16,7 @@ export const schema = makeAugmentedSchema({
 		// hasScope: HasScopeDirective,
 	},
 	config: {
-		// debug: true,
+		debug: false,
 		experimental: true,
 		auth: {
 			isAuthenticated: true,
