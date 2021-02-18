@@ -1,3 +1,12 @@
+export const getRanksEnumDefs = (): string => {
+	let enumStr = 'enum UserRank { \n'
+	for (const key in ranks) {
+		enumStr += key + '\n'
+	}
+	enumStr += '}'
+	return enumStr
+}
+
 export const ranks = {
 	CHIEF_OFFICER: 'Chief Officer',
 	RADIO_OFFICER: 'Radio Officer',
