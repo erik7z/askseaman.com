@@ -13,12 +13,10 @@ import { ComponentWithHistory, kvPair } from '../../types/globals'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
-import { useLocalStorage } from '../../lib/hooks'
 import { CurrentUserContext } from '../../lib/contexts'
 
 export const Register: FC<ComponentWithHistory> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
-	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
 	const [, userDispatch] = useContext(CurrentUserContext)
 
 	const { data: ranksData } = useUserRanksQuery()
@@ -49,7 +47,6 @@ export const Register: FC<ComponentWithHistory> = ({ history }) => {
 
 						if (regResponse.Register.__typename === 'TokenResponse') {
 							const token = regResponse.Register.token
-							setToken(token)
 							userDispatch({
 								type: 'SET_TOKEN',
 								payload: token,

@@ -64,10 +64,8 @@ export const App = () => {
 
 	const [
 		getCurrentUser,
-		{ data: currentUserResponse, error },
+		{ data: currentUserResponse },
 	] = useCurrentUserLazyQuery()
-
-	if (error) console.log(error)
 
 	useEffect(() => {
 		getCurrentUser()
@@ -77,12 +75,7 @@ export const App = () => {
 				payload: currentUserResponse,
 			})
 		}
-	}, [
-		currentUserResponse,
-		userDispatch,
-		getCurrentUser,
-		userContext.toUpdateProfile,
-	])
+	}, [getCurrentUser, userContext.token, currentUserResponse, userDispatch])
 
 	return (
 		<Router>

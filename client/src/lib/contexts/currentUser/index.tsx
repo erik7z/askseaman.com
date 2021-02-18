@@ -9,7 +9,6 @@ interface IProps {
 }
 
 type IUserState = {
-	toUpdateProfile: boolean
 	isLoading: boolean
 	isLoggedIn: boolean
 	token?: string | null | undefined
@@ -33,7 +32,6 @@ const initialUser = {
 }
 
 const initialState: IUserState = {
-	toUpdateProfile: true,
 	isLoading: false,
 	isLoggedIn: false,
 	token: '',
@@ -49,30 +47,27 @@ const userReducer = (state: IUserState = initialState, action: ActionType) => {
 				isLoading: true,
 			}
 		case 'SET_TOKEN':
+			localStorage.setItem('token', action.payload as string)
+
 			return {
 				...state,
-				toUpdateProfile: true,
+				token: action.payload,
 				isLoggedIn: false,
-				isLoading: false,
-				currentUser: initialUser,
 			}
 		case 'SIGN_IN':
 			const currentUser = action.payload.CurrentUser as UserType
 
 			return {
 				...state,
-				toUpdateProfile: false,
 				isLoggedIn: true,
-				isLoading: false,
 				currentUser,
 			}
 		case 'SIGN_OUT':
 			localStorage.setItem('token', '')
 			return {
 				...state,
-				toUpdateProfile: false,
+				token: '',
 				isLoggedIn: false,
-				isLoading: false,
 				currentUser: initialUser,
 			}
 		default:

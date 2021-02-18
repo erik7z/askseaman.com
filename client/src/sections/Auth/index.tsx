@@ -9,12 +9,10 @@ import { ComponentWithHistory } from '../../types/globals'
 
 import { signInValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
-import { useLocalStorage } from '../../lib/hooks'
 import { CurrentUserContext } from '../../lib/contexts'
 
 export const Auth: FC<ComponentWithHistory> = ({ history }) => {
 	const [signInMutation, { error: connErrors }] = useSignInMutation()
-	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
 	const [, dispatch] = useContext(CurrentUserContext)
 
 	return (
@@ -39,7 +37,6 @@ export const Auth: FC<ComponentWithHistory> = ({ history }) => {
 
 						if (signInResponse.SignIn.__typename === 'TokenResponse') {
 							const token = signInResponse.SignIn.token
-							setToken(token)
 							dispatch({
 								type: 'SET_TOKEN',
 								payload: token,
