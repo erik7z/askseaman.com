@@ -3,8 +3,8 @@ import { createToken } from '../../utils/auth'
 import { neo4jgraphql } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
 
-import { ApolloServerContext } from './../../types/backend'
-import { Resolvers } from '../../types/generated-backend'
+import { ApolloServerContext, kvPair } from './../../types/backend'
+import { Resolvers, UserRank } from '../../types/generated-backend'
 import { ranks } from './../../data/ranks'
 
 import {
@@ -32,7 +32,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			data.password = bcrypt.hashSync(data.password, salt)
 			const roles = [process.env.DEFAULT_ROLE || 'reader']
 			const newData = { ...data, roles }
-			// newData.rank = (<kvPair>ranks)[<string>data.rank] as UserRank
+			newData.rank = (<kvPair>ranks)[<string>data.rank] as UserRank
 
 			try {
 				const user = await ctx.driver

@@ -57,18 +57,14 @@ const userReducer = (state: IUserState = initialState, action: ActionType) => {
 				currentUser: initialUser,
 			}
 		case 'SIGN_IN':
-			const ranks = action.payload.UserRanks
-			const userData = action.payload.CurrentUser as UserType
-			let userClone = Object.assign({}, userData)
-			// assigning human readable rank to userobject
-			userClone.rank = ranks[userData.rank as string] //TODO: how ranks will be converted for other users ? change rank display approach
+			const currentUser = action.payload.CurrentUser as UserType
 
 			return {
 				...state,
 				toUpdateProfile: false,
 				isLoggedIn: true,
 				isLoading: false,
-				currentUser: userClone as UserType,
+				currentUser,
 			}
 		case 'SIGN_OUT':
 			localStorage.setItem('token', '')

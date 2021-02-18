@@ -5,5 +5,4 @@ query CurrentUser {
 		surname
 		rank
 	}
-	UserRanks
 }

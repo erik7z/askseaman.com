@@ -71,14 +71,13 @@ export const App = () => {
 
 	useEffect(() => {
 		getCurrentUser()
-		if (currentUserResponse?.CurrentUser) {
+		if (currentUserResponse) {
 			userDispatch({
 				type: 'SIGN_IN',
 				payload: currentUserResponse,
 			})
 		}
 	}, [
-		currentUserResponse?.CurrentUser,
 		currentUserResponse,
 		userDispatch,
 		getCurrentUser,

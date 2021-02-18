@@ -669,10 +669,17 @@ export type _UserFilter = {
   surname_not_starts_with?: Maybe<Scalars['String']>;
   surname_ends_with?: Maybe<Scalars['String']>;
   surname_not_ends_with?: Maybe<Scalars['String']>;
-  rank?: Maybe<UserRank>;
-  rank_not?: Maybe<UserRank>;
-  rank_in?: Maybe<Array<UserRank>>;
-  rank_not_in?: Maybe<Array<UserRank>>;
+  rank?: Maybe<Scalars['String']>;
+  rank_not?: Maybe<Scalars['String']>;
+  rank_in?: Maybe<Array<Scalars['String']>>;
+  rank_not_in?: Maybe<Array<Scalars['String']>>;
+  rank_regexp?: Maybe<Scalars['String']>;
+  rank_contains?: Maybe<Scalars['String']>;
+  rank_not_contains?: Maybe<Scalars['String']>;
+  rank_starts_with?: Maybe<Scalars['String']>;
+  rank_not_starts_with?: Maybe<Scalars['String']>;
+  rank_ends_with?: Maybe<Scalars['String']>;
+  rank_not_ends_with?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -748,7 +755,7 @@ export type User = {
   nodeId: Scalars['ID'];
   name: Scalars['String'];
   surname: Scalars['String'];
-  rank?: Maybe<UserRank>;
+  rank?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTime>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
@@ -1708,7 +1715,7 @@ export type QueryUserArgs = {
   nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
-  rank?: Maybe<UserRank>;
+  rank?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
@@ -1772,7 +1779,6 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'UserRanks'>
   & { CurrentUser?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'nodeId' | 'name' | 'surname' | 'rank'>
@@ -1913,7 +1919,6 @@ export const CurrentUserDocument = gql`
     surname
     rank
   }
-  UserRanks
 }
     `;
 

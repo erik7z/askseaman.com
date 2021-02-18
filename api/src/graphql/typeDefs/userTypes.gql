@@ -2,7 +2,7 @@ type User {
 	nodeId: ID! @id
 	name: String!
 	surname: String!
-	rank: UserRank
+	rank: String
 	createdAt: DateTime
 	roles: [String]
 	location: String
