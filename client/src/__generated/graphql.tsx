@@ -11,6 +11,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSONObject: any;
 };
 
 
@@ -829,6 +833,216 @@ export enum VoteIntention {
   DownVote = 'downVote'
 }
 
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+  Reader = 'reader'
+}
+
+export enum ResponseStatus {
+  Success = 'success',
+  Fail = 'fail'
+}
+
+export type RegisterUserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  name: Scalars['String'];
+  surname: Scalars['String'];
+  rank?: Maybe<UserRank>;
+};
+
+export type LoginUserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type EmailInput = {
+  email: Scalars['String'];
+};
+
+export type NodeIdInput = {
+  nodeId: Scalars['ID'];
+};
+
+export type DeleteTagInput = {
+  name: Scalars['String'];
+};
+
+export type CodeInput = {
+  code: Scalars['Int'];
+};
+
+export type NewPassInput = {
+  code: Scalars['Int'];
+  new_password: Scalars['String'];
+};
+
+export type AskQuestionInput = {
+  title: Scalars['String'];
+  text: Scalars['String'];
+  tags: Array<Scalars['String']>;
+};
+
+export type EditQuestionInput = {
+  nodeId: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type AnswerQuestionInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type AddCommentInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type EditAnswerInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type EditCommentInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type AddTagInput = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type AddRankInput = {
+  rank: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type VoteInput = {
+  nodeId: Scalars['ID'];
+  action: VoteIntention;
+};
+
+export type CanBeCommented = {
+  nodeId: Scalars['ID'];
+  commentsCount?: Maybe<Scalars['Int']>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
+};
+
+
+export type CanBeCommentedCommentsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
+  filter?: Maybe<_CommentFilter>;
+};
+
+export type CanBeLiked = {
+  nodeId: Scalars['ID'];
+  likesCount?: Maybe<Scalars['Int']>;
+  likes?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type CanBeLikedLikesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
+};
+
+export type CanBeSubscribed = {
+  nodeId: Scalars['ID'];
+  subscribersCount?: Maybe<Scalars['Int']>;
+  subscribers?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type CanBeSubscribedSubscribersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
+};
+
+export type CanBeVoted = {
+  nodeId: Scalars['ID'];
+  upVotesCount?: Maybe<Scalars['Int']>;
+  downVotesCount?: Maybe<Scalars['Int']>;
+};
+
+export type LikeResponse = Question | Comment;
+
+export type VoteResponse = Question | Answer;
+
+export type SubscribeResponse = Question | Tag;
+
+export type AuthResponse = TokenResponse | FormError;
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type FormError = {
+  __typename?: 'FormError';
+  message?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<Maybe<FieldError>>>;
+};
+
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  nodeId: Scalars['ID'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  name: Scalars['String'];
+  surname: Scalars['String'];
+  token?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Role>>>;
+};
+
+export type TokenResponse = {
+  __typename?: 'TokenResponse';
+  token?: Maybe<Scalars['String']>;
+};
+
+export type RedirectUriResponse = {
+  __typename?: 'RedirectUriResponse';
+  redirect: Scalars['String'];
+  status: ResponseStatus;
+  message?: Maybe<Scalars['String']>;
+};
+
+export type DeleteQuestionResponse = {
+  __typename?: 'DeleteQuestionResponse';
+  nodeId: Scalars['ID'];
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type DeleteAnswerResponse = {
+  __typename?: 'DeleteAnswerResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type DeleteCommentResponse = {
+  __typename?: 'DeleteCommentResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type DeleteTagResponse = {
+  __typename?: 'DeleteTagResponse';
+  name: Scalars['String'];
+};
+
+
+
 export enum UserRank {
   ChiefOfficer = 'CHIEF_OFFICER',
   RadioOfficer = 'RADIO_OFFICER',
@@ -1123,214 +1337,6 @@ export enum UserRank {
   HydrographicSurveyor = 'HYDROGRAPHIC_SURVEYOR',
   PipeOperator = 'PIPE_OPERATOR'
 }
-
-export enum Role {
-  User = 'user',
-  Admin = 'admin',
-  Reader = 'reader'
-}
-
-export enum ResponseStatus {
-  Success = 'success',
-  Fail = 'fail'
-}
-
-export type RegisterUserInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-  name: Scalars['String'];
-  surname: Scalars['String'];
-  rank?: Maybe<UserRank>;
-};
-
-export type LoginUserInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type EmailInput = {
-  email: Scalars['String'];
-};
-
-export type NodeIdInput = {
-  nodeId: Scalars['ID'];
-};
-
-export type DeleteTagInput = {
-  name: Scalars['String'];
-};
-
-export type CodeInput = {
-  code: Scalars['Int'];
-};
-
-export type NewPassInput = {
-  code: Scalars['Int'];
-  new_password: Scalars['String'];
-};
-
-export type AskQuestionInput = {
-  title: Scalars['String'];
-  text: Scalars['String'];
-  tags: Array<Scalars['String']>;
-};
-
-export type EditQuestionInput = {
-  nodeId: Scalars['ID'];
-  title?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-};
-
-export type AnswerQuestionInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type AddCommentInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type EditAnswerInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type EditCommentInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type AddTagInput = {
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
-export type AddRankInput = {
-  rank: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
-export type VoteInput = {
-  nodeId: Scalars['ID'];
-  action: VoteIntention;
-};
-
-export type CanBeCommented = {
-  nodeId: Scalars['ID'];
-  commentsCount?: Maybe<Scalars['Int']>;
-  comments?: Maybe<Array<Maybe<Comment>>>;
-};
-
-
-export type CanBeCommentedCommentsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
-  filter?: Maybe<_CommentFilter>;
-};
-
-export type CanBeLiked = {
-  nodeId: Scalars['ID'];
-  likesCount?: Maybe<Scalars['Int']>;
-  likes?: Maybe<Array<Maybe<User>>>;
-};
-
-
-export type CanBeLikedLikesArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
-  filter?: Maybe<_UserFilter>;
-};
-
-export type CanBeSubscribed = {
-  nodeId: Scalars['ID'];
-  subscribersCount?: Maybe<Scalars['Int']>;
-  subscribers?: Maybe<Array<Maybe<User>>>;
-};
-
-
-export type CanBeSubscribedSubscribersArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
-  filter?: Maybe<_UserFilter>;
-};
-
-export type CanBeVoted = {
-  nodeId: Scalars['ID'];
-  upVotesCount?: Maybe<Scalars['Int']>;
-  downVotesCount?: Maybe<Scalars['Int']>;
-};
-
-export type LikeResponse = Question | Comment;
-
-export type VoteResponse = Question | Answer;
-
-export type SubscribeResponse = Question | Tag;
-
-export type AuthResponse = TokenResponse | FormError;
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
-export type FormError = {
-  __typename?: 'FormError';
-  message?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<Maybe<FieldError>>>;
-};
-
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  nodeId: Scalars['ID'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  name: Scalars['String'];
-  surname: Scalars['String'];
-  token?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Maybe<Role>>>;
-};
-
-export type TokenResponse = {
-  __typename?: 'TokenResponse';
-  token?: Maybe<Scalars['String']>;
-};
-
-export type RedirectUriResponse = {
-  __typename?: 'RedirectUriResponse';
-  redirect: Scalars['String'];
-  status: ResponseStatus;
-  message?: Maybe<Scalars['String']>;
-};
-
-export type DeleteQuestionResponse = {
-  __typename?: 'DeleteQuestionResponse';
-  nodeId: Scalars['ID'];
-  title: Scalars['String'];
-  text: Scalars['String'];
-};
-
-export type DeleteAnswerResponse = {
-  __typename?: 'DeleteAnswerResponse';
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type DeleteCommentResponse = {
-  __typename?: 'DeleteCommentResponse';
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type DeleteTagResponse = {
-  __typename?: 'DeleteTagResponse';
-  name: Scalars['String'];
-};
 
 /** Generated Time input object for Neo4j [Temporal field arguments](https://grandstack.io/docs/graphql-temporal-types-datetime/#temporal-query-arguments). */
 export type _Neo4jTimeInput = {
@@ -1629,6 +1635,7 @@ export type MutationChangePassCompleteArgs = {
 export type Query = {
   __typename?: 'Query';
   CurrentUser?: Maybe<User>;
+  UserRanks?: Maybe<Scalars['JSONObject']>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
   Answer?: Maybe<Array<Maybe<Answer>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Comment type nodes. */
@@ -1752,11 +1759,20 @@ export type SignInMutation = (
   ) }
 );
 
+export type UserRanksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserRanksQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'UserRanks'>
+);
+
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentUserQuery = (
   { __typename?: 'Query' }
+  & Pick<Query, 'UserRanks'>
   & { CurrentUser?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'nodeId' | 'name' | 'surname' | 'rank'>
@@ -1859,6 +1875,36 @@ export function useSignInMutation(baseOptions?: Apollo.MutationHookOptions<SignI
 export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
 export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
 export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
+export const UserRanksDocument = gql`
+    query UserRanks {
+  UserRanks
+}
+    `;
+
+/**
+ * __useUserRanksQuery__
+ *
+ * To run a query within a React component, call `useUserRanksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserRanksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserRanksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserRanksQuery(baseOptions?: Apollo.QueryHookOptions<UserRanksQuery, UserRanksQueryVariables>) {
+        return Apollo.useQuery<UserRanksQuery, UserRanksQueryVariables>(UserRanksDocument, baseOptions);
+      }
+export function useUserRanksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserRanksQuery, UserRanksQueryVariables>) {
+          return Apollo.useLazyQuery<UserRanksQuery, UserRanksQueryVariables>(UserRanksDocument, baseOptions);
+        }
+export type UserRanksQueryHookResult = ReturnType<typeof useUserRanksQuery>;
+export type UserRanksLazyQueryHookResult = ReturnType<typeof useUserRanksLazyQuery>;
+export type UserRanksQueryResult = Apollo.QueryResult<UserRanksQuery, UserRanksQueryVariables>;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   CurrentUser {
@@ -1867,6 +1913,7 @@ export const CurrentUserDocument = gql`
     surname
     rank
   }
+  UserRanks
 }
     `;
 

@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 
 import { ApolloServerContext } from './../../types/backend'
 import { Resolvers } from '../../types/generated-backend'
+import { ranks } from './../../data/ranks'
 
 import {
 	HOST_URI,
@@ -18,6 +19,11 @@ enum errorCodes {
 }
 
 const userResolvers: Resolvers<ApolloServerContext> = {
+	Query: {
+		UserRanks() {
+			return ranks
+		},
+	},
 	Mutation: {
 		async Register(_, { data }, ctx) {
 			let errorField = ''
@@ -26,6 +32,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			data.password = bcrypt.hashSync(data.password, salt)
 			const roles = [process.env.DEFAULT_ROLE || 'reader']
 			const newData = { ...data, roles }
+			// newData.rank = (<kvPair>ranks)[<string>data.rank] as UserRank
 
 			try {
 				const user = await ctx.driver
@@ -37,6 +44,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 						name: $data.name,
 						surname: $data.surname,
 						roles: $data.roles,
+						rank: $data.rank,
 						createdAt: DateTime()
 					}) return u`,
 						{ data: newData }

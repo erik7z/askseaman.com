@@ -1,6 +1,10 @@
 import { Driver } from 'neo4j-driver'
 import { Request } from 'express'
 
+export type kvPair = {
+	[key: string]: string
+}
+
 export interface AuthUserParams {
 	user: {
 		id: string

@@ -3,8 +3,13 @@ import { Formik } from 'formik'
 
 import { Link } from 'react-router-dom'
 import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
-import { useRegisterMutation, FieldError } from '../../__generated/graphql'
-import { ComponentWithHistory } from '../../types/globals'
+import {
+	useUserRanksQuery,
+	useRegisterMutation,
+	FieldError,
+	UserRank,
+} from '../../__generated/graphql'
+import { ComponentWithHistory, kvPair } from '../../types/globals'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
@@ -15,6 +20,9 @@ export const Register: FC<ComponentWithHistory> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
 	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
 	const [, userDispatch] = useContext(CurrentUserContext)
+
+	const { data: ranksData } = useUserRanksQuery()
+	const ranks: kvPair = ranksData?.UserRanks
 
 	return (
 		<>
@@ -29,7 +37,7 @@ export const Register: FC<ComponentWithHistory> = ({ history }) => {
 								password: values.password,
 								name: values.name,
 								surname: values.surname,
-								// rank: values.rank, //TODO: use ranks from enums
+								rank: values.rank as UserRank,
 							},
 						},
 					})
@@ -139,7 +147,15 @@ export const Register: FC<ComponentWithHistory> = ({ history }) => {
 									className='medium-input'
 								>
 									<option>-- Select Rank ---</option>
-									<option value='bosun'>Bosun</option>
+									{ranksData?.UserRanks &&
+										Object.keys(ranks).map((rank) => {
+											return (
+												<option value={rank} key={rank}>
+													{ranks[rank]}
+												</option>
+											)
+										})}
+
 									<option value='chief_officer'>Chief Officer</option>
 									<option value='chief_engineer'>Chief Engineer</option>
 									<option value='master'>Master</option>

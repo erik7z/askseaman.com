@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -11,6 +11,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSONObject: any;
 };
 
 
@@ -829,6 +833,216 @@ export enum VoteIntention {
   DownVote = 'downVote'
 }
 
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+  Reader = 'reader'
+}
+
+export enum ResponseStatus {
+  Success = 'success',
+  Fail = 'fail'
+}
+
+export type RegisterUserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  name: Scalars['String'];
+  surname: Scalars['String'];
+  rank?: Maybe<UserRank>;
+};
+
+export type LoginUserInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type EmailInput = {
+  email: Scalars['String'];
+};
+
+export type NodeIdInput = {
+  nodeId: Scalars['ID'];
+};
+
+export type DeleteTagInput = {
+  name: Scalars['String'];
+};
+
+export type CodeInput = {
+  code: Scalars['Int'];
+};
+
+export type NewPassInput = {
+  code: Scalars['Int'];
+  new_password: Scalars['String'];
+};
+
+export type AskQuestionInput = {
+  title: Scalars['String'];
+  text: Scalars['String'];
+  tags: Array<Scalars['String']>;
+};
+
+export type EditQuestionInput = {
+  nodeId: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+};
+
+export type AnswerQuestionInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type AddCommentInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type EditAnswerInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type EditCommentInput = {
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type AddTagInput = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type AddRankInput = {
+  rank: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+};
+
+export type VoteInput = {
+  nodeId: Scalars['ID'];
+  action: VoteIntention;
+};
+
+export type CanBeCommented = {
+  nodeId: Scalars['ID'];
+  commentsCount?: Maybe<Scalars['Int']>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
+};
+
+
+export type CanBeCommentedCommentsArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
+  filter?: Maybe<_CommentFilter>;
+};
+
+export type CanBeLiked = {
+  nodeId: Scalars['ID'];
+  likesCount?: Maybe<Scalars['Int']>;
+  likes?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type CanBeLikedLikesArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
+};
+
+export type CanBeSubscribed = {
+  nodeId: Scalars['ID'];
+  subscribersCount?: Maybe<Scalars['Int']>;
+  subscribers?: Maybe<Array<Maybe<User>>>;
+};
+
+
+export type CanBeSubscribedSubscribersArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
+};
+
+export type CanBeVoted = {
+  nodeId: Scalars['ID'];
+  upVotesCount?: Maybe<Scalars['Int']>;
+  downVotesCount?: Maybe<Scalars['Int']>;
+};
+
+export type LikeResponse = Question | Comment;
+
+export type VoteResponse = Question | Answer;
+
+export type SubscribeResponse = Question | Tag;
+
+export type AuthResponse = TokenResponse | FormError;
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type FormError = {
+  __typename?: 'FormError';
+  message?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<Maybe<FieldError>>>;
+};
+
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  nodeId: Scalars['ID'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  name: Scalars['String'];
+  surname: Scalars['String'];
+  token?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Role>>>;
+};
+
+export type TokenResponse = {
+  __typename?: 'TokenResponse';
+  token?: Maybe<Scalars['String']>;
+};
+
+export type RedirectUriResponse = {
+  __typename?: 'RedirectUriResponse';
+  redirect: Scalars['String'];
+  status: ResponseStatus;
+  message?: Maybe<Scalars['String']>;
+};
+
+export type DeleteQuestionResponse = {
+  __typename?: 'DeleteQuestionResponse';
+  nodeId: Scalars['ID'];
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type DeleteAnswerResponse = {
+  __typename?: 'DeleteAnswerResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type DeleteCommentResponse = {
+  __typename?: 'DeleteCommentResponse';
+  nodeId: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type DeleteTagResponse = {
+  __typename?: 'DeleteTagResponse';
+  name: Scalars['String'];
+};
+
+
+
 export enum UserRank {
   ChiefOfficer = 'CHIEF_OFFICER',
   RadioOfficer = 'RADIO_OFFICER',
@@ -1123,214 +1337,6 @@ export enum UserRank {
   HydrographicSurveyor = 'HYDROGRAPHIC_SURVEYOR',
   PipeOperator = 'PIPE_OPERATOR'
 }
-
-export enum Role {
-  User = 'user',
-  Admin = 'admin',
-  Reader = 'reader'
-}
-
-export enum ResponseStatus {
-  Success = 'success',
-  Fail = 'fail'
-}
-
-export type RegisterUserInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-  name: Scalars['String'];
-  surname: Scalars['String'];
-  rank?: Maybe<UserRank>;
-};
-
-export type LoginUserInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type EmailInput = {
-  email: Scalars['String'];
-};
-
-export type NodeIdInput = {
-  nodeId: Scalars['ID'];
-};
-
-export type DeleteTagInput = {
-  name: Scalars['String'];
-};
-
-export type CodeInput = {
-  code: Scalars['Int'];
-};
-
-export type NewPassInput = {
-  code: Scalars['Int'];
-  new_password: Scalars['String'];
-};
-
-export type AskQuestionInput = {
-  title: Scalars['String'];
-  text: Scalars['String'];
-  tags: Array<Scalars['String']>;
-};
-
-export type EditQuestionInput = {
-  nodeId: Scalars['ID'];
-  title?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
-  tags?: Maybe<Array<Scalars['String']>>;
-};
-
-export type AnswerQuestionInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type AddCommentInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type EditAnswerInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type EditCommentInput = {
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type AddTagInput = {
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
-export type AddRankInput = {
-  rank: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
-export type VoteInput = {
-  nodeId: Scalars['ID'];
-  action: VoteIntention;
-};
-
-export type CanBeCommented = {
-  nodeId: Scalars['ID'];
-  commentsCount?: Maybe<Scalars['Int']>;
-  comments?: Maybe<Array<Maybe<Comment>>>;
-};
-
-
-export type CanBeCommentedCommentsArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_CommentOrdering>>>;
-  filter?: Maybe<_CommentFilter>;
-};
-
-export type CanBeLiked = {
-  nodeId: Scalars['ID'];
-  likesCount?: Maybe<Scalars['Int']>;
-  likes?: Maybe<Array<Maybe<User>>>;
-};
-
-
-export type CanBeLikedLikesArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
-  filter?: Maybe<_UserFilter>;
-};
-
-export type CanBeSubscribed = {
-  nodeId: Scalars['ID'];
-  subscribersCount?: Maybe<Scalars['Int']>;
-  subscribers?: Maybe<Array<Maybe<User>>>;
-};
-
-
-export type CanBeSubscribedSubscribersArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
-  filter?: Maybe<_UserFilter>;
-};
-
-export type CanBeVoted = {
-  nodeId: Scalars['ID'];
-  upVotesCount?: Maybe<Scalars['Int']>;
-  downVotesCount?: Maybe<Scalars['Int']>;
-};
-
-export type LikeResponse = Question | Comment;
-
-export type VoteResponse = Question | Answer;
-
-export type SubscribeResponse = Question | Tag;
-
-export type AuthResponse = TokenResponse | FormError;
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
-export type FormError = {
-  __typename?: 'FormError';
-  message?: Maybe<Scalars['String']>;
-  errors?: Maybe<Array<Maybe<FieldError>>>;
-};
-
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  nodeId: Scalars['ID'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  name: Scalars['String'];
-  surname: Scalars['String'];
-  token?: Maybe<Scalars['String']>;
-  roles?: Maybe<Array<Maybe<Role>>>;
-};
-
-export type TokenResponse = {
-  __typename?: 'TokenResponse';
-  token?: Maybe<Scalars['String']>;
-};
-
-export type RedirectUriResponse = {
-  __typename?: 'RedirectUriResponse';
-  redirect: Scalars['String'];
-  status: ResponseStatus;
-  message?: Maybe<Scalars['String']>;
-};
-
-export type DeleteQuestionResponse = {
-  __typename?: 'DeleteQuestionResponse';
-  nodeId: Scalars['ID'];
-  title: Scalars['String'];
-  text: Scalars['String'];
-};
-
-export type DeleteAnswerResponse = {
-  __typename?: 'DeleteAnswerResponse';
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type DeleteCommentResponse = {
-  __typename?: 'DeleteCommentResponse';
-  nodeId: Scalars['ID'];
-  text: Scalars['String'];
-};
-
-export type DeleteTagResponse = {
-  __typename?: 'DeleteTagResponse';
-  name: Scalars['String'];
-};
 
 /** Generated Time input object for Neo4j [Temporal field arguments](https://grandstack.io/docs/graphql-temporal-types-datetime/#temporal-query-arguments). */
 export type _Neo4jTimeInput = {
@@ -1629,6 +1635,7 @@ export type MutationChangePassCompleteArgs = {
 export type Query = {
   __typename?: 'Query';
   CurrentUser?: Maybe<User>;
+  UserRanks?: Maybe<Scalars['JSONObject']>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
   Answer?: Maybe<Array<Maybe<Answer>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Comment type nodes. */
@@ -1812,7 +1819,6 @@ export type ResolversTypes = ResolversObject<{
   User: ResolverTypeWrapper<User>;
   LocalAccount: ResolverTypeWrapper<LocalAccount>;
   VoteIntention: VoteIntention;
-  UserRank: UserRank;
   Role: Role;
   ResponseStatus: ResponseStatus;
   RegisterUserInput: RegisterUserInput;
@@ -1848,6 +1854,9 @@ export type ResolversTypes = ResolversObject<{
   DeleteAnswerResponse: ResolverTypeWrapper<DeleteAnswerResponse>;
   DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
   DeleteTagResponse: ResolverTypeWrapper<DeleteTagResponse>;
+  JSON: ResolverTypeWrapper<Scalars['JSON']>;
+  JSONObject: ResolverTypeWrapper<Scalars['JSONObject']>;
+  UserRank: UserRank;
   _Neo4jTimeInput: _Neo4jTimeInput;
   _Neo4jTime: ResolverTypeWrapper<_Neo4jTime>;
   _Neo4jDateInput: _Neo4jDateInput;
@@ -1917,6 +1926,8 @@ export type ResolversParentTypes = ResolversObject<{
   DeleteAnswerResponse: DeleteAnswerResponse;
   DeleteCommentResponse: DeleteCommentResponse;
   DeleteTagResponse: DeleteTagResponse;
+  JSON: Scalars['JSON'];
+  JSONObject: Scalars['JSONObject'];
   _Neo4jTimeInput: _Neo4jTimeInput;
   _Neo4jTime: _Neo4jTime;
   _Neo4jDateInput: _Neo4jDateInput;
@@ -2192,6 +2203,14 @@ export type DeleteTagResponseResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
+  name: 'JSON';
+}
+
+export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSONObject'], any> {
+  name: 'JSONObject';
+}
+
 export type _Neo4jTimeResolvers<ContextType = any, ParentType extends ResolversParentTypes['_Neo4jTime'] = ResolversParentTypes['_Neo4jTime']> = ResolversObject<{
   hour?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   minute?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -2289,6 +2308,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   CurrentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  UserRanks?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
   Comment?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QueryCommentArgs, never>>;
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
@@ -2320,6 +2340,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DeleteAnswerResponse?: DeleteAnswerResponseResolvers<ContextType>;
   DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
   DeleteTagResponse?: DeleteTagResponseResolvers<ContextType>;
+  JSON?: GraphQLScalarType;
+  JSONObject?: GraphQLScalarType;
   _Neo4jTime?: _Neo4jTimeResolvers<ContextType>;
   _Neo4jDate?: _Neo4jDateResolvers<ContextType>;
   _Neo4jDateTime?: _Neo4jDateTimeResolvers<ContextType>;

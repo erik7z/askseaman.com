@@ -1,15 +1,20 @@
 import React, { useReducer, createContext, ReactNode } from 'react'
-import { User as UserType } from '../../../__generated/graphql'
+import {
+	User as UserType,
+	CurrentUserQuery as CurrentUserQueryType,
+} from '../../../__generated/graphql'
 
 interface IProps {
 	children: ReactNode
 }
 
 type IUserState = {
+	toUpdateProfile: boolean
 	isLoading: boolean
 	isLoggedIn: boolean
 	token?: string | null | undefined
 	currentUser: UserType
+	userRank: string | null | undefined
 }
 
 type ICurrentUserContext = [IUserState, React.Dispatch<ActionType>]
@@ -17,7 +22,7 @@ type ICurrentUserContext = [IUserState, React.Dispatch<ActionType>]
 type ActionType =
 	| { type: 'LOADING' }
 	| { type: 'SET_TOKEN'; payload: string | null | undefined }
-	| { type: 'SIGN_IN'; payload: UserType }
+	| { type: 'SIGN_IN'; payload: CurrentUserQueryType }
 	| { type: 'SIGN_OUT' }
 
 const initialUser = {
@@ -28,10 +33,12 @@ const initialUser = {
 }
 
 const initialState: IUserState = {
+	toUpdateProfile: true,
 	isLoading: false,
 	isLoggedIn: false,
 	token: '',
 	currentUser: initialUser,
+	userRank: '',
 }
 
 const userReducer = (state: IUserState = initialState, action: ActionType) => {
@@ -44,24 +51,32 @@ const userReducer = (state: IUserState = initialState, action: ActionType) => {
 		case 'SET_TOKEN':
 			return {
 				...state,
-				isLoggedIn: true,
+				toUpdateProfile: true,
+				isLoggedIn: false,
 				isLoading: false,
-				token: action.payload,
+				currentUser: initialUser,
 			}
 		case 'SIGN_IN':
+			const ranks = action.payload.UserRanks
+			const userData = action.payload.CurrentUser as UserType
+			let userClone = Object.assign({}, userData)
+			// assigning human readable rank to userobject
+			userClone.rank = ranks[userData.rank as string] //TODO: how ranks will be converted for other users ? change rank display approach
+
 			return {
 				...state,
+				toUpdateProfile: false,
 				isLoggedIn: true,
 				isLoading: false,
-				currentUser: action.payload,
+				currentUser: userClone as UserType,
 			}
 		case 'SIGN_OUT':
 			localStorage.setItem('token', '')
 			return {
 				...state,
+				toUpdateProfile: false,
 				isLoggedIn: false,
 				isLoading: false,
-				// token: '', TODO: if clear userstate token during signout, index useffect sign in again
 				currentUser: initialUser,
 			}
 		default:
