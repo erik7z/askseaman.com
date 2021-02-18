@@ -14,7 +14,7 @@ import { CurrentUserContext } from '../../lib/contexts'
 export const Register: FC<ComponentWithHistory> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
 	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
-	const [, setCurrentUserState] = useContext(CurrentUserContext)
+	const [, userDispatch] = useContext(CurrentUserContext)
 
 	return (
 		<>
@@ -42,10 +42,10 @@ export const Register: FC<ComponentWithHistory> = ({ history }) => {
 						if (regResponse.Register.__typename === 'TokenResponse') {
 							const token = regResponse.Register.token
 							setToken(token)
-							setCurrentUserState((state: any) => ({
-								...state,
-								token,
-							}))
+							userDispatch({
+								type: 'SET_TOKEN',
+								payload: token,
+							})
 
 							history.push('/')
 						}

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import { BsGear, BsBoxArrowRight } from 'react-icons/bs'
 
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
@@ -9,7 +10,7 @@ import { CurrentUserContext } from '../../lib/contexts'
 import { ucFirstLetter } from '../../lib/helpers'
 
 const Aside = () => {
-	const [currentUserState] = useContext(CurrentUserContext)
+	const [currentUserState, userDispatch] = useContext(CurrentUserContext)
 	const { currentUser } = currentUserState
 
 	return (
@@ -58,12 +59,20 @@ const Aside = () => {
 								</small>
 							</Col>
 							<Col md={1} className='pt-1'>
-								<Link to='#' className='text-secondary'>
-									<i className='icon-gear'></i>
-								</Link>
+								<span className='text-secondary'>
+									<BsGear />
+								</span>
 								<br />
-								<Link to='#' className='text-secondary'>
-									<i className='icon-sign-out'></i>
+								<Link
+									to='#'
+									className='text-secondary'
+									onClick={() =>
+										userDispatch({
+											type: 'SIGN_OUT',
+										})
+									}
+								>
+									<BsBoxArrowRight />
 								</Link>
 							</Col>
 							<Col md={12}>

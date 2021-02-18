@@ -6,9 +6,9 @@ import {
 	ApolloLink,
 	InMemoryCache,
 	concat,
+	ApolloProvider,
 } from '@apollo/client'
 
-import { ApolloProvider } from '@apollo/react-hooks'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -63,7 +63,7 @@ const client = new ApolloClient({
 })
 
 export const App = () => {
-	const [currentUserState, setCurrentUserState] = useContext(CurrentUserContext)
+	const [userContext, userDispatch] = useContext(CurrentUserContext)
 
 	const [getCurrentUser, { data: response }] = useCurrentUserLazyQuery()
 
@@ -71,19 +71,12 @@ export const App = () => {
 		getCurrentUser()
 		if (response?.CurrentUser) {
 			const currentUser = response.CurrentUser as UserType
-			setCurrentUserState((state) => ({
-				...state,
-				isLoggedIn: true,
-				isLoading: false,
-				currentUser,
-			}))
+			userDispatch({
+				type: 'SIGN_IN',
+				payload: currentUser,
+			})
 		}
-	}, [
-		response?.CurrentUser,
-		setCurrentUserState,
-		getCurrentUser,
-		currentUserState.token,
-	])
+	}, [response?.CurrentUser, userDispatch, getCurrentUser, userContext.token])
 
 	return (
 		<Router>

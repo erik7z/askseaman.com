@@ -15,7 +15,7 @@ import { CurrentUserContext } from '../../lib/contexts'
 export const Auth: FC<ComponentWithHistory> = ({ history }) => {
 	const [signInMutation, { error: connErrors }] = useSignInMutation()
 	const [, setToken] = useLocalStorage('token') as any //TODO: find proper type
-	const [, setCurrentUserState] = useContext(CurrentUserContext)
+	const [, dispatch] = useContext(CurrentUserContext)
 
 	return (
 		<>
@@ -40,10 +40,10 @@ export const Auth: FC<ComponentWithHistory> = ({ history }) => {
 						if (signInResponse.SignIn.__typename === 'TokenResponse') {
 							const token = signInResponse.SignIn.token
 							setToken(token)
-							setCurrentUserState((state: any) => ({
-								...state,
-								token,
-							}))
+							dispatch({
+								type: 'SET_TOKEN',
+								payload: token,
+							})
 
 							history.push('/')
 						}
