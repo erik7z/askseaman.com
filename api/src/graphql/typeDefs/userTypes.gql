@@ -57,13 +57,12 @@ type Query {
 			RETURN u
 			"""
 		)
+	UserRanks: JSONObject
 }
 
 type Mutation {
 	Register(data: RegisterUserInput!): AuthResponse!
-
 	SignIn(data: LoginUserInput!): AuthResponse!
-
 	ChangePassRequest(data: EmailInput!): RedirectUriResponse!
 		@cypher(
 			statement: """

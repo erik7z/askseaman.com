@@ -23,6 +23,7 @@
 		"express-jwt": "6.0.0",
 		"graphql": "15.4.0",
 		"graphql-auth-directives": "2.2.1",
+		"graphql-type-json": "^0.3.2",
 		"jsonwebtoken": "^8.5.1",
 		"lodash.merge": "4.6.2",
 		"neo4j-driver": "4.2.2",
