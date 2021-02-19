@@ -1,7 +1,7 @@
 import { Driver } from 'neo4j-driver'
 import { Request } from 'express'
 
-export type kvPair = {
+export type TkvPair = {
 	[key: string]: string
 }
 
