@@ -43,7 +43,7 @@ type Tag implements CanBeSubscribed {
 }
 
 type Mutation {
-	AddTag(data: AddTagInput!): Tag!
+	AddTag(data: AddTagInput!): Tag
 		@isAuthenticated
 		@cypher(
 			statement: """

@@ -68,7 +68,7 @@ export const App = () => {
 
 	useEffect(() => {
 		getCurrentUser()
-		console.log('hola')
+		console.log('auth useffect')
 		if (currentUserResponse && localStorage.getItem(TOKEN_FIELD)) {
 			userDispatch({
 				type: 'SIGN_IN',
