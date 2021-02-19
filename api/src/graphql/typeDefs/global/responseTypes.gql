@@ -2,15 +2,16 @@ union LikeResponse = Question | Comment
 union VoteResponse = Question | Answer
 union SubscribeResponse = Question | Tag
 union AuthResponse = TokenResponse | FormError
+union AskQuestionResponse = Question | FormError
 
 type FieldError {
-	field: String!
-	message: String!
+	field: String
+	message: String
 }
 
 type FormError {
 	message: String
-	errors: [FieldError]
+	errors: [FieldError] @neo4j_ignore # have to ignore array with subfields in union responses
 }
 
 type LoginResponse {

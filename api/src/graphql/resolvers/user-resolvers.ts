@@ -1,10 +1,14 @@
-import { ResponseStatus, FieldError } from './../../types/generated-backend'
+import {
+	ResponseStatus,
+	FieldError,
+	Resolvers,
+	UserRank,
+} from './../../types/generated-backend'
+import { ApolloServerContext, TkvPair } from './../../types/backend'
 import { createToken } from '../../utils/auth'
 import { neo4jgraphql } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
 
-import { ApolloServerContext, TkvPair } from './../../types/backend'
-import { Resolvers, UserRank } from '../../types/generated-backend'
 import { ranks } from './../../data/ranks'
 
 import {
@@ -126,8 +130,6 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 					field: errorField,
 					message: e.message,
 				})
-
-				console.log(e.code)
 
 				return {
 					message: e.message,

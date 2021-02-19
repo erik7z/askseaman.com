@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Formik } from 'formik'
 
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
 
-import { useAskQuestionMutation } from '../../__generated/graphql'
+import { useAskQuestionMutation, FieldError } from '../../__generated/graphql'
+
+import { TComponentWithHistory } from '../../types/globals'
 
 import {
 	QuestionSearch,
@@ -15,8 +17,9 @@ import {
 } from '../../components'
 
 import { askQuestionValidation } from './../../lib/validation'
+import { normalizeErrors } from './../../lib/helpers'
 
-export const AskQuestion = () => {
+export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
 
 	return (
@@ -42,7 +45,17 @@ export const AskQuestion = () => {
 										},
 									})
 									if (askResponse) {
-										console.log(askResponse)
+										if (askResponse.AskQuestion.__typename === 'FormError') {
+											const formErrors = askResponse.AskQuestion
+												.errors as FieldError[]
+											setErrors(normalizeErrors(formErrors))
+										}
+
+										if (askResponse.AskQuestion.__typename === 'Question') {
+											// const title = askResponse.AskQuestion.title
+
+											history.push('/')
+										}
 									}
 									setSubmitting(false)
 								}}

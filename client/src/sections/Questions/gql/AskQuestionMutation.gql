@@ -1,7 +1,17 @@
 mutation AskQuestion($data: AskQuestionInput!) {
 	AskQuestion(data: $data) {
-		nodeId
-		title
-		text
+		__typename
+		... on Question {
+			nodeId
+			title
+			text
+		}
+		... on FormError {
+			message
+			errors {
+				field
+				message
+			}
+		}
 	}
 }

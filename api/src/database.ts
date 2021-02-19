@@ -52,6 +52,16 @@ export const schema = makeAugmentedSchema({
 	},
 })
 
+// bug fix for the union resolvers (neo4j overwrites them)
+schema._typeMap.AuthResponse.resolveType = (obj: any) => {
+	if (obj.message) return 'FormError'
+	else return 'TokenResponse'
+}
+schema._typeMap.AskQuestionResponse.resolveType = (obj: any) => {
+	if (obj.message || obj.errors || obj.message) return 'FormError'
+	else return 'Question'
+}
+
 export const driver = neo4j.driver(
 	process.env.NEO4J_URI || 'bolt://localhost:7687',
 	neo4j.auth.basic(
@@ -59,10 +69,5 @@ export const driver = neo4j.driver(
 		process.env.NEO4J_PASSWORD || 'letmein'
 	)
 )
-
-schema._typeMap.AuthResponse.resolveType = (obj: any) => {
-	if (obj.message) return 'FormError'
-	else return 'TokenResponse'
-}
 
 assertSchema({ schema, driver })

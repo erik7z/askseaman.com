@@ -38,7 +38,7 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 }
 
 type Mutation {
-	AskQuestion(data: AskQuestionInput!): Question!
+	AskQuestion(data: AskQuestionInput!): AskQuestionResponse!
 		@isAuthenticated
 		@cypher(
 			statement: """

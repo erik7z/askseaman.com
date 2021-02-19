@@ -109,9 +109,7 @@ export const App = () => {
 							<Route exact path='/question'>
 								<Question />
 							</Route>
-							<Route exact path='/ask'>
-								<AskQuestion />
-							</Route>
+							<Route exact path='/ask' component={AskQuestion} />
 							<Route exact path='/user'>
 								<User />
 							</Route>
