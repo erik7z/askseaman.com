@@ -1,9 +1,9 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { Formik } from 'formik'
 
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
-import TagsInput from 'react-tagsinput'
-import 'react-tagsinput/react-tagsinput.css'
+import TagsInput from 'react-tagsinput-special'
+import 'react-tagsinput-special/react-tagsinput.css'
 
 import { useAskQuestionMutation, FieldError } from '../../__generated/graphql'
 
@@ -23,7 +23,6 @@ import { normalizeErrors } from './../../lib/helpers'
 
 export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
-	const [tags, setTags] = useState([])
 
 	return (
 		<>
@@ -39,29 +38,28 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 								onSubmit={async (values, { setSubmitting, setErrors }) => {
 									setSubmitting(true)
 
-									console.log(values.tags)
-									// const { data: askResponse } = await askQuestionMutation({
-									// 	variables: {
-									// 		data: {
-									// 			title: values.title,
-									// 			text: values.text,
-									// 			tags: [values.tags],
-									// 		},
-									// 	},
-									// })
-									// if (askResponse) {
-									// 	if (askResponse.AskQuestion.__typename === 'FormError') {
-									// 		const formErrors = askResponse.AskQuestion
-									// 			.errors as FieldError[]
-									// 		setErrors(normalizeErrors(formErrors))
-									// 	}
+									const { data: askResponse } = await askQuestionMutation({
+										variables: {
+											data: {
+												title: values.title,
+												text: values.text,
+												tags: values.tags ? values.tags.split(',') : [],
+											},
+										},
+									})
+									if (askResponse) {
+										if (askResponse.AskQuestion.__typename === 'FormError') {
+											const formErrors = askResponse.AskQuestion
+												.errors as FieldError[]
+											setErrors(normalizeErrors(formErrors))
+										}
 
-									// 	if (askResponse.AskQuestion.__typename === 'Question') {
-									// 		// const title = askResponse.AskQuestion.title
+										if (askResponse.AskQuestion.__typename === 'Question') {
+											// const title = askResponse.AskQuestion.title
 
-									// 		history.push('/')
-									// 	}
-									// }
+											history.push('/')
+										}
+									}
 									setSubmitting(false)
 								}}
 								initialValues={{
@@ -73,7 +71,6 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 							>
 								{({
 									handleSubmit,
-									handleChange,
 									errors,
 									touched,
 									isSubmitting,
@@ -119,18 +116,10 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 												</small>
 												<TagsInput
 													className='small-input'
-													value={tags}
-													onChange={(tags: any) => {
-														setTags(tags)
-														console.log(tags)
+													onChange={(tags: []) => {
+														if (tags) setFieldValue('tags', tags.join(','))
 													}}
-													// onChange={(tags) => {
-													// if (tags) setFieldValue('tags', tags.join(','))
-													// }}
-													// onChange={(tags) => {
-													// 	if (tags) setFieldValue('tags', tags.join(','))
-													// }}
-													// value={values.tags ? values.tags.split(',') : []}
+													value={values.tags ? values.tags.split(',') : []}
 												/>
 
 												{/* <Form.Control
