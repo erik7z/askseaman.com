@@ -193,13 +193,13 @@ h5,
 	-o-transform: scaleX(1);
 	transform: scaleX(1);
 }
-#as-aside #as-main-menu ul li.as-active {
+#as-aside #as-main-menu ul li .as-active {
 	font-weight: 600;
 }
-#as-aside #as-main-menu ul li.as-active a {
+#as-aside #as-main-menu ul li a.as-active {
 	color: #1eafed;
 }
-#as-aside #as-main-menu ul li.as-active a:after {
+#as-aside #as-main-menu ul li a.as-active:after {
 	visibility: visible;
 	-webkit-transform: scaleX(1);
 	-moz-transform: scaleX(1);

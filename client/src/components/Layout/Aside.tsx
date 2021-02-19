@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { BsGear, BsBoxArrowRight } from 'react-icons/bs'
 
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
 
 import { AvatarLink } from '../'
@@ -84,20 +84,20 @@ const Aside = () => {
 
 				<nav id='as-main-menu' role='navigation'>
 					<ul>
-						<li className='as-active'>
-							<Link to='/'>
+						<li>
+							<NavLink exact={true} to='/' activeClassName='as-active'>
 								<span className='icon-question'></span> Questions
-							</Link>
+							</NavLink>
 						</li>
 						<li>
-							<Link to='/tags'>
+							<NavLink exact={true} to='/tags' activeClassName='as-active'>
 								<span className='icon-tag'></span> Tags
-							</Link>
+							</NavLink>
 						</li>
 						<li>
-							<Link to='/users'>
+							<NavLink exact={true} to='/users' activeClassName='as-active'>
 								<span className='icon-user'></span> Users
-							</Link>
+							</NavLink>
 						</li>
 					</ul>
 				</nav>
