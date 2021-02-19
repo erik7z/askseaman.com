@@ -65,17 +65,23 @@ export const App = () => {
 	const [
 		getCurrentUser,
 		{ data: currentUserResponse },
-	] = useCurrentUserLazyQuery()
+	] = useCurrentUserLazyQuery({ fetchPolicy: 'network-only' })
 
 	useEffect(() => {
 		getCurrentUser()
-		if (currentUserResponse) {
+		if (currentUserResponse && userContext.isLoggedIn) {
 			userDispatch({
 				type: 'SIGN_IN',
 				payload: currentUserResponse,
 			})
 		}
-	}, [getCurrentUser, userContext.token, currentUserResponse, userDispatch])
+	}, [
+		userContext.token,
+		userContext.isLoggedIn,
+		currentUserResponse,
+		userDispatch,
+		getCurrentUser,
+	])
 
 	return (
 		<Router>

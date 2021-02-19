@@ -52,7 +52,7 @@ const userReducer = (state: IUserState = initialState, action: ActionType) => {
 			return {
 				...state,
 				token: action.payload,
-				isLoggedIn: false,
+				isLoggedIn: true,
 			}
 		case 'SIGN_IN':
 			const currentUser = action.payload.CurrentUser as UserType
