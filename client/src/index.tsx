@@ -15,6 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles.css'
 
 import { CurrentUserProvider, CurrentUserContext } from './lib/contexts'
+import { TOKEN_FIELD, HOST_URI } from './env'
 import AuthLayout from './components/Layout/Auth'
 import MainLayout from './components/Layout'
 import { Auth, Me, NotFound, Questions, Tags, Users } from './sections'
@@ -29,8 +30,6 @@ import { Register } from './sections/Auth/Register'
 import { useCurrentUserLazyQuery } from './__generated/graphql'
 
 import reportWebVitals from './reportWebVitals'
-
-const HOST_URI = 'http://localhost:4000'
 
 const httpLink = new HttpLink({ uri: HOST_URI })
 
@@ -65,23 +64,17 @@ export const App = () => {
 	const [
 		getCurrentUser,
 		{ data: currentUserResponse },
-	] = useCurrentUserLazyQuery({ fetchPolicy: 'network-only' })
+	] = useCurrentUserLazyQuery({ fetchPolicy: 'cache-and-network' })
 
 	useEffect(() => {
 		getCurrentUser()
-		if (currentUserResponse && userContext.isLoggedIn) {
+		if (currentUserResponse && localStorage.getItem(TOKEN_FIELD)) {
 			userDispatch({
 				type: 'SIGN_IN',
 				payload: currentUserResponse,
 			})
 		}
-	}, [
-		userContext.token,
-		userContext.isLoggedIn,
-		currentUserResponse,
-		userDispatch,
-		getCurrentUser,
-	])
+	}, [userContext.token, currentUserResponse, userDispatch, getCurrentUser])
 
 	return (
 		<Router>

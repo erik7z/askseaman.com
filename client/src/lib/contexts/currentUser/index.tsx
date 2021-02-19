@@ -4,6 +4,8 @@ import {
 	CurrentUserQuery as CurrentUserQueryType,
 } from '../../../__generated/graphql'
 
+import { TOKEN_FIELD } from '../../../env'
+
 interface IProps {
 	children: ReactNode
 }
@@ -47,12 +49,12 @@ const userReducer = (state: IUserState = initialState, action: ActionType) => {
 				isLoading: true,
 			}
 		case 'SET_TOKEN':
-			localStorage.setItem('token', action.payload as string)
+			localStorage.setItem(TOKEN_FIELD, action.payload as string)
 
 			return {
 				...state,
 				token: action.payload,
-				isLoggedIn: true,
+				isLoggedIn: false,
 			}
 		case 'SIGN_IN':
 			const currentUser = action.payload.CurrentUser as UserType
@@ -63,7 +65,7 @@ const userReducer = (state: IUserState = initialState, action: ActionType) => {
 				currentUser,
 			}
 		case 'SIGN_OUT':
-			localStorage.setItem('token', '')
+			localStorage.setItem(TOKEN_FIELD, '')
 			return {
 				...state,
 				token: '',
