@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom'
 import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
 import { useSignInMutation, FieldError } from '../../__generated/graphql'
 
-import { ComponentWithHistory } from '../../types/globals'
+import { TComponentWithHistory } from '../../types/globals'
 
 import { signInValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
 import { CurrentUserContext } from '../../lib/contexts'
 
-export const Auth: FC<ComponentWithHistory> = ({ history }) => {
+export const Auth: FC<TComponentWithHistory> = ({ history }) => {
 	const [signInMutation, { error: connErrors }] = useSignInMutation()
 	const [, dispatch] = useContext(CurrentUserContext)
 

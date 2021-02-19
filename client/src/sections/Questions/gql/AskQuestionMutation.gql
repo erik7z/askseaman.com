@@ -1,0 +1,7 @@
+mutation AskQuestion($data: AskQuestionInput!) {
+	AskQuestion(data: $data) {
+		nodeId
+		title
+		text
+	}
+}

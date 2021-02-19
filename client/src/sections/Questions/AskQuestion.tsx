@@ -1,123 +1,169 @@
 import React from 'react'
+import { Formik } from 'formik'
+
+import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
+
+import { useAskQuestionMutation } from '../../__generated/graphql'
+
+import {
+	QuestionSearch,
+	SideAdvertBox,
+	SideNewsBox,
+	SideAskBox,
+	SideTagCloudBox,
+	SideTopUsersBox,
+} from '../../components'
+
+import { askQuestionValidation } from './../../lib/validation'
 
 export const AskQuestion = () => {
+	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
+
 	return (
 		<>
-			<div className='main-content col-xl-8'>
-				<div className='row'>
-					<div className='col-md-12'>
-						<form action='#' className='search-form'>
-							<div className='form-group'>
-								<span className='icon icon-search'></span>
-								<input
-									type='text'
-									className='form-control'
-									placeholder='Search for question or #tag'
-								/>
-							</div>
-						</form>
-					</div>
-				</div>
-				<div className='row'>
-					<div className='col-md-12'>
+			<Col xl={8} className='main-content'>
+				<QuestionSearch />
+				<Row>
+					<Col md={12}>
 						<h5 className='module-header'>&gt; Ask Question</h5>
 						<hr className='hr-header hr-bold' />
 						<div className='section-ask-question'>
-							<form action='#' method='POST'>
-								<div className='form-group'>
-									<label htmlFor='q_title' className='form-label'>
-										Question title
-									</label>
-									<small id='q_title_help' className='form-text'>
-										Short description of your question.
-									</small>
-									<input
-										type='text'
-										className='form-control small-input'
-										id='q_title'
-										aria-describedby='q_title_help'
-									/>
-								</div>
-								<div className='form-group'>
-									<label htmlFor='q_tags' className='form-label'>
-										Question tags
-									</label>
-									<small id='q_tags_help' className='form-text'>
-										Add 1 to 5 tags for your question.
-									</small>
-									<input
-										type='text'
-										className='form-control small-input'
-										id='q_tags'
-										aria-describedby='q_tags_help'
-									/>
-								</div>
-								<div className='form-group'>
-									<label htmlFor='q_text' className='form-label'>
-										Question description
-									</label>
-									<small id='q_text_help' className='form-text'>
-										Include all the information someone would need to answer
-										your question
-									</small>
-									<textarea
-										className='form-control small-input'
-										id='q_text'
-										rows={5}
-									></textarea>
-								</div>
-								<div className='form-group'>
-									<label htmlFor='hide_name' className='form-label'>
-										Hide name
-									</label>
-									<small id='hide_name_help' className='form-text'>
-										Don't show your account to other users
-									</small>
-									<select className='custom-select mr-sm-2' id='hide_name'>
-										<option selected value='1'>
-											No
-										</option>
-										<option value='2'>Yes</option>
-									</select>
-								</div>
-								<div className='form-group text-right'>
-									<button type='submit' className='btn btn-primary'>
-										Publish
-									</button>
-								</div>
-							</form>
+							<Formik
+								validationSchema={askQuestionValidation}
+								onSubmit={async (values, { setSubmitting, setErrors }) => {
+									setSubmitting(true)
+									const { data: askResponse } = await askQuestionMutation({
+										variables: {
+											data: {
+												title: values.title,
+												text: values.text,
+												tags: [values.tags],
+											},
+										},
+									})
+									if (askResponse) {
+										console.log(askResponse)
+									}
+									setSubmitting(false)
+								}}
+								initialValues={{
+									title: '',
+									text: '',
+									tags: '',
+									hideMe: false,
+								}}
+							>
+								{({
+									handleSubmit,
+									errors,
+									touched,
+									isSubmitting,
+									isValid,
+									getFieldProps,
+								}) => (
+									<Form noValidate onSubmit={handleSubmit}>
+										<Form.Row>
+											{connErrors && (
+												<Alert variant='danger'>
+													<Alert.Heading>
+														Ooops! Something went wrong
+													</Alert.Heading>
+													<p>{connErrors.message}</p>
+												</Alert>
+											)}
+										</Form.Row>
+
+										<Form.Row>
+											<Form.Group as={Col} md='12' controlId='title'>
+												<Form.Label>Question title</Form.Label>
+												<small id='title_help' className='form-text'>
+													Short description of your question.
+												</small>
+												<Form.Control
+													type='title'
+													{...getFieldProps('title')}
+													isInvalid={!!errors.title}
+													className='small-input'
+													aria-describedby='title_help'
+												/>
+												<Form.Control.Feedback type='invalid'>
+													{errors.title}
+												</Form.Control.Feedback>
+											</Form.Group>
+
+											<Form.Group as={Col} md='12' controlId='tags'>
+												<Form.Label>Question tags</Form.Label>
+												<small id='tags' className='form-text'>
+													Add 1 to 5 tags for your question.
+												</small>
+												<Form.Control
+													type='text'
+													{...getFieldProps('tags')}
+													isValid={touched.tags && !errors.tags}
+													isInvalid={!!errors.tags}
+													className='small-input'
+												/>
+												<Form.Control.Feedback type='invalid'>
+													{errors.tags}
+												</Form.Control.Feedback>
+											</Form.Group>
+
+											<Form.Group as={Col} md='12' controlId='text'>
+												<Form.Label>Question description</Form.Label>
+												<small id='q_text_help' className='form-text'>
+													Include all the information someone would need to
+													answer your question
+												</small>
+												<Form.Control
+													as='textarea'
+													rows={5}
+													placeholder='Describe your question...'
+													{...getFieldProps('text')}
+													isValid={touched.text && !errors.text}
+													isInvalid={!!errors.text}
+													className='small-input'
+												/>
+												<Form.Control.Feedback type='invalid'>
+													{errors.text}
+												</Form.Control.Feedback>
+											</Form.Group>
+										</Form.Row>
+
+										<Form.Group>
+											<Form.Check
+												{...getFieldProps('hideMe')}
+												label='Hide my name'
+												isInvalid={!!errors.hideMe}
+												feedback={errors.hideMe}
+												id='hideMe'
+											/>
+										</Form.Group>
+										<Form.Row className='mb3 text-right'>
+											<Col md={12}>
+												<Button
+													variant='primary'
+													type='submit'
+													disabled={isSubmitting || !isValid}
+													className='px-3'
+												>
+													Publish
+												</Button>
+											</Col>
+										</Form.Row>
+									</Form>
+								)}
+							</Formik>
 						</div>
-					</div>
-				</div>
-			</div>
-			<div className='col-xl-4 sidebar bg-blue'>
-				<div className='row'>
-					<div className='col-md-12 text-center'>
-						<div className='question-instruction card'>
-							<div className='card-header'>Asking a good question</div>
-							<div className='card-body'>
-								<h5 className='card-title'>
-									Before you post, search the site to make sure your question
-									hasn’t been answered.
-								</h5>
-								<p className='card-text'>
-									&gt; Add more <b>#tags</b>, they are help to categorize your
-									question and make it more easy find answer.
-								</p>
-								<p className='card-text'>
-									&gt; We trying to make usefull source of information for all
-									seamans. Use examples from your
-									<b>real experience</b>.
-								</p>
-								<p className='card-text'>
-									&gt; Provide details for your question.
-									<b>Share your research</b> and efforts in finding the answer.
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+					</Col>
+				</Row>
+			</Col>
+			<Col xl={4} className='sidebar bg-blue'>
+				<SideAskBox />
+				<SideAdvertBox />
+				<SideTagCloudBox />
+				<SideTopUsersBox />
+				<SideNewsBox />
+			</Col>
 		</>
 	)
 }

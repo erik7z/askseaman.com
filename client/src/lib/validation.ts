@@ -34,3 +34,13 @@ export const signInValidation = yup.object({
 	// .matches(emailRegexp, '*Email is not valid'),
 	password: yup.string().required('Password is required'),
 })
+
+export const askQuestionValidation = yup.object({
+	title: yup
+		.string()
+		.required('Title is required')
+		.min(3, '*Titles must have at least 3 characters')
+		.max(64, "*Title can't be longer than 64 characters"),
+	tags: yup.string().required('Tags are required'),
+	text: yup.string().required('Question description is required'),
+})

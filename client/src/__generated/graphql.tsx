@@ -1785,6 +1785,19 @@ export type CurrentUserQuery = (
   )> }
 );
 
+export type AskQuestionMutationVariables = Exact<{
+  data: AskQuestionInput;
+}>;
+
+
+export type AskQuestionMutation = (
+  { __typename?: 'Mutation' }
+  & { AskQuestion: (
+    { __typename?: 'Question' }
+    & Pick<Question, 'nodeId' | 'title' | 'text'>
+  ) }
+);
+
 export type QuestionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1946,6 +1959,40 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export const AskQuestionDocument = gql`
+    mutation AskQuestion($data: AskQuestionInput!) {
+  AskQuestion(data: $data) {
+    nodeId
+    title
+    text
+  }
+}
+    `;
+export type AskQuestionMutationFn = Apollo.MutationFunction<AskQuestionMutation, AskQuestionMutationVariables>;
+
+/**
+ * __useAskQuestionMutation__
+ *
+ * To run a mutation, you first call `useAskQuestionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAskQuestionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [askQuestionMutation, { data, loading, error }] = useAskQuestionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAskQuestionMutation(baseOptions?: Apollo.MutationHookOptions<AskQuestionMutation, AskQuestionMutationVariables>) {
+        return Apollo.useMutation<AskQuestionMutation, AskQuestionMutationVariables>(AskQuestionDocument, baseOptions);
+      }
+export type AskQuestionMutationHookResult = ReturnType<typeof useAskQuestionMutation>;
+export type AskQuestionMutationResult = Apollo.MutationResult<AskQuestionMutation>;
+export type AskQuestionMutationOptions = Apollo.BaseMutationOptions<AskQuestionMutation, AskQuestionMutationVariables>;
 export const QuestionDocument = gql`
     query Question {
   Question {

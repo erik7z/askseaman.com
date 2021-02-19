@@ -50,15 +50,11 @@ export const Questions = () => {
 				<Pagination />
 			</Col>
 			<Col xl={4} className='sidebar bg-blue'>
-				<div className='row'>
-					<div className='col-md-12 bg-blue'>
-						<SideAskBox />
-						<SideAdvertBox />
-						<SideTagCloudBox />
-						<SideTopUsersBox />
-						<SideNewsBox />
-					</div>
-				</div>
+				<SideAskBox />
+				<SideAdvertBox />
+				<SideTagCloudBox />
+				<SideTopUsersBox />
+				<SideNewsBox />
 			</Col>
 		</>
 	)

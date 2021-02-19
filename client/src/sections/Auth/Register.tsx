@@ -1,6 +1,5 @@
 import React, { FC, useContext } from 'react'
 import { Formik } from 'formik'
-
 import { Link } from 'react-router-dom'
 import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
 import {
@@ -9,18 +8,18 @@ import {
 	FieldError,
 	UserRank,
 } from '../../__generated/graphql'
-import { ComponentWithHistory, kvPair } from '../../types/globals'
+import { TComponentWithHistory, TkvPair } from '../../types/globals'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
 import { CurrentUserContext } from '../../lib/contexts'
 
-export const Register: FC<ComponentWithHistory> = ({ history }) => {
+export const Register: FC<TComponentWithHistory> = ({ history }) => {
 	const [registerMutation, { error: connErrors }] = useRegisterMutation()
 	const [, userDispatch] = useContext(CurrentUserContext)
 
 	const { data: ranksData } = useUserRanksQuery()
-	const ranks: kvPair = ranksData?.UserRanks
+	const ranks: TkvPair = ranksData?.UserRanks
 
 	return (
 		<>
