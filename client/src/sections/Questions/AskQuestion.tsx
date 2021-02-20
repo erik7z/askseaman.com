@@ -43,7 +43,9 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 											data: {
 												title: values.title,
 												text: values.text,
-												tags: values.tags ? values.tags.split(',') : [],
+												tags: values.tags
+													? values.tags.toUpperCase().split(',')
+													: [],
 											},
 										},
 									})
