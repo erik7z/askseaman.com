@@ -29,6 +29,7 @@ export const QuestionListItem = ({ question }: { question: Question }) => {
 									subscribersCount={question.subscribersCount}
 									viewsCount={question.viewsCount}
 									commentsCount={question.commentsCount}
+									createdAt={question.createdAt}
 								/>
 							}
 						</div>

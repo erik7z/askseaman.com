@@ -2043,7 +2043,7 @@ export type AskQuestionMutationResult = Apollo.MutationResult<AskQuestionMutatio
 export type AskQuestionMutationOptions = Apollo.BaseMutationOptions<AskQuestionMutation, AskQuestionMutationVariables>;
 export const QuestionsListDocument = gql`
     query QuestionsList {
-  Question {
+  Question(orderBy: createdAt_desc) {
     nodeId
     title
     text

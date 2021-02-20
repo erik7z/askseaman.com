@@ -1,12 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Accordion } from 'react-bootstrap'
+import { BsChat, BsEye, BsClock } from 'react-icons/bs'
+
+import { _Neo4jDateTime } from '../../__generated/graphql'
+import { normalizeTime } from './../../lib/helpers'
 
 interface IProps {
 	toggleEventKey?: string
 	subscribersCount?: number | null | undefined
 	viewsCount?: number | null | undefined
 	commentsCount?: number | null | undefined
+	createdAt?: _Neo4jDateTime | null | undefined
 }
 
 export const MetaActions = ({
@@ -14,6 +19,7 @@ export const MetaActions = ({
 	subscribersCount,
 	viewsCount,
 	commentsCount,
+	createdAt,
 }: IProps) => {
 	const subscribersMeta = (
 		<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
@@ -23,23 +29,21 @@ export const MetaActions = ({
 
 	const commentsMeta = (
 		<span>
-			<i className='icon-comments-o'></i>
-			<b>{commentsCount ? commentsCount : 0}</b> Comments
+			<BsChat /> <b>{commentsCount ? commentsCount : 0}</b> Comments
 		</span>
 	)
 
 	const viewsMeta = (
 		<span>
-			<i className='icon-eye'></i>
-			{viewsCount ? viewsCount : 0} Views
+			<BsEye /> <b>{viewsCount ? viewsCount : 0}</b> Views
 		</span>
 	)
 
-	const timeMeta = (
+	const timeMeta = createdAt ? (
 		<span>
-			<i className='icon-clock-o'></i>15 Minutes ago
+			<BsClock /> {normalizeTime(createdAt)}
 		</span>
-	)
+	) : null
 
 	const commentsButton = toggleEventKey ? (
 		<Accordion.Toggle as={Link} to='#' eventKey={toggleEventKey}>

@@ -1,5 +1,5 @@
 query QuestionsList {
-	Question {
+	Question(orderBy: createdAt_desc) {
 		nodeId
 		title
 		text
