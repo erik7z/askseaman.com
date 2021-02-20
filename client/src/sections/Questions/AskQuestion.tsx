@@ -1,12 +1,12 @@
 import React, { FC, useState, useRef } from 'react'
 import { Formik } from 'formik'
-// import ReactTags from 'react-tag-autocomplete'
+import ReactTags from 'react-tag-autocomplete'
 
-import { TagsAutoSuggest } from './TagsAutoSuggest'
+// import { TagsAutoSuggest } from './TagsAutoSuggest'
 
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
-import TagsInput from 'react-tagsinput-special'
-import 'react-tagsinput-special/react-tagsinput.css'
+// import TagsInput from 'react-tagsinput-special'
+// import 'react-tagsinput-special/react-tagsinput.css'
 
 import { useAskQuestionMutation, FieldError } from '../../__generated/graphql'
 
@@ -26,31 +26,33 @@ import { normalizeErrors } from './../../lib/helpers'
 
 export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
-	// const [tags, setTags] = useState([
-	// 	{ id: 1, name: 'Apples' },
-	// 	{ id: 2, name: 'Pears' },
-	// ])
+	const [tags, setTags] = useState([
+		{ id: 1, name: 'Apples' },
+		{ id: 2, name: 'Pears' },
+	])
 
-	// const [suggestions, setSuggestions] = useState([
-	// 	{ id: 3, name: 'Bananas' },
-	// 	{ id: 4, name: 'Mangos' },
-	// 	{ id: 5, name: 'Lemons' },
-	// 	{ id: 6, name: 'Apricots' },
-	// ])
+	const [suggestions, setSuggestions] = useState([
+		{ id: 3, name: 'Bananas' },
+		{ id: 4, name: 'Mangos' },
+		{ id: 5, name: 'Lemons' },
+		{ id: 6, name: 'Apricots' },
+		{ id: 7, name: 'Cucumber' },
+		{ id: 7, name: 'Ravioli' },
+	])
 
-	// const tagsInput = useRef(null)
+	const tagsInput = useRef(null)
 
-	// const onDelete = (i: number) => {
-	// 	const tagsD = tags.slice(0)
+	const onDelete = (i: number) => {
+		const tagsD = tags.slice(0)
 
-	// 	tagsD.splice(i, 1)
-	// 	setTags(tagsD)
-	// }
+		tagsD.splice(i, 1)
+		setTags(tagsD)
+	}
 
-	// const onAddition = (tag: any) => {
-	// 	const tagsA = [].concat(tags as never[], tag)
-	// 	setTags(tagsA)
-	// }
+	const onAddition = (tag: any) => {
+		const tagsA = [].concat(tags as never[], tag)
+		setTags(tagsA)
+	}
 
 	return (
 		<>
@@ -144,22 +146,22 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 												<small id='tags' className='form-text'>
 													Add 1 to 5 tags for your question.
 												</small>
-												<TagsInput
+												{/* <TagsInput
 													className='small-input'
 													onChange={(tags: []) => {
 														if (tags) setFieldValue('tags', tags.join(','))
 													}}
 													value={values.tags ? values.tags.split(',') : []}
 													renderInput={TagsAutoSuggest}
-												/>
-												{/* <ReactTags
+												/> */}
+												<ReactTags
 													ref={tagsInput}
 													tags={tags}
 													suggestions={suggestions}
-													onDelete={onDelete.bind(this)}
-													onAddition={onAddition.bind(this)}
+													onDelete={onDelete}
+													onAddition={onAddition}
 													delimiters={['Enter', 'Tab']}
-												/> */}
+												/>
 												{/* <Form.Control
 													type='text'
 													{...getFieldProps('tags')}
