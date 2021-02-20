@@ -1938,26 +1938,6 @@ div.meta {
 	margin-bottom: 20px;
 }
 
-.react-tagsinput-input {
-	background: #fff !important;
-	border: 1px solid #ccc !important;
-	width: 100px !important;
-}
-
-.react-tagsinput-tag {
-	text-transform: uppercase !important;
-	background-color: #4b78c3 !important;
-	border: 1px solid #ced4da !important;
-	color: #ffcc00 !important;
-	font-family: 'Poppins', Arial, sans-serif !important;
-	font-size: 12px !important;
-	font-weight: 400 !important;
-}
-
-.react-tagsinput-remove {
-	color: #ffcc00 !important;
-}
-
 /* react-tag-autocomplete/styles.css */
 /**
  * <div class="react-tags">

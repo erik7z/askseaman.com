@@ -1,12 +1,9 @@
-import React, { FC, useState, useRef } from 'react'
+import React, { FC } from 'react'
 import { Formik } from 'formik'
-import ReactTags from 'react-tag-autocomplete'
 
-// import { TagsAutoSuggest } from './TagsAutoSuggest'
+import { TagsAutoSuggest } from './TagsAutoSuggest'
 
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
-// import TagsInput from 'react-tagsinput-special'
-// import 'react-tagsinput-special/react-tagsinput.css'
 
 import { useAskQuestionMutation, FieldError } from '../../__generated/graphql'
 
@@ -26,33 +23,6 @@ import { normalizeErrors } from './../../lib/helpers'
 
 export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
-	const [tags, setTags] = useState([
-		{ id: 1, name: 'Apples' },
-		{ id: 2, name: 'Pears' },
-	])
-
-	const [suggestions, setSuggestions] = useState([
-		{ id: 3, name: 'Bananas' },
-		{ id: 4, name: 'Mangos' },
-		{ id: 5, name: 'Lemons' },
-		{ id: 6, name: 'Apricots' },
-		{ id: 7, name: 'Cucumber' },
-		{ id: 7, name: 'Ravioli' },
-	])
-
-	const tagsInput = useRef(null)
-
-	const onDelete = (i: number) => {
-		const tagsD = tags.slice(0)
-
-		tagsD.splice(i, 1)
-		setTags(tagsD)
-	}
-
-	const onAddition = (tag: any) => {
-		const tagsA = [].concat(tags as never[], tag)
-		setTags(tagsA)
-	}
 
 	return (
 		<>
@@ -67,6 +37,8 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 								validationSchema={askQuestionValidation}
 								onSubmit={async (values, { setSubmitting, setErrors }) => {
 									setSubmitting(true)
+
+									console.log(values.tags)
 
 									// const { data: askResponse } = await askQuestionMutation({
 									// 	variables: {
@@ -108,7 +80,6 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 									isSubmitting,
 									isValid,
 									getFieldProps,
-									values,
 									setFieldValue,
 								}) => (
 									<Form noValidate onSubmit={handleSubmit}>
@@ -146,29 +117,10 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 												<small id='tags' className='form-text'>
 													Add 1 to 5 tags for your question.
 												</small>
-												{/* <TagsInput
-													className='small-input'
-													onChange={(tags: []) => {
-														if (tags) setFieldValue('tags', tags.join(','))
-													}}
-													value={values.tags ? values.tags.split(',') : []}
-													renderInput={TagsAutoSuggest}
-												/> */}
-												<ReactTags
-													ref={tagsInput}
-													tags={tags}
-													suggestions={suggestions}
-													onDelete={onDelete}
-													onAddition={onAddition}
-													delimiters={['Enter', 'Tab']}
+												<TagsAutoSuggest
+													name='tags'
+													setFieldValue={setFieldValue}
 												/>
-												{/* <Form.Control
-													type='text'
-													{...getFieldProps('tags')}
-													isValid={touched.tags && !errors.tags}
-													isInvalid={!!errors.tags}
-													className='small-input'
-												/> */}
 												<Form.Control.Feedback type='invalid'>
 													{errors.tags}
 												</Form.Control.Feedback>
