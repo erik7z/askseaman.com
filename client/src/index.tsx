@@ -63,7 +63,7 @@ export const App = () => {
 
 	const [
 		getCurrentUser,
-		{ data: currentUserResponse, called: currentUserCalled },
+		{ data: currentUserResponse },
 	] = useCurrentUserLazyQuery({ fetchPolicy: 'cache-and-network' })
 
 	useEffect(() => {
@@ -74,18 +74,8 @@ export const App = () => {
 				type: 'SIGN_IN',
 				payload: currentUserResponse,
 			})
-		} else if (!userContext.currentUser.nodeId && !currentUserCalled)
-			userDispatch({
-				type: 'SIGN_OUT',
-			})
-	}, [
-		currentUserCalled,
-		userContext.currentUser.nodeId,
-		userContext.token,
-		currentUserResponse,
-		userDispatch,
-		getCurrentUser,
-	])
+		}
+	}, [userContext.token, currentUserResponse, userDispatch, getCurrentUser])
 
 	return (
 		<Router>

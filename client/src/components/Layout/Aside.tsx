@@ -12,6 +12,61 @@ import { ucFirstLetter } from '../../lib/helpers'
 const Aside = () => {
 	const [currentUserState, userDispatch] = useContext(CurrentUserContext)
 	const { currentUser } = currentUserState
+	let authModule = (
+		<>
+			<Row className='text-center'>
+				<Col md={12}>
+					<Link to='/auth' className='btn btn-outline-success btn-sm px-5'>
+						Sign In
+					</Link>
+					<hr />
+				</Col>
+			</Row>
+		</>
+	)
+
+	if (currentUser && currentUserState.isLoggedIn) {
+		authModule = (
+			<>
+				<Row className='auth-module'>
+					<Col md={3} className='text-right pr-0 pt-1'>
+						<AvatarLink size='md' />
+					</Col>
+					<Col md={7}>
+						<Link to='#' className='text-secondary'>
+							<b>
+								{ucFirstLetter(currentUser.name)}{' '}
+								{ucFirstLetter(currentUser.surname)}
+							</b>
+						</Link>
+						<br />
+
+						<small>{currentUser.rank && ucFirstLetter(currentUser.rank)}</small>
+					</Col>
+					<Col md={1} className='pt-1'>
+						<span className='text-secondary'>
+							<BsGear />
+						</span>
+						<br />
+						<Link
+							to='#'
+							className='text-secondary'
+							onClick={() =>
+								userDispatch({
+									type: 'SIGN_OUT',
+								})
+							}
+						>
+							<BsBoxArrowRight />
+						</Link>
+					</Col>
+					<Col md={12}>
+						<hr />
+					</Col>
+				</Row>
+			</>
+		)
+	}
 
 	return (
 		<>
@@ -23,64 +78,7 @@ const Aside = () => {
 				</h1>
 				<hr />
 
-				{currentUserState.isLoggedIn === false && (
-					<>
-						<Row className='text-center'>
-							<Col md={12}>
-								<Link
-									to='/auth'
-									className='btn btn-outline-success btn-sm px-5'
-								>
-									Sign In
-								</Link>
-								<hr />
-							</Col>
-						</Row>
-					</>
-				)}
-
-				{currentUserState.isLoggedIn && (
-					<>
-						<Row className='auth-module'>
-							<Col md={3} className='text-right pr-0 pt-1'>
-								<AvatarLink size='md' />
-							</Col>
-							<Col md={7}>
-								<Link to='#' className='text-secondary'>
-									<b>
-										{ucFirstLetter(currentUser.name)}{' '}
-										{ucFirstLetter(currentUser.surname)}
-									</b>
-								</Link>
-								<br />
-
-								<small>
-									{currentUser.rank && ucFirstLetter(currentUser.rank)}
-								</small>
-							</Col>
-							<Col md={1} className='pt-1'>
-								<span className='text-secondary'>
-									<BsGear />
-								</span>
-								<br />
-								<Link
-									to='#'
-									className='text-secondary'
-									onClick={() =>
-										userDispatch({
-											type: 'SIGN_OUT',
-										})
-									}
-								>
-									<BsBoxArrowRight />
-								</Link>
-							</Col>
-							<Col md={12}>
-								<hr />
-							</Col>
-						</Row>
-					</>
-				)}
+				{authModule}
 
 				<nav id='as-main-menu' role='navigation'>
 					<ul>

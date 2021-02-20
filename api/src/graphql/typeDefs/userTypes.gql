@@ -49,7 +49,7 @@ type LocalAccount {
 }
 
 type Query {
-	CurrentUser: User
+	CurrentUser: User!
 		@isAuthenticated
 		@cypher(
 			statement: """
