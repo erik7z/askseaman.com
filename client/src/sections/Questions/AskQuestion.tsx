@@ -1,5 +1,8 @@
-import React, { FC } from 'react'
+import React, { FC, useState, useRef } from 'react'
 import { Formik } from 'formik'
+// import ReactTags from 'react-tag-autocomplete'
+
+import { TagsAutoSuggest } from './TagsAutoSuggest'
 
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
 import TagsInput from 'react-tagsinput-special'
@@ -23,6 +26,31 @@ import { normalizeErrors } from './../../lib/helpers'
 
 export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
+	// const [tags, setTags] = useState([
+	// 	{ id: 1, name: 'Apples' },
+	// 	{ id: 2, name: 'Pears' },
+	// ])
+
+	// const [suggestions, setSuggestions] = useState([
+	// 	{ id: 3, name: 'Bananas' },
+	// 	{ id: 4, name: 'Mangos' },
+	// 	{ id: 5, name: 'Lemons' },
+	// 	{ id: 6, name: 'Apricots' },
+	// ])
+
+	// const tagsInput = useRef(null)
+
+	// const onDelete = (i: number) => {
+	// 	const tagsD = tags.slice(0)
+
+	// 	tagsD.splice(i, 1)
+	// 	setTags(tagsD)
+	// }
+
+	// const onAddition = (tag: any) => {
+	// 	const tagsA = [].concat(tags as never[], tag)
+	// 	setTags(tagsA)
+	// }
 
 	return (
 		<>
@@ -38,30 +66,30 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 								onSubmit={async (values, { setSubmitting, setErrors }) => {
 									setSubmitting(true)
 
-									const { data: askResponse } = await askQuestionMutation({
-										variables: {
-											data: {
-												title: values.title,
-												text: values.text,
-												tags: values.tags
-													? values.tags.toUpperCase().split(',')
-													: [],
-											},
-										},
-									})
-									if (askResponse) {
-										if (askResponse.AskQuestion.__typename === 'FormError') {
-											const formErrors = askResponse.AskQuestion
-												.errors as FieldError[]
-											setErrors(normalizeErrors(formErrors))
-										}
+									// const { data: askResponse } = await askQuestionMutation({
+									// 	variables: {
+									// 		data: {
+									// 			title: values.title,
+									// 			text: values.text,
+									// 			tags: values.tags
+									// 				? values.tags.toUpperCase().split(',')
+									// 				: [],
+									// 		},
+									// 	},
+									// })
+									// if (askResponse) {
+									// 	if (askResponse.AskQuestion.__typename === 'FormError') {
+									// 		const formErrors = askResponse.AskQuestion
+									// 			.errors as FieldError[]
+									// 		setErrors(normalizeErrors(formErrors))
+									// 	}
 
-										if (askResponse.AskQuestion.__typename === 'Question') {
-											// const title = askResponse.AskQuestion.title
+									// 	if (askResponse.AskQuestion.__typename === 'Question') {
+									// 		// const title = askResponse.AskQuestion.title
 
-											history.push('/')
-										}
-									}
+									// 		history.push('/')
+									// 	}
+									// }
 									setSubmitting(false)
 								}}
 								initialValues={{
@@ -122,8 +150,16 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 														if (tags) setFieldValue('tags', tags.join(','))
 													}}
 													value={values.tags ? values.tags.split(',') : []}
+													renderInput={TagsAutoSuggest}
 												/>
-
+												{/* <ReactTags
+													ref={tagsInput}
+													tags={tags}
+													suggestions={suggestions}
+													onDelete={onDelete.bind(this)}
+													onAddition={onAddition.bind(this)}
+													delimiters={['Enter', 'Tab']}
+												/> */}
 												{/* <Form.Control
 													type='text'
 													{...getFieldProps('tags')}
