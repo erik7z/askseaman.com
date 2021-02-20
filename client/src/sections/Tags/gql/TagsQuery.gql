@@ -1,0 +1,6 @@
+query Tag {
+	Tag {
+		name
+		description
+	}
+}

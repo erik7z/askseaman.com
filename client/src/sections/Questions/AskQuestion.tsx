@@ -1,11 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { Formik } from 'formik'
-
+import { Tag as ITag } from 'react-tag-autocomplete'
 import { TagsAutoSuggest } from './TagsAutoSuggest'
 
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
 
-import { useAskQuestionMutation, FieldError } from '../../__generated/graphql'
+import {
+	useAskQuestionMutation,
+	useTagLazyQuery,
+	FieldError,
+	Tag as TTag,
+} from '../../__generated/graphql'
 
 import { TComponentWithHistory } from '../../types/globals'
 
@@ -19,10 +24,25 @@ import {
 } from '../../components'
 
 import { askQuestionValidation } from './../../lib/validation'
-import { normalizeErrors } from './../../lib/helpers'
+import { normalizeErrors, normalizeTags } from './../../lib/helpers'
 
 export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
+	let tagsSuggestions: ITag[] = []
+	const [suggestions, setSuggestions] = useState(tagsSuggestions)
+
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
+
+	const [getTags, { data: tagsData }] = useTagLazyQuery({
+		fetchPolicy: 'cache-and-network',
+	})
+
+	useEffect(() => {
+		console.log('get tags useffect')
+		getTags()
+		if (tagsData && tagsData.Tag) {
+			setSuggestions(normalizeTags(tagsData.Tag as TTag[]))
+		}
+	}, [getTags, tagsData])
 
 	return (
 		<>
@@ -38,32 +58,30 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 								onSubmit={async (values, { setSubmitting, setErrors }) => {
 									setSubmitting(true)
 
-									console.log(values.tags)
+									const { data: askResponse } = await askQuestionMutation({
+										variables: {
+											data: {
+												title: values.title,
+												text: values.text,
+												tags: values.tags
+													? values.tags.toUpperCase().split(',')
+													: [],
+											},
+										},
+									})
+									if (askResponse) {
+										if (askResponse.AskQuestion.__typename === 'FormError') {
+											const formErrors = askResponse.AskQuestion
+												.errors as FieldError[]
+											setErrors(normalizeErrors(formErrors))
+										}
 
-									// const { data: askResponse } = await askQuestionMutation({
-									// 	variables: {
-									// 		data: {
-									// 			title: values.title,
-									// 			text: values.text,
-									// 			tags: values.tags
-									// 				? values.tags.toUpperCase().split(',')
-									// 				: [],
-									// 		},
-									// 	},
-									// })
-									// if (askResponse) {
-									// 	if (askResponse.AskQuestion.__typename === 'FormError') {
-									// 		const formErrors = askResponse.AskQuestion
-									// 			.errors as FieldError[]
-									// 		setErrors(normalizeErrors(formErrors))
-									// 	}
+										if (askResponse.AskQuestion.__typename === 'Question') {
+											// const title = askResponse.AskQuestion.title
 
-									// 	if (askResponse.AskQuestion.__typename === 'Question') {
-									// 		// const title = askResponse.AskQuestion.title
-
-									// 		history.push('/')
-									// 	}
-									// }
+											history.push('/')
+										}
+									}
 									setSubmitting(false)
 								}}
 								initialValues={{
@@ -119,6 +137,7 @@ export const AskQuestion: FC<TComponentWithHistory> = ({ history }) => {
 												</small>
 												<TagsAutoSuggest
 													name='tags'
+													suggestions={suggestions}
 													setFieldValue={setFieldValue}
 												/>
 												<Form.Control.Feedback type='invalid'>
