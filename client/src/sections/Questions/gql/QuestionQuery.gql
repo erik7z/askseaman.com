@@ -1,6 +1,28 @@
-query Question {
+query QuestionsList {
 	Question {
 		nodeId
 		title
+		text
+		author {
+			nodeId
+			name
+			surname
+			rank
+		}
+		viewsCount
+		answersCount
+		subscribersCount
+		commentsCount
+		createdAt {
+			year
+			month
+			day
+			hour
+			minute
+		}
+		tags(first: 5) {
+			nodeId
+			name
+		}
 	}
 }

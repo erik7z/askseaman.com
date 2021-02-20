@@ -13,17 +13,21 @@ import {
 	SideTopUsersBox,
 } from '../../components'
 
-import { useQuestionQuery } from '../../__generated/graphql'
+import { useQuestionsListQuery } from '../../__generated/graphql'
 
 export const Questions = () => {
-	const { data, loading, error } = useQuestionQuery()
-	const questions = data?.Question
-	const questionsList = questions ? (
-		<ul>
-			{questions.map((question) => {
-				return <li key={question?.nodeId}>{question?.title}</li>
+	const { data, loading, error } = useQuestionsListQuery()
+
+	const qList = data?.Question
+
+	const questionsList = qList ? (
+		<>
+			{qList.map((question) => {
+				return question ? (
+					<QuestionListItem key={question.nodeId} question={question} />
+				) : null
 			})}
-		</ul>
+		</>
 	) : null
 
 	const loadingMessage = loading ? <h4>Loading in progress</h4> : null
@@ -38,11 +42,11 @@ export const Questions = () => {
 						<hr className='hr-header hr-bold' />
 						<MainSorting />
 						<section className='section-questions-list'>
-							<QuestionListItem />
+							{questionsList}
+
 							<h2>Askseaman Questions</h2>
 							{errorMessage}
 							{loadingMessage}
-							{questionsList}
 						</section>
 					</Col>
 				</Row>

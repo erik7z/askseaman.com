@@ -71,7 +71,7 @@ export const Tag = () => {
 						</Row>
 						<h5 className='module-header text-right'>Top questions &lt;</h5>
 						<hr className='hr-header hr-bold' />
-						<QuestionListItem />
+						{/* <QuestionListItem /> */}
 					</Col>
 				</Row>
 			</Col>

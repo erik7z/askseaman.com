@@ -1,24 +1,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { BsTag } from 'react-icons/bs'
+import { Tag as TTag } from '../../__generated/graphql'
 
-export const TagsInlineList = () => {
+export const TagsInlineList = ({
+	tagsList = [],
+	questionId,
+}: {
+	tagsList: TTag[]
+	questionId: string
+}) => {
 	return (
 		<div className='tags'>
-			<span className='tag'>
-				<Link to='single.html'>
-					<i className='icon-tag'></i> CAPTAIN
-				</Link>
-			</span>
-			<span className='tag'>
-				<Link to='single.html'>
-					<i className='icon-tag'></i> BULK CARRIER
-				</Link>
-			</span>
-			<span className='tag'>
-				<Link to='single.html'>
-					<i className='icon-tag'></i> MANAGEMENT
-				</Link>
-			</span>
+			{tagsList &&
+				tagsList.map((tag: TTag) => {
+					return (
+						<span className='mr-2 tag' key={questionId + tag.nodeId}>
+							<Link to={`/tag/${tag.name}`}>
+								<BsTag /> {tag.name}
+							</Link>
+						</span>
+					)
+				})}
 		</div>
 	)
 }

@@ -44,7 +44,9 @@ type Mutation {
 			statement: """
 			MATCH (u:User {nodeId: $cypherParams.currentUserId})
 			CREATE (q:Question:CanBeCommented:CanBeVoted:CanBeSubscribed)<-[:ASKED]-(u)
-			SET q += {title: $data.title, text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+			SET q += {title: $data.title, text: $data.text, nodeId: apoc.create.uuid(),
+			viewsCount: 0,
+			createdAt: DateTime()}
 			WITH q
 			CALL {
 				WITH q

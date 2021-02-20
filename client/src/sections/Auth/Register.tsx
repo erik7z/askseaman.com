@@ -151,10 +151,6 @@ export const Register: FC<TComponentWithHistory> = ({ history }) => {
 												</option>
 											)
 										})}
-
-									<option value='chief_officer'>Chief Officer</option>
-									<option value='chief_engineer'>Chief Engineer</option>
-									<option value='master'>Master</option>
 								</Form.Control>
 								<Form.Control.Feedback type='invalid'>
 									{errors.rank}

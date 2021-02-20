@@ -1815,14 +1815,24 @@ export type AskQuestionMutation = (
   ) }
 );
 
-export type QuestionQueryVariables = Exact<{ [key: string]: never; }>;
+export type QuestionsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type QuestionQuery = (
+export type QuestionsListQuery = (
   { __typename?: 'Query' }
   & { Question?: Maybe<Array<Maybe<(
     { __typename?: 'Question' }
-    & Pick<Question, 'nodeId' | 'title'>
+    & Pick<Question, 'nodeId' | 'title' | 'text' | 'viewsCount' | 'answersCount' | 'subscribersCount' | 'commentsCount'>
+    & { author: (
+      { __typename?: 'User' }
+      & Pick<User, 'nodeId' | 'name' | 'surname' | 'rank'>
+    ), createdAt?: Maybe<(
+      { __typename?: '_Neo4jDateTime' }
+      & Pick<_Neo4jDateTime, 'year' | 'month' | 'day' | 'hour' | 'minute'>
+    )>, tags?: Maybe<Array<Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'nodeId' | 'name'>
+    )>>> }
   )>>> }
 );
 
@@ -2031,39 +2041,61 @@ export function useAskQuestionMutation(baseOptions?: Apollo.MutationHookOptions<
 export type AskQuestionMutationHookResult = ReturnType<typeof useAskQuestionMutation>;
 export type AskQuestionMutationResult = Apollo.MutationResult<AskQuestionMutation>;
 export type AskQuestionMutationOptions = Apollo.BaseMutationOptions<AskQuestionMutation, AskQuestionMutationVariables>;
-export const QuestionDocument = gql`
-    query Question {
+export const QuestionsListDocument = gql`
+    query QuestionsList {
   Question {
     nodeId
     title
+    text
+    author {
+      nodeId
+      name
+      surname
+      rank
+    }
+    viewsCount
+    answersCount
+    subscribersCount
+    commentsCount
+    createdAt {
+      year
+      month
+      day
+      hour
+      minute
+    }
+    tags(first: 5) {
+      nodeId
+      name
+    }
   }
 }
     `;
 
 /**
- * __useQuestionQuery__
+ * __useQuestionsListQuery__
  *
- * To run a query within a React component, call `useQuestionQuery` and pass it any options that fit your needs.
- * When your component renders, `useQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useQuestionsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useQuestionQuery({
+ * const { data, loading, error } = useQuestionsListQuery({
  *   variables: {
  *   },
  * });
  */
-export function useQuestionQuery(baseOptions?: Apollo.QueryHookOptions<QuestionQuery, QuestionQueryVariables>) {
-        return Apollo.useQuery<QuestionQuery, QuestionQueryVariables>(QuestionDocument, baseOptions);
+export function useQuestionsListQuery(baseOptions?: Apollo.QueryHookOptions<QuestionsListQuery, QuestionsListQueryVariables>) {
+        return Apollo.useQuery<QuestionsListQuery, QuestionsListQueryVariables>(QuestionsListDocument, baseOptions);
       }
-export function useQuestionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionQuery, QuestionQueryVariables>) {
-          return Apollo.useLazyQuery<QuestionQuery, QuestionQueryVariables>(QuestionDocument, baseOptions);
+export function useQuestionsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QuestionsListQuery, QuestionsListQueryVariables>) {
+          return Apollo.useLazyQuery<QuestionsListQuery, QuestionsListQueryVariables>(QuestionsListDocument, baseOptions);
         }
-export type QuestionQueryHookResult = ReturnType<typeof useQuestionQuery>;
-export type QuestionLazyQueryHookResult = ReturnType<typeof useQuestionLazyQuery>;
-export type QuestionQueryResult = Apollo.QueryResult<QuestionQuery, QuestionQueryVariables>;
+export type QuestionsListQueryHookResult = ReturnType<typeof useQuestionsListQuery>;
+export type QuestionsListLazyQueryHookResult = ReturnType<typeof useQuestionsListLazyQuery>;
+export type QuestionsListQueryResult = Apollo.QueryResult<QuestionsListQuery, QuestionsListQueryVariables>;
 export const TagDocument = gql`
     query Tag {
   Tag {

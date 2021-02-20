@@ -32,7 +32,7 @@ export const Question = () => {
 									<Link to='#'>Vasya Batareykin</Link>,
 									<span className='author-position'>Chief Officer</span>
 								</h5>
-								<TagsInlineList />
+								{/* <TagsInlineList tagsList={[]} /> */}
 							</div>
 						</div>
 
