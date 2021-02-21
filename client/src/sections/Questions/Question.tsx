@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Col } from 'react-bootstrap'
 
 import {
@@ -10,16 +10,31 @@ import {
 	AvatarLink,
 } from '../../components'
 import { AnswerItem } from './AnswerItem'
+import {
+	useQuestionPageQuery,
+	Question as TQuestion,
+	Tag as TTag,
+} from './../../__generated/graphql'
 
 export const Question = () => {
+	const { questionId } = useParams<{ questionId: string }>()
+
+	const { data, loading, error } = useQuestionPageQuery({
+		variables: {
+			nodeId: questionId,
+		},
+	})
+
+	const [question] = data?.Question || [null]
+
+	if (!question) return <h1>Something went wrong</h1>
+
 	return (
 		<>
 			<Col xl={8} className='main-content'>
 				<h5 className='module-header'>
 					&gt; Question:
-					<span className='text-dark'>
-						&nbsp; What to do if your captain is idiot ?
-					</span>
+					<span className='text-dark'>&nbsp; {question.title}</span>
 				</h5>
 				<hr className='hr-header hr-bold' />
 				<section className='section-question-page'>
@@ -29,22 +44,25 @@ export const Question = () => {
 							<div className='post-item-info'>
 								<span>Asked by</span>
 								<h5 className='author-name'>
-									<Link to='#'>Vasya Batareykin</Link>,
-									<span className='author-position'>Chief Officer</span>
+									<Link to='#'>{question.author?.name}</Link>,
+									<span className='author-position'>
+										{question.author?.rank}
+									</span>
 								</h5>
-								{/* <TagsInlineList tagsList={[]} /> */}
+								{question.tags && (
+									<TagsInlineList
+										questionId={question.nodeId}
+										tagsList={question.tags as TTag[]}
+									/>
+								)}
 							</div>
 						</div>
 
-						<p className='post-item-text'>
-							My Captain is idiot and i dont know what to do with that. Please
-							help. <br />
-							Even the all-powerful Pointing has no control about the blind
-							texts it is an almost unorthographic life One day however a small
-							line of blind text by the name of Lorem Ipsum decided to leave for
-							the far World of Grammar.
-						</p>
-						<CommentsBox toggleEventKey='qcomments-0' />
+						<p className='post-item-text'>{question.text}</p>
+						<CommentsBox
+							question={question as TQuestion}
+							toggleEventKey='qcomments-0'
+						/>
 					</div>
 					<h5 className='module-header text-right'>Answers on question &lt;</h5>
 					<hr className='hr-header hr-bold' />

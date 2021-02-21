@@ -72,7 +72,7 @@ const Aside = () => {
 		<>
 			<aside id='as-aside' className='js-fullheight'>
 				<h1 id='as-logo'>
-					<Link to='/' style={{ backgroundImage: 'url(images/bg_1.jpg)' }}>
+					<Link to='/' style={{ backgroundImage: 'url(/images/bg_1.jpg)' }}>
 						Ask <span>Seaman</span>
 					</Link>
 				</h1>

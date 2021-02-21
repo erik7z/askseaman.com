@@ -1,0 +1,58 @@
+query QuestionPage($nodeId: ID!) {
+	Question(nodeId: $nodeId) {
+		nodeId
+		title
+		text
+		author {
+			...userFields
+		}
+		tags {
+			nodeId
+			name
+		}
+		comments {
+			nodeId
+			text
+			likesCount
+			createdAt {
+				...dateTimeFields
+			}
+			author {
+				...userFields
+			}
+		}
+		answers {
+			nodeId
+			text
+			author {
+				...userFields
+			}
+			createdAt {
+				...dateTimeFields
+			}
+		}
+		createdAt {
+			...dateTimeFields
+		}
+		viewsCount
+		upVotesCount
+		downVotesCount
+		answersCount
+		commentsCount
+	}
+}
+
+fragment userFields on User {
+	nodeId
+	name
+	surname
+	rank
+}
+
+fragment dateTimeFields on _Neo4jDateTime {
+	year
+	month
+	day
+	hour
+	minute
+}
