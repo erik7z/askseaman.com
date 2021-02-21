@@ -1063,6 +1063,7 @@ textarea.form-control {
 	display: inline-block;
 	margin-bottom: 4px;
 	font-weight: 400;
+	margin: 0 2px;
 }
 .block-27 ul li a,
 .block-27 ul li span {

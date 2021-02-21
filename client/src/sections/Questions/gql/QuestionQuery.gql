@@ -3,6 +3,7 @@ query QuestionsList(
 	$first: Int
 	$offset: Int
 	$filter: _QuestionFilter
+	$tagsCount: Int = 5
 ) {
 	Question(orderBy: $orderBy, first: $first, offset: $offset, filter: $filter) {
 		nodeId
@@ -25,9 +26,12 @@ query QuestionsList(
 			hour
 			minute
 		}
-		tags(first: 5) {
+		tags(first: $tagsCount) {
 			nodeId
 			name
 		}
+	}
+	QuestionCount(filter: $filter) {
+		totalCount
 	}
 }

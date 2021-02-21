@@ -29,7 +29,7 @@ export const Users = () => {
 						</section>
 					</Col>
 				</Row>
-				<Pagination />
+				{/* <Pagination /> */}
 			</Col>
 			<Col xl={4} className='sidebar bg-blue'>
 				<SideAdvertBox />

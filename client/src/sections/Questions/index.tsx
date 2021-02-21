@@ -13,29 +13,30 @@ import {
 	SideTopUsersBox,
 } from '../../components'
 
-import { PAGINATION_RESULTS } from './../../env'
+import { PAGINATION_PAGE_SIZE } from './../../env'
 import {
 	useQuestionsListQuery,
 	_QuestionOrdering,
 } from '../../__generated/graphql'
 
 export const Questions = () => {
-	const [resultsCount, setResultsCount] = useState(PAGINATION_RESULTS)
-	const [page, setPage] = useState(0)
+	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
+	const [currentPage, setCurrentPage] = useState(0)
 
 	const { data, loading, error } = useQuestionsListQuery({
 		variables: {
 			orderBy: [_QuestionOrdering.CreatedAtDesc],
-			first: resultsCount,
-			offset: resultsCount * page,
+			first: resultsLimit,
+			offset: resultsLimit * currentPage,
 		},
 	})
 
-	const qList = data?.Question
+	const questionsList = data?.Question
+	const totalItems = data?.QuestionCount?.totalCount
 
-	const questionsList = qList ? (
+	const questionsListComponent = questionsList ? (
 		<>
-			{qList.map((question) => {
+			{questionsList.map((question) => {
 				return question ? (
 					<QuestionListItem key={question.nodeId} question={question} />
 				) : null
@@ -55,16 +56,21 @@ export const Questions = () => {
 						<hr className='hr-header hr-bold' />
 						<MainSorting />
 						<section className='section-questions-list'>
-							{questionsList}
-
-							<h2>Askseaman Questions</h2>
+							{questionsListComponent}
 							{errorMessage}
 							{loadingMessage}
 						</section>
 					</Col>
 				</Row>
 
-				<Pagination />
+				<Pagination
+					currentPage={currentPage}
+					resultsLimit={resultsLimit}
+					totalItems={totalItems}
+					baseUrl='/questions'
+					setCurrentPage={setCurrentPage}
+					setResultsLimit={setResultsLimit}
+				/>
 			</Col>
 			<Col xl={4} className='sidebar bg-blue'>
 				<SideAskBox />
