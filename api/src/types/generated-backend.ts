@@ -28,6 +28,7 @@ export type Scalars = {
 
 
 
+
 export enum _AnswerOrdering {
   NodeIdAsc = 'nodeId_asc',
   NodeIdDesc = 'nodeId_desc',
@@ -382,6 +383,14 @@ export type _QuestionFilter = {
   subscribers_none?: Maybe<_UserFilter>;
   subscribers_single?: Maybe<_UserFilter>;
   subscribers_every?: Maybe<_UserFilter>;
+  totalCount?: Maybe<Scalars['Int']>;
+  totalCount_not?: Maybe<Scalars['Int']>;
+  totalCount_in?: Maybe<Array<Scalars['Int']>>;
+  totalCount_not_in?: Maybe<Array<Scalars['Int']>>;
+  totalCount_lt?: Maybe<Scalars['Int']>;
+  totalCount_lte?: Maybe<Scalars['Int']>;
+  totalCount_gt?: Maybe<Scalars['Int']>;
+  totalCount_gte?: Maybe<Scalars['Int']>;
 };
 
 export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribed & {
@@ -399,7 +408,7 @@ export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribe
   commentsCount?: Maybe<Scalars['Int']>;
   likesCount?: Maybe<Scalars['Int']>;
   subscribersCount?: Maybe<Scalars['Int']>;
-  author: User;
+  author?: Maybe<User>;
   answers?: Maybe<Array<Maybe<Answer>>>;
   comments?: Maybe<Array<Maybe<Comment>>>;
   tags?: Maybe<Array<Maybe<Tag>>>;
@@ -1646,6 +1655,7 @@ export type MutationChangePassCompleteArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  QuestionCount?: Maybe<Question>;
   CurrentUser: User;
   UserRanks?: Maybe<Scalars['JSONObject']>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
@@ -1660,6 +1670,11 @@ export type Query = {
   User?: Maybe<Array<Maybe<User>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AskQuestionResponse type nodes. */
   AskQuestionResponse?: Maybe<Array<Maybe<AskQuestionResponse>>>;
+};
+
+
+export type QueryQuestionCountArgs = {
+  filter?: Maybe<_QuestionFilter>;
 };
 
 
@@ -1697,6 +1712,7 @@ export type QueryQuestionArgs = {
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
   viewsCount?: Maybe<Scalars['Int']>;
   canVote?: Maybe<Scalars['Boolean']>;
+  totalCount?: Maybe<Scalars['Int']>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -1968,6 +1984,10 @@ export type ResolversParentTypes = ResolversObject<{
   Query: {};
 }>;
 
+export type UpperDirectiveArgs = {  };
+
+export type UpperDirectiveResolver<Result, Parent, ContextType = any, Args = UpperDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type CypherDirectiveArgs = {   statement?: Maybe<Scalars['String']>; };
 
 export type CypherDirectiveResolver<Result, Parent, ContextType = any, Args = CypherDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
@@ -2061,7 +2081,7 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   commentsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   likesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   subscribersCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  author?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QuestionAuthorArgs, never>>;
+  author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QuestionAuthorArgs, never>>;
   answers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QuestionAnswersArgs, never>>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QuestionCommentsArgs, never>>;
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QuestionTagsArgs, never>>;
@@ -2334,6 +2354,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  QuestionCount?: Resolver<Maybe<ResolversTypes['Question']>, ParentType, ContextType, RequireFields<QueryQuestionCountArgs, never>>;
   CurrentUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   UserRanks?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
@@ -2388,6 +2409,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
  */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
 export type DirectiveResolvers<ContextType = any> = ResolversObject<{
+  upper?: UpperDirectiveResolver<any, any, ContextType>;
   cypher?: CypherDirectiveResolver<any, any, ContextType>;
   relation?: RelationDirectiveResolver<any, any, ContextType>;
   additionalLabels?: AdditionalLabelsDirectiveResolver<any, any, ContextType>;

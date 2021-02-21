@@ -29,13 +29,17 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 			statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
 		)
 
-	author: User! @relation(name: "ASKED", direction: IN)
+	author: User @relation(name: "ASKED", direction: IN)
 	answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
 	comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 	tags: [Tag] @relation(name: "TAGGED", direction: IN)
 	likes: [User] @relation(name: "LIKED", direction: IN)
 	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
 	totalCount: Int
+}
+
+type Query {
+	QuestionCount: Question
 }
 
 type Mutation {

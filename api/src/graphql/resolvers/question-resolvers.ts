@@ -6,23 +6,26 @@ import fs from 'fs'
 const questionResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
 		Question: async (_parent, params, ctx, resolveInfo) => {
-			// const query = cypherQuery(params, ctx, resolveInfo)
+			return neo4jgraphql(_parent, params, ctx, resolveInfo)
+		},
 
-			// const resultsCount = await ctx.driver
-			// 	.session()
-			// 	.run(query[0], { ...params, cypherParams: ctx.cypherParams })
-			// 	.then((res) => res.records.length)
+		QuestionCount: async (_parent, params, ctx, resolveInfo) => {
+			const [queryString, queryParams] = cypherQuery(params, ctx, resolveInfo)
 
-			const neo4jResult = await neo4jgraphql(_parent, params, ctx, resolveInfo)
+			const resultsCount = await ctx.driver
+				.session()
+				.run(queryString, queryParams)
+				.then((res) => res.records.length)
 
-			// console.log(neo4jResult)
+			const requiredFieldsMessage =
+				'### Only `totalCount` field can be resolved with this query'
 
-			// fs.writeFile('lastquery.txt', query[0], function (err) {
-			// 	if (err) return console.log(err)
-			// 	console.log('Query generated to > lastquery.txt')
-			// })
-
-			return neo4jResult
+			return {
+				nodeId: requiredFieldsMessage,
+				title: requiredFieldsMessage,
+				text: requiredFieldsMessage,
+				totalCount: resultsCount,
+			}
 		},
 	},
 	Mutation: {

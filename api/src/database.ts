@@ -15,7 +15,6 @@ export const schema = makeAugmentedSchema({
 		isAuthenticated: IsAuthenticatedDirective,
 		hasRole: HasRoleDirective,
 		upper: UpperCaseDirective,
-		upperCase: UpperCaseDirective,
 		// hasScope: HasScopeDirective,
 	},
 	config: {
