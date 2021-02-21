@@ -6,16 +6,16 @@ import fs from 'fs'
 const questionResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
 		Question: async (_parent, params, ctx, resolveInfo) => {
-			const query = cypherQuery(params, ctx, resolveInfo)
+			// const query = cypherQuery(params, ctx, resolveInfo)
 
-			const resultsCount = await ctx.driver
-				.session()
-				.run(query[0], { ...params, cypherParams: ctx.cypherParams })
-				.then((res) => res.records.length)
+			// const resultsCount = await ctx.driver
+			// 	.session()
+			// 	.run(query[0], { ...params, cypherParams: ctx.cypherParams })
+			// 	.then((res) => res.records.length)
 
 			const neo4jResult = await neo4jgraphql(_parent, params, ctx, resolveInfo)
 
-			console.log(neo4jResult)
+			// console.log(neo4jResult)
 
 			// fs.writeFile('lastquery.txt', query[0], function (err) {
 			// 	if (err) return console.log(err)

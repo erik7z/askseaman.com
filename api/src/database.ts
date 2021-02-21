@@ -5,6 +5,7 @@ import {
 	HasRoleDirective,
 } from 'graphql-auth-directives'
 
+import UpperCaseDirective from './graphql/directives/UpperCaseDirective'
 import { resolvers, typeDefs } from './graphql'
 
 export const schema = makeAugmentedSchema({
@@ -13,6 +14,8 @@ export const schema = makeAugmentedSchema({
 	schemaDirectives: {
 		isAuthenticated: IsAuthenticatedDirective,
 		hasRole: HasRoleDirective,
+		upper: UpperCaseDirective,
+		upperCase: UpperCaseDirective,
 		// hasScope: HasScopeDirective,
 	},
 	config: {

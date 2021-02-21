@@ -1,6 +1,6 @@
 type Tag implements CanBeSubscribed {
 	nodeId: ID! @id
-	name: String! @unique
+	name: String! @unique @upper
 	description: String
 	createdAt: DateTime
 	isSubscribed: Boolean
