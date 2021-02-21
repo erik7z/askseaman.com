@@ -1,7 +1,6 @@
 import { neo4jgraphql, cypherQuery } from 'neo4j-graphql-js'
 import { Resolvers, FieldError } from '../../types/generated-backend'
 import { ApolloServerContext } from '../../types/backend'
-import fs from 'fs'
 
 const questionResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
