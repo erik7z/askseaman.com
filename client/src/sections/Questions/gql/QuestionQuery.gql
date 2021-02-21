@@ -1,5 +1,10 @@
-query QuestionsList {
-	Question(orderBy: createdAt_desc) {
+query QuestionsList(
+	$orderBy: [_QuestionOrdering]
+	$first: Int
+	$offset: Int
+	$filter: _QuestionFilter
+) {
+	Question(orderBy: $orderBy, first: $first, offset: $offset, filter: $filter) {
 		nodeId
 		title
 		text

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Row, Col } from 'react-bootstrap'
 
 import {
@@ -13,10 +13,23 @@ import {
 	SideTopUsersBox,
 } from '../../components'
 
-import { useQuestionsListQuery } from '../../__generated/graphql'
+import { PAGINATION_RESULTS } from './../../env'
+import {
+	useQuestionsListQuery,
+	_QuestionOrdering,
+} from '../../__generated/graphql'
 
 export const Questions = () => {
-	const { data, loading, error } = useQuestionsListQuery()
+	const [resultsCount, setResultsCount] = useState(PAGINATION_RESULTS)
+	const [page, setPage] = useState(0)
+
+	const { data, loading, error } = useQuestionsListQuery({
+		variables: {
+			orderBy: [_QuestionOrdering.CreatedAtDesc],
+			first: resultsCount,
+			offset: resultsCount * page,
+		},
+	})
 
 	const qList = data?.Question
 

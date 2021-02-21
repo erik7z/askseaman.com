@@ -35,6 +35,7 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 	tags: [Tag] @relation(name: "TAGGED", direction: IN)
 	likes: [User] @relation(name: "LIKED", direction: IN)
 	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
+	totalCount: Int
 }
 
 type Mutation {

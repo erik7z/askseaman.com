@@ -2,6 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
 
+interface IProps {
+	page?: number | null | undefined
+	setPage?: React.Dispatch<React.SetStateAction<number>> | null
+}
+
 export const Pagination = () => {
 	return (
 		<Row>

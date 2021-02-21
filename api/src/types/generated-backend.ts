@@ -270,6 +270,8 @@ export enum _QuestionOrdering {
   LikesCountDesc = 'likesCount_desc',
   SubscribersCountAsc = 'subscribersCount_asc',
   SubscribersCountDesc = 'subscribersCount_desc',
+  TotalCountAsc = 'totalCount_asc',
+  TotalCountDesc = 'totalCount_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -403,6 +405,7 @@ export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribe
   tags?: Maybe<Array<Maybe<Tag>>>;
   likes?: Maybe<Array<Maybe<User>>>;
   subscribers?: Maybe<Array<Maybe<User>>>;
+  totalCount?: Maybe<Scalars['Int']>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
@@ -993,8 +996,8 @@ export type AskQuestionResponse = Question | FormError;
 
 export type FieldError = {
   __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
+  field?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
 };
 
 export type FormError = {
@@ -1532,7 +1535,7 @@ export type Mutation = {
   ToggleLike: LikeResponse;
   ToggleSubscribe: SubscribeResponse;
   Vote: VoteResponse;
-  AddTag: Tag;
+  AddTag?: Maybe<Tag>;
   DeleteTag: DeleteTagResponse;
   Register: AuthResponse;
   SignIn: AuthResponse;
@@ -1643,7 +1646,7 @@ export type MutationChangePassCompleteArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  CurrentUser?: Maybe<User>;
+  CurrentUser: User;
   UserRanks?: Maybe<Scalars['JSONObject']>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for Answer type nodes. */
   Answer?: Maybe<Array<Maybe<Answer>>>;
@@ -2064,6 +2067,7 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QuestionTagsArgs, never>>;
   likes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QuestionLikesArgs, never>>;
   subscribers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QuestionSubscribersArgs, never>>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -2168,8 +2172,8 @@ export type AskQuestionResponseResolvers<ContextType = any, ParentType extends R
 }>;
 
 export type FieldErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
-  field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  field?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2320,7 +2324,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   ToggleLike?: Resolver<ResolversTypes['LikeResponse'], ParentType, ContextType, RequireFields<MutationToggleLikeArgs, 'data'>>;
   ToggleSubscribe?: Resolver<ResolversTypes['SubscribeResponse'], ParentType, ContextType, RequireFields<MutationToggleSubscribeArgs, 'data'>>;
   Vote?: Resolver<ResolversTypes['VoteResponse'], ParentType, ContextType, RequireFields<MutationVoteArgs, 'data'>>;
-  AddTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
+  AddTag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<MutationAddTagArgs, 'data'>>;
   DeleteTag?: Resolver<ResolversTypes['DeleteTagResponse'], ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'data'>>;
   Register?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'data'>>;
   SignIn?: Resolver<ResolversTypes['AuthResponse'], ParentType, ContextType, RequireFields<MutationSignInArgs, 'data'>>;
@@ -2330,7 +2334,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  CurrentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  CurrentUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   UserRanks?: Resolver<Maybe<ResolversTypes['JSONObject']>, ParentType, ContextType>;
   Answer?: Resolver<Maybe<Array<Maybe<ResolversTypes['Answer']>>>, ParentType, ContextType, RequireFields<QueryAnswerArgs, never>>;
   Comment?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QueryCommentArgs, never>>;
