@@ -119,9 +119,9 @@ export type Answer = CanBeCommented & CanBeVoted & {
   updatedAt?: Maybe<_Neo4jDateTime>;
   canAccept?: Maybe<Scalars['Boolean']>;
   accepted?: Maybe<Scalars['Boolean']>;
-  upVotesCount?: Maybe<Scalars['Int']>;
-  downVotesCount?: Maybe<Scalars['Int']>;
-  commentsCount?: Maybe<Scalars['Int']>;
+  upVotesCount: Scalars['Int'];
+  downVotesCount: Scalars['Int'];
+  commentsCount: Scalars['Int'];
   author: User;
   question: Question;
   comments?: Maybe<Array<Maybe<Comment>>>;
@@ -329,14 +329,6 @@ export type _QuestionFilter = {
   updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
-  viewsCount?: Maybe<Scalars['Int']>;
-  viewsCount_not?: Maybe<Scalars['Int']>;
-  viewsCount_in?: Maybe<Array<Scalars['Int']>>;
-  viewsCount_not_in?: Maybe<Array<Scalars['Int']>>;
-  viewsCount_lt?: Maybe<Scalars['Int']>;
-  viewsCount_lte?: Maybe<Scalars['Int']>;
-  viewsCount_gt?: Maybe<Scalars['Int']>;
-  viewsCount_gte?: Maybe<Scalars['Int']>;
   canVote?: Maybe<Scalars['Boolean']>;
   canVote_not?: Maybe<Scalars['Boolean']>;
   author?: Maybe<_UserFilter>;
@@ -1003,6 +995,8 @@ export type AuthResponse = TokenResponse | FormError;
 
 export type AskQuestionResponse = Question | FormError;
 
+export type AnswerQuestionResponse = Answer | FormError;
+
 export type FieldError = {
   __typename?: 'FieldError';
   field?: Maybe<Scalars['String']>;
@@ -1531,7 +1525,7 @@ export enum _RelationDirections {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  AnswerQuestion: Answer;
+  AnswerQuestion: AnswerQuestionResponse;
   EditAnswer: Answer;
   DeleteAnswer: DeleteAnswerResponse;
   ToggleAcceptAnswer?: Maybe<Answer>;
@@ -1670,6 +1664,8 @@ export type Query = {
   User?: Maybe<Array<Maybe<User>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AskQuestionResponse type nodes. */
   AskQuestionResponse?: Maybe<Array<Maybe<AskQuestionResponse>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AnswerQuestionResponse type nodes. */
+  AnswerQuestionResponse?: Maybe<Array<Maybe<AnswerQuestionResponse>>>;
 };
 
 
@@ -1710,7 +1706,6 @@ export type QueryQuestionArgs = {
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
-  viewsCount?: Maybe<Scalars['Int']>;
   canVote?: Maybe<Scalars['Boolean']>;
   totalCount?: Maybe<Scalars['Int']>;
   _id?: Maybe<Scalars['String']>;
@@ -1751,6 +1746,12 @@ export type QueryUserArgs = {
 
 
 export type QueryAskQuestionResponseArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryAnswerQuestionResponseArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
 };
@@ -1882,6 +1883,7 @@ export type ResolversTypes = ResolversObject<{
   SubscribeResponse: ResolversTypes['Question'] | ResolversTypes['Tag'];
   AuthResponse: ResolversTypes['TokenResponse'] | ResolversTypes['FormError'];
   AskQuestionResponse: ResolversTypes['Question'] | ResolversTypes['FormError'];
+  AnswerQuestionResponse: ResolversTypes['Answer'] | ResolversTypes['FormError'];
   FieldError: ResolverTypeWrapper<FieldError>;
   FormError: ResolverTypeWrapper<FormError>;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
@@ -1955,6 +1957,7 @@ export type ResolversParentTypes = ResolversObject<{
   SubscribeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Tag'];
   AuthResponse: ResolversParentTypes['TokenResponse'] | ResolversParentTypes['FormError'];
   AskQuestionResponse: ResolversParentTypes['Question'] | ResolversParentTypes['FormError'];
+  AnswerQuestionResponse: ResolversParentTypes['Answer'] | ResolversParentTypes['FormError'];
   FieldError: FieldError;
   FormError: FormError;
   LoginResponse: LoginResponse;
@@ -2044,9 +2047,9 @@ export type AnswerResolvers<ContextType = any, ParentType extends ResolversParen
   updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   canAccept?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   accepted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  upVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  downVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  commentsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  upVotesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  downVotesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  commentsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<AnswerAuthorArgs, never>>;
   question?: Resolver<ResolversTypes['Question'], ParentType, ContextType, RequireFields<AnswerQuestionArgs, never>>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<AnswerCommentsArgs, never>>;
@@ -2191,6 +2194,10 @@ export type AskQuestionResponseResolvers<ContextType = any, ParentType extends R
   __resolveType: TypeResolveFn<'Question' | 'FormError', ParentType, ContextType>;
 }>;
 
+export type AnswerQuestionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AnswerQuestionResponse'] = ResolversParentTypes['AnswerQuestionResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Answer' | 'FormError', ParentType, ContextType>;
+}>;
+
 export type FieldErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
   field?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2331,7 +2338,7 @@ export type _Neo4jPointResolvers<ContextType = any, ParentType extends Resolvers
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  AnswerQuestion?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationAnswerQuestionArgs, 'data'>>;
+  AnswerQuestion?: Resolver<ResolversTypes['AnswerQuestionResponse'], ParentType, ContextType, RequireFields<MutationAnswerQuestionArgs, 'data'>>;
   EditAnswer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationEditAnswerArgs, 'data'>>;
   DeleteAnswer?: Resolver<ResolversTypes['DeleteAnswerResponse'], ParentType, ContextType, RequireFields<MutationDeleteAnswerArgs, 'data'>>;
   ToggleAcceptAnswer?: Resolver<Maybe<ResolversTypes['Answer']>, ParentType, ContextType, RequireFields<MutationToggleAcceptAnswerArgs, 'data'>>;
@@ -2363,6 +2370,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Tag?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QueryTagArgs, never>>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
   AskQuestionResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AskQuestionResponse']>>>, ParentType, ContextType, RequireFields<QueryAskQuestionResponseArgs, never>>;
+  AnswerQuestionResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AnswerQuestionResponse']>>>, ParentType, ContextType, RequireFields<QueryAnswerQuestionResponseArgs, never>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
@@ -2381,6 +2389,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   SubscribeResponse?: SubscribeResponseResolvers<ContextType>;
   AuthResponse?: AuthResponseResolvers<ContextType>;
   AskQuestionResponse?: AskQuestionResponseResolvers<ContextType>;
+  AnswerQuestionResponse?: AnswerQuestionResponseResolvers<ContextType>;
   FieldError?: FieldErrorResolvers<ContextType>;
   FormError?: FormErrorResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;

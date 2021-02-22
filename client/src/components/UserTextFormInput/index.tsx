@@ -1,11 +1,25 @@
 import React from 'react'
 import { Formik } from 'formik'
+import { Row, Col, Form, Button, Alert } from 'react-bootstrap'
+import { ApolloError } from '@apollo/client'
 
-import { Row, Col, Form, Button } from 'react-bootstrap'
+import { AnswerQuestionMutationFn, FieldError } from '../../__generated/graphql'
+
 import { AvatarLink } from '../'
 import { userTextValidation } from '../../lib/validation'
+import { normalizeErrors } from './../../lib/helpers'
 
-export const UserTextFormInput = () => {
+interface IProps {
+	topicId: string
+	submitMutation: AnswerQuestionMutationFn
+	connErrors?: ApolloError | undefined
+}
+
+export const UserTextFormInput = ({
+	submitMutation,
+	topicId,
+	connErrors,
+}: IProps) => {
 	return (
 		<Row className='SECTION-user-input'>
 			<Col md={1} xs={2} className='pr-0 text-right'>
@@ -17,30 +31,25 @@ export const UserTextFormInput = () => {
 					onSubmit={async (values, { setSubmitting, setErrors }) => {
 						setSubmitting(true)
 
-						// const { data: askResponse } = await askQuestionMutation({
-						// 	variables: {
-						// 		data: {
-						// 			title: values.title,
-						// 			text: values.text,
-						// 			tags: values.tags
-						// 				? values.tags.toUpperCase().split(',')
-						// 				: [],
-						// 		},
-						// 	},
-						// })
-						// if (askResponse) {
-						// 	if (askResponse.AskQuestion.__typename === 'FormError') {
-						// 		const formErrors = askResponse.AskQuestion
-						// 			.errors as FieldError[]
-						// 		setErrors(normalizeErrors(formErrors))
-						// 	}
+						const { data: submitResponse } = await submitMutation({
+							variables: {
+								data: {
+									nodeId: topicId,
+									text: values.text,
+								},
+							},
+						})
 
-						// 	if (askResponse.AskQuestion.__typename === 'Question') {
-						// 		// const title = askResponse.AskQuestion.title
+						if (submitResponse) {
+							if (submitResponse.AnswerQuestion.__typename === 'FormError') {
+								const formErrors = submitResponse.AnswerQuestion
+									.errors as FieldError[]
+								setErrors(normalizeErrors(formErrors))
+							}
 
-						// 		history.push('/')
-						// 	}
-						// }
+							if (submitResponse.AnswerQuestion.__typename === 'Answer') {
+							}
+						}
 						setSubmitting(false)
 					}}
 					initialValues={{
@@ -57,14 +66,12 @@ export const UserTextFormInput = () => {
 					}) => (
 						<Form noValidate onSubmit={handleSubmit}>
 							<Form.Row>
-								{/* {connErrors && (
-												<Alert variant='danger'>
-													<Alert.Heading>
-														Ooops! Something went wrong
-													</Alert.Heading>
-													<p>{connErrors.message}</p>
-												</Alert>
-											)} */}
+								{connErrors && (
+									<Alert variant='danger'>
+										<Alert.Heading>Ooops! Something went wrong</Alert.Heading>
+										<p>{connErrors.message}</p>
+									</Alert>
+								)}
 							</Form.Row>
 
 							<Form.Row>

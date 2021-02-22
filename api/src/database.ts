@@ -56,12 +56,17 @@ export const schema = makeAugmentedSchema({
 
 // bug fix for the union resolvers (neo4j overwrites them)
 schema._typeMap.AuthResponse.resolveType = (obj: any) => {
-	if (obj.message) return 'FormError'
+	if (obj.message || obj.errors || obj.message) return 'FormError'
 	else return 'TokenResponse'
 }
 schema._typeMap.AskQuestionResponse.resolveType = (obj: any) => {
 	if (obj.message || obj.errors || obj.message) return 'FormError'
 	else return 'Question'
+}
+
+schema._typeMap.AnswerQuestionResponse.resolveType = (obj: any) => {
+	if (obj.message || obj.errors || obj.message) return 'FormError'
+	else return 'Answer'
 }
 
 export const driver = neo4j.driver(

@@ -32,7 +32,7 @@ type Answer implements CanBeCommented & CanBeVoted {
 }
 
 type Mutation {
-	AnswerQuestion(data: AnswerQuestionInput!): Answer!
+	AnswerQuestion(data: AnswerQuestionInput!): AnswerQuestionResponse!
 		@isAuthenticated
 		@cypher(
 			statement: """

@@ -3,6 +3,7 @@ union VoteResponse = Question | Answer
 union SubscribeResponse = Question | Tag
 union AuthResponse = TokenResponse | FormError
 union AskQuestionResponse = Question | FormError
+union AnswerQuestionResponse = Answer | FormError
 
 type FieldError {
 	field: String

@@ -1,7 +1,11 @@
 import React from 'react'
 import { Accordion, Card } from 'react-bootstrap'
 
-import { CommentItem, MetaActions, UserTextFormInput } from '..'
+import {
+	CommentItem,
+	MetaActions,
+	// UserTextFormInput
+} from '..'
 import {
 	Answer as TAnswer,
 	Question as TQuestion,
@@ -38,7 +42,7 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 						<CommentItem />
 						<h5 className='module-header'>&gt; Your comment</h5>
 						<hr className='hr-header hr-bold' />
-						<UserTextFormInput />
+						{/* <UserTextFormInput /> */}
 					</Card.Body>
 				</Accordion.Collapse>
 			</Card>

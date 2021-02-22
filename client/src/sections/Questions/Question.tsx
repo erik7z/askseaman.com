@@ -12,6 +12,7 @@ import {
 import { AnswerItem } from './AnswerItem'
 import {
 	useQuestionPageQuery,
+	useAnswerQuestionMutation,
 	Question as TQuestion,
 	Tag as TTag,
 	Answer as TAnswer,
@@ -25,6 +26,11 @@ export const Question = () => {
 			nodeId: questionId,
 		},
 	})
+
+	const [
+		answerQuestionMutation,
+		{ error: answerQuestionConnErrors },
+	] = useAnswerQuestionMutation()
 
 	if (loading) return <h1>Loading in progress...</h1>
 	if (error) return <h1>Something went wrong</h1>
@@ -79,7 +85,11 @@ export const Question = () => {
 
 					<h5 className='module-header'>&gt; Your answer</h5>
 					<hr className='hr-header hr-bold' />
-					<UserTextFormInput />
+					<UserTextFormInput
+						topicId={question.nodeId}
+						submitMutation={answerQuestionMutation}
+						connErrors={answerQuestionConnErrors}
+					/>
 				</section>
 			</Col>
 			<div className='col-xl-4 sidebar  bg-blue'>
