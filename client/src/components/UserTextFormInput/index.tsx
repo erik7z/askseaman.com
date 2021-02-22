@@ -13,12 +13,14 @@ interface IProps {
 	topicId: string
 	submitMutation: AnswerQuestionMutationFn
 	connErrors?: ApolloError | undefined
+	toggleUpdatePage: () => void
 }
 
 export const UserTextFormInput = ({
 	submitMutation,
 	topicId,
 	connErrors,
+	toggleUpdatePage,
 }: IProps) => {
 	return (
 		<Row className='SECTION-user-input'>
@@ -48,6 +50,7 @@ export const UserTextFormInput = ({
 							}
 
 							if (submitResponse.AnswerQuestion.__typename === 'Answer') {
+								toggleUpdatePage()
 							}
 						}
 						setSubmitting(false)

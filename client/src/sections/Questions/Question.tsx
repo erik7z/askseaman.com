@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Col } from 'react-bootstrap'
 
@@ -11,21 +11,30 @@ import {
 } from '../../components'
 import { AnswerItem } from './AnswerItem'
 import {
-	useQuestionPageQuery,
 	useAnswerQuestionMutation,
 	Question as TQuestion,
 	Tag as TTag,
 	Answer as TAnswer,
+	useQuestionPageLazyQuery,
 } from './../../__generated/graphql'
 
 export const Question = () => {
 	const { questionId } = useParams<{ questionId: string }>()
 
-	const { data, loading, error } = useQuestionPageQuery({
+	const [updateQuestionPage, setUpdateQuestionPage] = useState(false)
+	const toggleUpdatePage = () => setUpdateQuestionPage(!updateQuestionPage)
+
+	const [getQuestion, { data, loading, error }] = useQuestionPageLazyQuery({
 		variables: {
 			nodeId: questionId,
 		},
+		fetchPolicy: 'cache-and-network',
 	})
+
+	useEffect(() => {
+		getQuestion()
+		console.log('getQuestion useffect')
+	}, [getQuestion, updateQuestionPage])
 
 	const [
 		answerQuestionMutation,
@@ -89,6 +98,7 @@ export const Question = () => {
 						topicId={question.nodeId}
 						submitMutation={answerQuestionMutation}
 						connErrors={answerQuestionConnErrors}
+						toggleUpdatePage={toggleUpdatePage}
 					/>
 				</section>
 			</Col>
