@@ -9,13 +9,14 @@ import {
 	CommentsBox,
 	AvatarLink,
 } from '../../components'
-import { AnswerItem } from './AnswerItem'
+import { AnswersList } from './AnswersList'
 import {
 	useAnswerQuestionMutation,
 	Question as TQuestion,
 	Tag as TTag,
 	Answer as TAnswer,
 	useQuestionPageLazyQuery,
+	useQuestionAnswersListLazyQuery,
 } from './../../__generated/graphql'
 
 export const Question = () => {
@@ -24,17 +25,43 @@ export const Question = () => {
 	const [updateQuestionPage, setUpdateQuestionPage] = useState(false)
 	const toggleUpdatePage = () => setUpdateQuestionPage(!updateQuestionPage)
 
+	const [answersList, setAnswersList] = useState<TAnswer[]>([])
+
 	const [getQuestion, { data, loading, error }] = useQuestionPageLazyQuery({
 		variables: {
 			nodeId: questionId,
 		},
 		fetchPolicy: 'cache-and-network',
 	})
+	const [question] = data?.Question || [null]
+
+	const [
+		getQuestionAnswers,
+		{ data: answersData, loading: answersLoading, error: answersError },
+	] = useQuestionAnswersListLazyQuery({
+		variables: {
+			filter: {
+				question: {
+					nodeId: questionId,
+				},
+			},
+		},
+		fetchPolicy: 'cache-and-network',
+	})
 
 	useEffect(() => {
-		getQuestion()
 		console.log('getQuestion useffect')
-	}, [getQuestion, updateQuestionPage])
+
+		getQuestion()
+		if (question) setAnswersList(question.answers as TAnswer[])
+	}, [getQuestion, question])
+
+	useEffect(() => {
+		console.log('getQuestionAnswers useffect')
+
+		getQuestionAnswers()
+		if (answersData?.Answer) setAnswersList(answersData?.Answer as TAnswer[])
+	}, [updateQuestionPage, getQuestionAnswers, answersData?.Answer])
 
 	const [
 		answerQuestionMutation,
@@ -42,10 +69,7 @@ export const Question = () => {
 	] = useAnswerQuestionMutation()
 
 	if (loading) return <h1>Loading in progress...</h1>
-	if (error) return <h1>Something went wrong</h1>
-
-	const [question] = data?.Question || [null]
-	if (!question) return <h1>Something went wrong</h1>
+	if (!question || error) return <h1>Something went wrong</h1>
 
 	return (
 		<>
@@ -87,10 +111,11 @@ export const Question = () => {
 					</div>
 					<h5 className='module-header text-right'>Answers on question &lt;</h5>
 					<hr className='hr-header hr-bold' />
-					{question.answers &&
-						question.answers.map((answer) => (
-							<AnswerItem key={answer?.nodeId} answer={answer as TAnswer} />
-						))}
+					<AnswersList
+						loading={answersLoading}
+						error={answersError}
+						answers={answersList}
+					/>
 
 					<h5 className='module-header'>&gt; Your answer</h5>
 					<hr className='hr-header hr-bold' />

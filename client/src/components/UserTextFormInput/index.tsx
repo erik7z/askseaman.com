@@ -30,7 +30,7 @@ export const UserTextFormInput = ({
 			<Col md={11} xs={10}>
 				<Formik
 					validationSchema={userTextValidation}
-					onSubmit={async (values, { setSubmitting, setErrors }) => {
+					onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
 						setSubmitting(true)
 
 						const { data: submitResponse } = await submitMutation({
@@ -51,6 +51,7 @@ export const UserTextFormInput = ({
 
 							if (submitResponse.AnswerQuestion.__typename === 'Answer') {
 								toggleUpdatePage()
+								resetForm()
 							}
 						}
 						setSubmitting(false)

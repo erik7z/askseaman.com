@@ -1792,6 +1792,49 @@ export type AskQuestionMutation = { __typename?: 'Mutation' } & {
 				})
 }
 
+export type QuestionAnswersListQueryVariables = Exact<{
+	filter?: Maybe<_AnswerFilter>
+}>
+
+export type QuestionAnswersListQuery = { __typename?: 'Query' } & {
+	Answer?: Maybe<
+		Array<
+			Maybe<
+				{ __typename?: 'Answer' } & Pick<
+					Answer,
+					'nodeId' | 'text' | 'upVotesCount' | 'downVotesCount'
+				> & {
+						author: { __typename?: 'User' } & UserFieldsFragment
+						createdAt?: Maybe<
+							{ __typename?: '_Neo4jDateTime' } & DateTimeFieldsFragment
+						>
+						comments?: Maybe<
+							Array<Maybe<{ __typename?: 'Comment' } & CommentFieldsFragment>>
+						>
+					}
+			>
+		>
+	>
+}
+
+export type UserFieldsFragment = { __typename?: 'User' } & Pick<
+	User,
+	'nodeId' | 'name' | 'surname' | 'rank'
+>
+
+export type DateTimeFieldsFragment = { __typename?: '_Neo4jDateTime' } & Pick<
+	_Neo4jDateTime,
+	'year' | 'month' | 'day' | 'hour' | 'minute'
+>
+
+export type CommentFieldsFragment = { __typename?: 'Comment' } & Pick<
+	Comment,
+	'nodeId' | 'text' | 'likesCount'
+> & {
+		createdAt: { __typename?: '_Neo4jDateTime' } & DateTimeFieldsFragment
+		author?: Maybe<{ __typename?: 'User' } & UserFieldsFragment>
+	}
+
 export type QuestionPageQueryVariables = Exact<{
 	nodeId: Scalars['ID']
 }>
@@ -1857,24 +1900,6 @@ export type QuestionPageQuery = { __typename?: 'Query' } & {
 		>
 	>
 }
-
-export type UserFieldsFragment = { __typename?: 'User' } & Pick<
-	User,
-	'nodeId' | 'name' | 'surname' | 'rank'
->
-
-export type DateTimeFieldsFragment = { __typename?: '_Neo4jDateTime' } & Pick<
-	_Neo4jDateTime,
-	'year' | 'month' | 'day' | 'hour' | 'minute'
->
-
-export type CommentFieldsFragment = { __typename?: 'Comment' } & Pick<
-	Comment,
-	'nodeId' | 'text' | 'likesCount'
-> & {
-		createdAt: { __typename?: '_Neo4jDateTime' } & DateTimeFieldsFragment
-		author?: Maybe<{ __typename?: 'User' } & UserFieldsFragment>
-	}
 
 export type QuestionsListQueryVariables = Exact<{
 	orderBy?: Maybe<Array<Maybe<_QuestionOrdering>> | Maybe<_QuestionOrdering>>
@@ -2298,6 +2323,77 @@ export type AskQuestionMutationResult = Apollo.MutationResult<AskQuestionMutatio
 export type AskQuestionMutationOptions = Apollo.BaseMutationOptions<
 	AskQuestionMutation,
 	AskQuestionMutationVariables
+>
+export const QuestionAnswersListDocument = gql`
+	query QuestionAnswersList($filter: _AnswerFilter) {
+		Answer(filter: $filter) {
+			nodeId
+			text
+			upVotesCount
+			downVotesCount
+			author {
+				...userFields
+			}
+			createdAt {
+				...dateTimeFields
+			}
+			comments {
+				...commentFields
+			}
+		}
+	}
+	${UserFieldsFragmentDoc}
+	${DateTimeFieldsFragmentDoc}
+	${CommentFieldsFragmentDoc}
+`
+
+/**
+ * __useQuestionAnswersListQuery__
+ *
+ * To run a query within a React component, call `useQuestionAnswersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuestionAnswersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuestionAnswersListQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useQuestionAnswersListQuery(
+	baseOptions?: Apollo.QueryHookOptions<
+		QuestionAnswersListQuery,
+		QuestionAnswersListQueryVariables
+	>
+) {
+	return Apollo.useQuery<
+		QuestionAnswersListQuery,
+		QuestionAnswersListQueryVariables
+	>(QuestionAnswersListDocument, baseOptions)
+}
+export function useQuestionAnswersListLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<
+		QuestionAnswersListQuery,
+		QuestionAnswersListQueryVariables
+	>
+) {
+	return Apollo.useLazyQuery<
+		QuestionAnswersListQuery,
+		QuestionAnswersListQueryVariables
+	>(QuestionAnswersListDocument, baseOptions)
+}
+export type QuestionAnswersListQueryHookResult = ReturnType<
+	typeof useQuestionAnswersListQuery
+>
+export type QuestionAnswersListLazyQueryHookResult = ReturnType<
+	typeof useQuestionAnswersListLazyQuery
+>
+export type QuestionAnswersListQueryResult = Apollo.QueryResult<
+	QuestionAnswersListQuery,
+	QuestionAnswersListQueryVariables
 >
 export const QuestionPageDocument = gql`
 	query QuestionPage($nodeId: ID!) {
