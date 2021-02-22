@@ -2,22 +2,35 @@ import React from 'react'
 import { Accordion, Card } from 'react-bootstrap'
 
 import { CommentItem, MetaActions, UserTextFormInput } from '..'
-import { Question as TQuestion } from '../../__generated/graphql'
+import {
+	Answer as TAnswer,
+	Question as TQuestion,
+} from '../../__generated/graphql'
 
 interface IProps {
 	toggleEventKey: string
-	question?: TQuestion
+	topic: TAnswer | TQuestion
 }
 
-export const CommentsBox = ({ toggleEventKey, question }: IProps) => {
+export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
+	if (!topic) return <h1>Something went wrong...</h1>
+
+	let subscribersCount, viewsCount
+
+	if (
+		topic.hasOwnProperty('subscribersCount') &&
+		topic.hasOwnProperty('viewsCount')
+	)
+		({ subscribersCount, viewsCount } = topic as TQuestion)
+
 	return (
 		<Accordion>
 			<MetaActions
 				toggleEventKey={toggleEventKey}
-				subscribersCount={question?.subscribersCount}
-				viewsCount={question?.viewsCount}
-				commentsCount={question?.commentsCount}
-				createdAt={question?.createdAt}
+				subscribersCount={subscribersCount}
+				viewsCount={viewsCount}
+				commentsCount={topic.commentsCount}
+				createdAt={topic.createdAt}
 			/>
 			<Card className='border-0 comments-collapse'>
 				<Accordion.Collapse eventKey={toggleEventKey}>

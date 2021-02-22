@@ -5,6 +5,7 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 	createdAt: DateTime
 	updatedAt: DateTime
 	viewsCount: Int
+		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
 	canVote: Boolean #TODO:logic to decide if user can vote (depended on some rating)
 	upVotesCount: Int
 		@cypher(

@@ -44,3 +44,7 @@ export const askQuestionValidation = yup.object({
 	tags: yup.string().required('Tags are required'),
 	text: yup.string().required('Question description is required'),
 })
+
+export const userTextValidation = yup.object({
+	text: yup.string().required('Text is required'),
+})

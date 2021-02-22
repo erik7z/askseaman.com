@@ -6,7 +6,7 @@ import {
 	TagCardItem,
 	SideAdvertBox,
 	SideNewsBox,
-	Pagination,
+	// Pagination,
 	MainSorting,
 } from '../../components'
 

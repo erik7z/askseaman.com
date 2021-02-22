@@ -13,15 +13,15 @@ type Answer implements CanBeCommented & CanBeVoted {
 		@cypher(
 			statement: "MATCH (this)<-[r:ACCEPTED]-(:User) RETURN count(r) > 0 as accepted"
 		)
-	upVotesCount: Int
+	upVotesCount: Int!
 		@cypher(
 			statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upVotesCount"
 		)
-	downVotesCount: Int
+	downVotesCount: Int!
 		@cypher(
 			statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downVotesCount"
 		)
-	commentsCount: Int
+	commentsCount: Int!
 		@cypher(
 			statement: "RETURN size((this)-[:HAS_COMMENT]->(:Comment)) as commentsCount"
 		)

@@ -11,24 +11,22 @@ query QuestionPage($nodeId: ID!) {
 			name
 		}
 		comments {
-			nodeId
-			text
-			likesCount
-			createdAt {
-				...dateTimeFields
-			}
-			author {
-				...userFields
-			}
+			...commentFields
 		}
 		answers {
 			nodeId
 			text
+			upVotesCount
+			downVotesCount
+			commentsCount
 			author {
 				...userFields
 			}
 			createdAt {
 				...dateTimeFields
+			}
+			comments {
+				...commentFields
 			}
 		}
 		createdAt {
@@ -37,6 +35,7 @@ query QuestionPage($nodeId: ID!) {
 		viewsCount
 		upVotesCount
 		downVotesCount
+		subscribersCount
 		answersCount
 		commentsCount
 	}
@@ -55,4 +54,16 @@ fragment dateTimeFields on _Neo4jDateTime {
 	day
 	hour
 	minute
+}
+
+fragment commentFields on Comment {
+	nodeId
+	text
+	likesCount
+	createdAt {
+		...dateTimeFields
+	}
+	author {
+		...userFields
+	}
 }

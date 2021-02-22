@@ -14,6 +14,7 @@ import {
 	useQuestionPageQuery,
 	Question as TQuestion,
 	Tag as TTag,
+	Answer as TAnswer,
 } from './../../__generated/graphql'
 
 export const Question = () => {
@@ -25,8 +26,10 @@ export const Question = () => {
 		},
 	})
 
-	const [question] = data?.Question || [null]
+	if (loading) return <h1>Loading in progress...</h1>
+	if (error) return <h1>Something went wrong</h1>
 
+	const [question] = data?.Question || [null]
 	if (!question) return <h1>Something went wrong</h1>
 
 	return (
@@ -44,7 +47,10 @@ export const Question = () => {
 							<div className='post-item-info'>
 								<span>Asked by</span>
 								<h5 className='author-name'>
-									<Link to='#'>{question.author?.name}</Link>,
+									<Link to={`/user/${question.author?.nodeId}`}>
+										{question.author?.name}
+									</Link>
+									,
 									<span className='author-position'>
 										{question.author?.rank}
 									</span>
@@ -60,14 +66,17 @@ export const Question = () => {
 
 						<p className='post-item-text'>{question.text}</p>
 						<CommentsBox
-							question={question as TQuestion}
+							topic={question as TQuestion}
 							toggleEventKey='qcomments-0'
 						/>
 					</div>
 					<h5 className='module-header text-right'>Answers on question &lt;</h5>
 					<hr className='hr-header hr-bold' />
-					<AnswerItem />
-					<hr />
+					{question.answers &&
+						question.answers.map((answer) => (
+							<AnswerItem key={answer?.nodeId} answer={answer as TAnswer} />
+						))}
+
 					<h5 className='module-header'>&gt; Your answer</h5>
 					<hr className='hr-header hr-bold' />
 					<UserTextFormInput />

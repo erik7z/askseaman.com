@@ -21,21 +21,21 @@ export const MetaActions = ({
 	commentsCount,
 	createdAt,
 }: IProps) => {
-	const subscribersMeta = (
+	const subscribersMeta = subscribersCount && (
 		<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
-			Subscribe | <b>{subscribersCount ? subscribersCount : 0} </b>
+			Subscribe | <b>{subscribersCount} </b>
 		</Link>
 	)
 
-	const commentsMeta = (
+	const commentsMeta = commentsCount !== null && commentsCount !== undefined && (
 		<span>
-			<BsChat /> <b>{commentsCount ? commentsCount : 0}</b> Comments
+			<BsChat /> <b>{commentsCount}</b> Comments
 		</span>
 	)
 
-	const viewsMeta = (
+	const viewsMeta = viewsCount !== null && viewsCount !== undefined && (
 		<span>
-			<BsEye /> <b>{viewsCount ? viewsCount : 0}</b> Views
+			<BsEye /> <b>{viewsCount}</b> Views
 		</span>
 	)
 

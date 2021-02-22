@@ -4,7 +4,7 @@ import { Row, Col, Jumbotron, ListGroup } from 'react-bootstrap'
 
 import {
 	UserCardItem,
-	QuestionListItem,
+	// QuestionListItem,
 	AvatarLink,
 	SideAdvertBox,
 	SideNewsBox,

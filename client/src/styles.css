@@ -1825,16 +1825,20 @@ div.meta {
 }
 
 .question-rating {
-	margin-top: 5px;
+	/* margin-top: 5px;
+	margin-bottom: 0; */
+	margin: 0;
 }
 
 .question-rating .rate-value {
 	font-family: 'Poppins', Arial, sans-serif;
 	font-weight: bold;
+	margin-left: 1px;
 }
 
 .question-rating .rate {
 	margin-bottom: 0;
+	line-height: 1;
 }
 
 .section-tags-list .card-title,

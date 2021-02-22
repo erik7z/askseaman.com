@@ -1,10 +1,18 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
 
 import { CommentsBox, AvatarLink } from '../../components'
+import { Answer as TAnswer } from '../../__generated/graphql'
 
-export const AnswerItem = () => {
+interface IProps {
+	answer: TAnswer
+}
+
+export const AnswerItem = ({ answer }: IProps) => {
+	if (!answer) return <h1>Something went wrong...</h1>
+
 	return (
 		<Row className='answer-item media'>
 			<Col md={12}>
@@ -12,9 +20,11 @@ export const AnswerItem = () => {
 					<Col md={11} xs={7}>
 						<div className='text-right author'>
 							<h5 className='author-name'>
-								<Link to='#'>Boris Gadov</Link>
+								<Link to='#'>
+									{answer.author?.name} {answer.author?.surname}
+								</Link>
 							</h5>
-							<span className='author-position'>2nd Officer</span>
+							<span className='author-position'>{answer.author?.rank}</span>
 						</div>
 					</Col>
 					<Col md={1} xs={5} className='pl-0'>
@@ -26,32 +36,32 @@ export const AnswerItem = () => {
 			<Col md={1} xs={2} className='text-center align-items-center'>
 				<ul className='question-rating list-unstyled'>
 					<li>
-						<h3 className='rate rate-up'>
+						<h3 className='rate rate-up mb-1'>
 							<Link to='#'>
-								<i className='icon-arrow-circle-up'></i>
+								<BsArrowUpShort />
 							</Link>
 						</h3>
 					</li>
 					<li>
-						<h5 className='rate rate-value text-secondary'>10</h5>
+						<h5 className='rate rate-value text-secondary'>
+							{answer.upVotesCount - answer.downVotesCount}
+						</h5>
 					</li>
 					<li>
 						<h3 className='rate rate-down'>
 							<Link to='#'>
-								<i className='icon-arrow-circle-down'></i>
+								<BsArrowDownShort />
 							</Link>
 						</h3>
 					</li>
 				</ul>
 			</Col>
 			<Col md={11} xs={10}>
-				<p className='post-item-text'>
-					Cras sit amet nibh libero, in gravida nulla. Nulla vel metus
-					scelerisque ante sollicitudin. Cras purus odio, vestibulum in
-					vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi
-					vulputate fringilla. Donec lacinia congue felis in faucibus.
-				</p>
-				<CommentsBox toggleEventKey='acomments-0' />
+				<p className='post-item-text'>{answer.text}</p>
+				<CommentsBox topic={answer as TAnswer} toggleEventKey='acomments-0' />
+			</Col>
+			<Col md={12}>
+				<hr />
 			</Col>
 		</Row>
 	)
