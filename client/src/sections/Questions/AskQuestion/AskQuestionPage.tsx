@@ -18,7 +18,7 @@ import { TComponentWithHistory } from '../../../types/frontend'
 import { askQuestionValidation } from '../../../lib/validation'
 import { normalizeErrors, normalizeTags } from '../../../lib/helpers'
 
-export const AskQuestionContent: FC<TComponentWithHistory> = ({ history }) => {
+export const AskQuestionPage: FC<TComponentWithHistory> = ({ history }) => {
 	let tagsSuggestions: ITag[] = []
 	const [suggestions, setSuggestions] = useState(tagsSuggestions)
 

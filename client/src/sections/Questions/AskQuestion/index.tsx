@@ -11,7 +11,7 @@ import {
 import Section from '../../../components/Layout/Section'
 import SideBar from '../../../components/Layout/SideBar'
 
-import { AskQuestionContent } from './AskQuestionContent'
+import { AskQuestionPage } from './AskQuestionPage'
 
 export const AskQuestion: FC<ComponentProps<any>> = ({ props }) => {
 	return (
@@ -21,7 +21,7 @@ export const AskQuestion: FC<ComponentProps<any>> = ({ props }) => {
 				sectionTitle='Ask Question'
 				sectionClass='section-ask-question'
 			>
-				<AskQuestionContent {...props} />
+				<AskQuestionPage {...props} />
 			</Section>
 			<SideBar>
 				<SideAskBox />

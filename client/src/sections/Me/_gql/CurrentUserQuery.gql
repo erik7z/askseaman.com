@@ -1,8 +1,5 @@
 query CurrentUser {
 	CurrentUser {
-		nodeId
-		name
-		surname
-		rank
+		...userFields
 	}
 }

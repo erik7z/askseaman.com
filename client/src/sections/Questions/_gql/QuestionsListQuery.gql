@@ -10,21 +10,14 @@ query QuestionsList(
 		title
 		text
 		author {
-			nodeId
-			name
-			surname
-			rank
+			...userFields
 		}
 		viewsCount
 		answersCount
 		subscribersCount
 		commentsCount
 		createdAt {
-			year
-			month
-			day
-			hour
-			minute
+			...dateTimeFields
 		}
 		tags(first: $tagsCount) {
 			nodeId

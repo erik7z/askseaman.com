@@ -15,30 +15,3 @@ query QuestionAnswersList($filter: _AnswerFilter) {
 		}
 	}
 }
-
-fragment userFields on User {
-	nodeId
-	name
-	surname
-	rank
-}
-
-fragment dateTimeFields on _Neo4jDateTime {
-	year
-	month
-	day
-	hour
-	minute
-}
-
-fragment commentFields on Comment {
-	nodeId
-	text
-	likesCount
-	createdAt {
-		...dateTimeFields
-	}
-	author {
-		...userFields
-	}
-}
