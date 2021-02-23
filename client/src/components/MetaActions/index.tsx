@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Accordion } from 'react-bootstrap'
 import { BsChat, BsEye, BsClock } from 'react-icons/bs'
+import { BiLike } from 'react-icons/bi'
 
 import { _Neo4jDateTime } from '../../types/generated-frontend'
 import { normalizeTime } from './../../lib/helpers'
@@ -14,6 +15,8 @@ interface IProps {
 	showSubscribers?: boolean
 	commentsCount?: number | null | undefined
 	showComments?: boolean
+	likesCount?: number | null | undefined
+	showLikes?: boolean
 	createdAt?: _Neo4jDateTime | null | undefined
 }
 
@@ -25,12 +28,24 @@ export const MetaActions = ({
 	showSubscribers = false,
 	commentsCount = 0,
 	showComments = false,
+	likesCount = 0,
+	showLikes = false,
 	createdAt,
 }: IProps) => {
 	const subscribersMeta = showSubscribers && (
-		<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
-			Subscribe | <b>{subscribersCount} </b>
-		</Link>
+		<span>
+			<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
+				Subscribe | <b>{subscribersCount} </b>
+			</Link>
+		</span>
+	)
+
+	const likesMeta = showLikes && (
+		<span>
+			<Link to='#' className=''>
+				<BiLike /> Like | <b>{likesCount} </b>
+			</Link>
+		</span>
 	)
 
 	const commentsMeta = showComments && (
@@ -64,6 +79,7 @@ export const MetaActions = ({
 			{subscribersMeta}
 			{commentsButton}
 			{viewsMeta}
+			{likesMeta}
 			{timeMeta}
 		</div>
 	)

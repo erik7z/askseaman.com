@@ -1,0 +1,8 @@
+query QuestionComments($nodeId: ID!) {
+	Question(nodeId: $nodeId) {
+		nodeId
+		comments {
+			...commentFields
+		}
+	}
+}

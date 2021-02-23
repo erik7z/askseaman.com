@@ -76,7 +76,7 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 
 	if (loading) return <Skeleton count={25} />
 
-	setSectionTitle(question.title)
+	// setSectionTitle(question.title)
 
 	return (
 		<>
