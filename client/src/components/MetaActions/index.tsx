@@ -8,32 +8,38 @@ import { normalizeTime } from './../../lib/helpers'
 
 interface IProps {
 	toggleEventKey?: string
-	subscribersCount?: number | null | undefined
 	viewsCount?: number | null | undefined
+	showViews?: boolean
+	subscribersCount?: number | null | undefined
+	showSubscribers?: boolean
 	commentsCount?: number | null | undefined
+	showComments?: boolean
 	createdAt?: _Neo4jDateTime | null | undefined
 }
 
 export const MetaActions = ({
 	toggleEventKey,
-	subscribersCount,
-	viewsCount,
-	commentsCount,
+	viewsCount = 0,
+	showViews = false,
+	subscribersCount = 0,
+	showSubscribers = false,
+	commentsCount = 0,
+	showComments = false,
 	createdAt,
 }: IProps) => {
-	const subscribersMeta = subscribersCount && (
+	const subscribersMeta = showSubscribers && (
 		<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
 			Subscribe | <b>{subscribersCount} </b>
 		</Link>
 	)
 
-	const commentsMeta = commentsCount !== null && commentsCount !== undefined && (
+	const commentsMeta = showComments && (
 		<span>
 			<BsChat /> <b>{commentsCount}</b> Comments
 		</span>
 	)
 
-	const viewsMeta = viewsCount !== null && viewsCount !== undefined && (
+	const viewsMeta = showViews && (
 		<span>
 			<BsEye /> <b>{viewsCount}</b> Views
 		</span>

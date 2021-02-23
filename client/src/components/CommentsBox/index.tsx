@@ -19,21 +19,30 @@ interface IProps {
 export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 	if (!topic) return <h1>Something went wrong...</h1>
 
-	let subscribersCount, viewsCount
+	let subscribersCount, viewsCount, showSubscribers, showViews, showComments
 
 	if (
 		topic.hasOwnProperty('subscribersCount') &&
 		topic.hasOwnProperty('viewsCount')
-	)
-		({ subscribersCount, viewsCount } = topic as TQuestion)
+	) {
+		;({ subscribersCount, viewsCount } = topic as TQuestion)
+
+		showSubscribers = true
+		showViews = true
+	}
+
+	showComments = true
 
 	return (
 		<Accordion>
 			<MetaActions
 				toggleEventKey={toggleEventKey}
 				subscribersCount={subscribersCount}
+				showSubscribers={showSubscribers}
 				viewsCount={viewsCount}
+				showViews={showViews}
 				commentsCount={topic.commentsCount}
+				showComments={showComments}
 				createdAt={topic.createdAt}
 			/>
 			<Card className='border-0 comments-collapse'>

@@ -27,8 +27,11 @@ export const QuestionListItem = ({ question }: { question: Question }) => {
 							{
 								<MetaActions
 									subscribersCount={question.subscribersCount}
+									showSubscribers={true}
 									viewsCount={question.viewsCount}
+									showViews={true}
 									commentsCount={question.commentsCount}
+									showComments={true}
 									createdAt={question.createdAt}
 								/>
 							}
