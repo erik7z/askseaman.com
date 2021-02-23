@@ -142,13 +142,13 @@ export const App = () => {
 }
 
 ReactDOM.render(
-	<React.StrictMode>
-		<ApolloProvider client={client}>
-			<CurrentUserProvider>
-				<App />
-			</CurrentUserProvider>
-		</ApolloProvider>
-	</React.StrictMode>,
+	// <React.StrictMode>
+	<ApolloProvider client={client}>
+		<CurrentUserProvider>
+			<App />
+		</CurrentUserProvider>
+	</ApolloProvider>,
+	// </React.StrictMode>,
 	document.getElementById('root')
 )
 
