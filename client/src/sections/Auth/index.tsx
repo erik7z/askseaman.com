@@ -3,9 +3,9 @@ import { Formik } from 'formik'
 
 import { Link } from 'react-router-dom'
 import { Col, Form, Button, InputGroup, Alert } from 'react-bootstrap'
-import { useSignInMutation, FieldError } from '../../__generated/graphql'
+import { useSignInMutation, FieldError } from '../../types/generated-frontend'
 
-import { TComponentWithHistory } from '../../types/globals'
+import { TComponentWithHistory } from '../../types/frontend'
 
 import { signInValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'

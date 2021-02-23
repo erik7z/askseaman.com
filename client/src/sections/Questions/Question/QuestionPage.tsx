@@ -17,13 +17,13 @@ import {
 	Answer as TAnswer,
 	useQuestionPageLazyQuery,
 	useQuestionAnswersListLazyQuery,
-} from '../../../__generated/graphql'
+} from '../../../types/generated-frontend'
 
 interface IProps {
 	setSectionTitle: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const QuestionContent = ({ setSectionTitle }: IProps) => {
+export const QuestionPage = ({ setSectionTitle }: IProps) => {
 	const { questionId } = useParams<{ questionId: string }>()
 
 	const [updateQuestionPage, setUpdateQuestionPage] = useState(false)

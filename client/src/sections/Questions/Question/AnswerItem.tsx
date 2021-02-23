@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
 
 import { CommentsBox, AvatarLink } from '../../../components'
-import { Answer as TAnswer } from '../../../__generated/graphql'
+import { Answer as TAnswer } from '../../../types/generated-frontend'
 
 interface IProps {
 	answer: TAnswer

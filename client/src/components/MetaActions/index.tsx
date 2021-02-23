@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Accordion } from 'react-bootstrap'
 import { BsChat, BsEye, BsClock } from 'react-icons/bs'
 
-import { _Neo4jDateTime } from '../../__generated/graphql'
+import { _Neo4jDateTime } from '../../types/generated-frontend'
 import { normalizeTime } from './../../lib/helpers'
 
 interface IProps {

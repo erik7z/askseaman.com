@@ -5,7 +5,7 @@ import { SideQuestInstrBox } from '../../../components'
 import Section from '../../../components/Layout/Section'
 import SideBar from '../../../components/Layout/SideBar'
 
-import { QuestionContent } from './QuestionContent'
+import { QuestionPage } from './QuestionPage'
 
 export const Question = () => {
 	const [sectionTitle, setSectionTitle] = useState('')
@@ -17,7 +17,7 @@ export const Question = () => {
 				sectionTitle={sectionTitle}
 				sectionClass='section-question-page'
 			>
-				<QuestionContent setSectionTitle={setSectionTitle} />
+				<QuestionPage setSectionTitle={setSectionTitle} />
 			</Section>
 			<SideBar>
 				<SideQuestInstrBox />

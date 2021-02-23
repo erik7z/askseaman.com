@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
 import { TagsInlineList } from './../TagsInlineList'
-import { Question, Tag } from '../../__generated/graphql'
+import { Question, Tag } from '../../types/generated-frontend'
 import { MetaActions } from './../MetaActions'
 
 export const QuestionListItem = ({ question }: { question: Question }) => {

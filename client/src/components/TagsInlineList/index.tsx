@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { BsTag } from 'react-icons/bs'
-import { Tag as TTag } from '../../__generated/graphql'
+import { Tag as TTag } from '../../types/generated-frontend'
 
 export const TagsInlineList = ({
 	tagsList = [],

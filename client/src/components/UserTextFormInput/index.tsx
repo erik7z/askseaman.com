@@ -3,7 +3,10 @@ import { Formik } from 'formik'
 import { Row, Col, Form, Button, Alert } from 'react-bootstrap'
 import { ApolloError } from '@apollo/client'
 
-import { AnswerQuestionMutationFn, FieldError } from '../../__generated/graphql'
+import {
+	AnswerQuestionMutationFn,
+	FieldError,
+} from '../../types/generated-frontend'
 
 import { AvatarLink } from '../'
 import { userTextValidation } from '../../lib/validation'

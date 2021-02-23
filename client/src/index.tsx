@@ -27,7 +27,7 @@ import { AskQuestion } from './sections/Questions/AskQuestion'
 import { Notifications } from './sections/Me/Notifications'
 import { Register } from './sections/Auth/Register'
 
-import { useCurrentUserLazyQuery } from './__generated/graphql'
+import { useCurrentUserLazyQuery } from './types/generated-frontend'
 
 import reportWebVitals from './reportWebVitals'
 

@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 import { Card } from 'react-bootstrap'
 import { BsBoxArrowInDown } from 'react-icons/bs'
 
-import { Answer as TAnswer } from '../../../__generated/graphql'
+import { Answer as TAnswer } from '../../../types/generated-frontend'
 
 import { AnswerItem } from './AnswerItem'
 import { ApolloError } from '@apollo/client'

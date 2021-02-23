@@ -9,7 +9,7 @@ import {
 import {
 	Answer as TAnswer,
 	Question as TQuestion,
-} from '../../__generated/graphql'
+} from '../../types/generated-frontend'
 
 interface IProps {
 	toggleEventKey: string

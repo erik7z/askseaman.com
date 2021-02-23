@@ -1,7 +1,11 @@
 import { Tag as ITag } from 'react-tag-autocomplete'
 
-import { TkvPair } from '../types/globals'
-import { FieldError, Tag as TTag, _Neo4jDateTime } from '../__generated/graphql'
+import { TkvPair } from '../types/frontend'
+import {
+	FieldError,
+	Tag as TTag,
+	_Neo4jDateTime,
+} from '../types/generated-frontend'
 import { PAGINATION_PAGES_VISIBLE, PAGINATION_PAGE_SIZE } from './../env'
 
 export const normalizeErrors = (errors: FieldError[]) => {

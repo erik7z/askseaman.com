@@ -7,8 +7,8 @@ import {
 	useRegisterMutation,
 	FieldError,
 	UserRank,
-} from '../../__generated/graphql'
-import { TComponentWithHistory, TkvPair } from '../../types/globals'
+} from '../../types/generated-frontend'
+import { TComponentWithHistory, TkvPair } from '../../types/frontend'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'

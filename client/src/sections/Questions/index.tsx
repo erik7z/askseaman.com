@@ -17,7 +17,7 @@ import { PAGINATION_PAGE_SIZE } from './../../env'
 import {
 	useQuestionsListQuery,
 	_QuestionOrdering,
-} from '../../__generated/graphql'
+} from '../../types/generated-frontend'
 
 export const Questions = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)

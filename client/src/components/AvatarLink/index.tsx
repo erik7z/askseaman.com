@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { typicSizes } from '../../types/globals'
+import { typicSizes } from '../../types/frontend'
 
 interface IProps {
 	size: typicSizes

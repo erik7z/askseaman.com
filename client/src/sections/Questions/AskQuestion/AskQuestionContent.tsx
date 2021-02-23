@@ -11,9 +11,9 @@ import {
 	useTagLazyQuery,
 	FieldError,
 	Tag as TTag,
-} from '../../../__generated/graphql'
+} from '../../../types/generated-frontend'
 
-import { TComponentWithHistory } from '../../../types/globals'
+import { TComponentWithHistory } from '../../../types/frontend'
 
 import { askQuestionValidation } from '../../../lib/validation'
 import { normalizeErrors, normalizeTags } from '../../../lib/helpers'

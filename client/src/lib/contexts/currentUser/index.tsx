@@ -2,7 +2,7 @@ import React, { useReducer, createContext, ReactNode } from 'react'
 import {
 	User as UserType,
 	CurrentUserQuery as CurrentUserQueryType,
-} from '../../../__generated/graphql'
+} from '../../../types/generated-frontend'
 
 import { TOKEN_FIELD } from '../../../env'
 
