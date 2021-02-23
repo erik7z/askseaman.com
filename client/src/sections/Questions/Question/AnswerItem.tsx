@@ -3,8 +3,8 @@ import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
 
-import { CommentsBox, AvatarLink } from '../../components'
-import { Answer as TAnswer } from '../../__generated/graphql'
+import { CommentsBox, AvatarLink } from '../../../components'
+import { Answer as TAnswer } from '../../../__generated/graphql'
 
 interface IProps {
 	answer: TAnswer

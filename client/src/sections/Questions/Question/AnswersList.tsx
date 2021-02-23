@@ -1,6 +1,7 @@
 import React from 'react'
+import Skeleton from 'react-loading-skeleton'
 
-import { Answer as TAnswer } from './../../__generated/graphql'
+import { Answer as TAnswer } from '../../../__generated/graphql'
 
 import { AnswerItem } from './AnswerItem'
 import { ApolloError } from '@apollo/client'
@@ -12,7 +13,7 @@ interface IProps {
 }
 
 export const AnswersList = ({ answers, loading, error }: IProps) => {
-	if (loading) return <h1>Loading in progress...</h1>
+	if (loading) return <Skeleton count={20} />
 	if (error) return <h1>Something went wrong</h1>
 
 	return (

@@ -88,21 +88,20 @@ export const App = () => {
 						</Switch>
 					</AuthLayout>
 				</Route>
-
-				<MainLayout>
-					<Route
-						path={[
-							'/',
-							'/questions',
-							'/question',
-							'/ask',
-							'/user',
-							'/me',
-							'/me/notifications',
-							'/tags',
-							'/tag',
-						]}
-					>
+				<Route
+					path={[
+						'/',
+						'/questions',
+						'/question',
+						'/ask',
+						'/user',
+						'/me',
+						'/me/notifications',
+						'/tags',
+						'/tag',
+					]}
+				>
+					<MainLayout>
 						<Switch>
 							<Route exact path='/'>
 								<Questions />
@@ -134,8 +133,8 @@ export const App = () => {
 								<NotFound />
 							</Route>
 						</Switch>
-					</Route>
-				</MainLayout>
+					</MainLayout>
+				</Route>
 			</Switch>
 		</Router>
 	)

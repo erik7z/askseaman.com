@@ -6,7 +6,6 @@ import Aside from './Aside'
 
 interface IProps {
 	children: ReactNode
-	// any other props that come into the component
 }
 
 const Layout = ({ children }: IProps) => {
