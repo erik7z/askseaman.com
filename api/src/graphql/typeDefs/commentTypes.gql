@@ -13,7 +13,7 @@ type Comment implements CanBeLiked {
 }
 
 type Mutation {
-	AddComment(data: AddCommentInput!): Comment!
+	AddComment(data: AddCommentInput!): AddCommentResponse!
 		@isAuthenticated
 		@cypher(
 			statement: """

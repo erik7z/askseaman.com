@@ -16,7 +16,10 @@ interface IProps {
 
 export const AnswersList = ({ answers, loading, error }: IProps) => {
 	if (loading) return <Skeleton count={20} />
-	if (error) return <h1>Something went wrong</h1>
+	if (!loading && error) {
+		console.log(error)
+		return <h1>Something went wrong</h1>
+	}
 
 	if (!answers.length) {
 		return (

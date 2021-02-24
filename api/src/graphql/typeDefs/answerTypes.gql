@@ -1,7 +1,7 @@
 type Answer implements CanBeCommented & CanBeVoted {
 	nodeId: ID! @id
 	text: String!
-	createdAt: DateTime
+	createdAt: DateTime!
 	updatedAt: DateTime
 
 	canAccept: Boolean

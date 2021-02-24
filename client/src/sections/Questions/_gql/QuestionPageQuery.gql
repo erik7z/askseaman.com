@@ -10,7 +10,7 @@ query QuestionPage($nodeId: ID!) {
 			nodeId
 			name
 		}
-		comments {
+		comments(orderBy: createdAt_asc) {
 			...commentFields
 		}
 		answers {
@@ -19,11 +19,11 @@ query QuestionPage($nodeId: ID!) {
 			upVotesCount
 			downVotesCount
 			commentsCount
-			author {
-				...userFields
-			}
 			createdAt {
 				...dateTimeFields
+			}
+			author {
+				...userFields
 			}
 			comments {
 				...commentFields

@@ -3,19 +3,17 @@ import { Accordion, Card, Alert } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 import Apollo from '@apollo/client'
 
-import {
-	CommentItem,
-	MetaActions,
-	// UserTextFormInput
-} from '..'
+import { CommentItem, MetaActions, UserTextFormInput } from '..'
 
+import { addCommentHandler } from './../UserTextFormInput/lib/helpers'
 import {
+	useQuestionCommentsLazyQuery,
+	useAnswerCommentsLazyQuery,
+	useAddCommentMutation,
 	Comment as TComment,
 	CanBeCommented,
 	Answer as TAnswer,
 	Question as TQuestion,
-	useQuestionCommentsLazyQuery,
-	useAnswerCommentsLazyQuery,
 	QuestionCommentsQuery as TQuestionCommentsQuery,
 	QuestionCommentsQueryVariables as TQuestionCommentsQueryVariables,
 	AnswerCommentsQuery as TAnswerCommentsQuery,
@@ -51,6 +49,7 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 	}
 
 	const [commentsList, setCommentsList] = useState<TComment[]>()
+	const [commentsCount, setCommentsCount] = useState(topic.commentsCount)
 
 	const getQuestionCommentsHook = useQuestionCommentsLazyQuery(queryOptions)
 	const getAnswersCommentsHook = useAnswerCommentsLazyQuery(queryOptions)
@@ -61,6 +60,16 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 	] = isQuestionComments ? getQuestionCommentsHook : getAnswersCommentsHook
 
 	const commentsData = data as TCommentsQueryResponse
+
+	const [
+		addCommentsMutation,
+		{ error: addCommentConnErrors },
+	] = useAddCommentMutation()
+
+	const handleAddCommentSuccess = (comments: TComment[]) => {
+		setCommentsList(comments)
+		setCommentsCount(comments.length)
+	}
 
 	useEffect(() => {
 		console.log('getComments useffect')
@@ -87,7 +96,7 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 				showSubscribers={showSubscribers}
 				viewsCount={viewsCount}
 				showViews={showViews}
-				commentsCount={topic.commentsCount}
+				commentsCount={commentsCount}
 				showComments={true}
 				createdAt={topic.createdAt}
 			/>
@@ -110,7 +119,13 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 
 						<h5 className='module-header'>&gt; Your comment</h5>
 						<hr className='hr-header hr-bold' />
-						{/* <UserTextFormInput /> */}
+						<UserTextFormInput<typeof addCommentsMutation>
+							topicId={topic.nodeId}
+							submitMutation={addCommentsMutation}
+							submitHandler={addCommentHandler}
+							successFn={handleAddCommentSuccess}
+							connErrors={addCommentConnErrors}
+						/>
 					</Card.Body>
 				</Accordion.Collapse>
 			</Card>

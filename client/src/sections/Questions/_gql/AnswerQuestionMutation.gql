@@ -3,7 +3,12 @@ mutation AnswerQuestion($data: AnswerQuestionInput!) {
 		__typename
 		... on Answer {
 			nodeId
-			text
+			question {
+				nodeId
+				answers {
+					...answerFields
+				}
+			}
 		}
 		... on FormError {
 			message

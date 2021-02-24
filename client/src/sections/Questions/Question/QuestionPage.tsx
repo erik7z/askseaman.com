@@ -8,7 +8,7 @@ import {
 	CommentsBox,
 	AvatarLink,
 } from '../../../components'
-
+import { answerQuestionHandler } from './../../../components/UserTextFormInput/lib/helpers'
 import { AnswersList } from './AnswersList'
 import {
 	useAnswerQuestionMutation,
@@ -25,9 +25,6 @@ interface IProps {
 
 export const QuestionPage = ({ setSectionTitle }: IProps) => {
 	const { questionId } = useParams<{ questionId: string }>()
-
-	const [updateQuestionPage, setUpdateQuestionPage] = useState(false)
-	const toggleUpdatePage = () => setUpdateQuestionPage(!updateQuestionPage)
 
 	const [answersList, setAnswersList] = useState<TAnswer[]>([])
 
@@ -65,14 +62,21 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 
 		getQuestionAnswers()
 		if (answersData?.Answer) setAnswersList(answersData?.Answer as TAnswer[])
-	}, [updateQuestionPage, getQuestionAnswers, answersData?.Answer])
+	}, [getQuestionAnswers, answersData?.Answer])
 
 	const [
 		answerQuestionMutation,
 		{ error: answerQuestionConnErrors },
 	] = useAnswerQuestionMutation()
 
-	if (!question || error) return <h1>Something went wrong</h1>
+	const handleAnswerQuestionSuccess = (answers: TAnswer[]) => {
+		setAnswersList(answers)
+	}
+
+	if (!question || error) {
+		console.log(error)
+		return <h1>Something went wrong</h1>
+	}
 
 	if (loading) return <Skeleton count={25} />
 
@@ -115,11 +119,12 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 			/>
 			<h5 className='module-header'>&gt; Your answer</h5>
 			<hr className='hr-header hr-bold' />
-			<UserTextFormInput
+			<UserTextFormInput<typeof answerQuestionMutation>
 				topicId={question.nodeId}
 				submitMutation={answerQuestionMutation}
+				submitHandler={answerQuestionHandler}
+				successFn={handleAnswerQuestionSuccess}
 				connErrors={answerQuestionConnErrors}
-				toggleUpdatePage={toggleUpdatePage}
 			/>
 		</>
 	)

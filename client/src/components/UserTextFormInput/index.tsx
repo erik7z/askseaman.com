@@ -3,28 +3,25 @@ import { Formik } from 'formik'
 import { Row, Col, Form, Button, Alert } from 'react-bootstrap'
 import { ApolloError } from '@apollo/client'
 
-import {
-	AnswerQuestionMutationFn,
-	FieldError,
-} from '../../types/generated-frontend'
-
 import { AvatarLink } from '../'
 import { userTextValidation } from '../../lib/validation'
-import { normalizeErrors } from './../../lib/helpers'
+import { FormikSubmit } from './lib/helpers'
 
-interface IProps {
+interface IProps<MutationFunctionType> {
 	topicId: string
-	submitMutation: AnswerQuestionMutationFn
+	submitHandler: FormikSubmit<MutationFunctionType>
+	submitMutation: MutationFunctionType
+	successFn: Function
 	connErrors?: ApolloError | undefined
-	toggleUpdatePage: () => void
 }
 
-export const UserTextFormInput = ({
-	submitMutation,
+export function UserTextFormInput<MutationFunctionType>({
 	topicId,
+	submitHandler,
+	submitMutation,
+	successFn,
 	connErrors,
-	toggleUpdatePage,
-}: IProps) => {
+}: IProps<MutationFunctionType>) {
 	return (
 		<Row className='SECTION-user-input'>
 			<Col md={1} xs={2} className='pr-0 text-right'>
@@ -33,31 +30,14 @@ export const UserTextFormInput = ({
 			<Col md={11} xs={10}>
 				<Formik
 					validationSchema={userTextValidation}
-					onSubmit={async (values, { setSubmitting, setErrors, resetForm }) => {
-						setSubmitting(true)
-
-						const { data: submitResponse } = await submitMutation({
-							variables: {
-								data: {
-									nodeId: topicId,
-									text: values.text,
-								},
-							},
-						})
-
-						if (submitResponse) {
-							if (submitResponse.AnswerQuestion.__typename === 'FormError') {
-								const formErrors = submitResponse.AnswerQuestion
-									.errors as FieldError[]
-								setErrors(normalizeErrors(formErrors))
-							}
-
-							if (submitResponse.AnswerQuestion.__typename === 'Answer') {
-								toggleUpdatePage()
-								resetForm()
-							}
-						}
-						setSubmitting(false)
+					onSubmit={async (values, formikHelpers) => {
+						submitHandler(
+							topicId,
+							submitMutation,
+							successFn,
+							values,
+							formikHelpers
+						)
 					}}
 					initialValues={{
 						text: '',

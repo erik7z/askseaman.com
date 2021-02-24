@@ -69,6 +69,11 @@ schema._typeMap.AnswerQuestionResponse.resolveType = (obj: any) => {
 	else return 'Answer'
 }
 
+schema._typeMap.AddCommentResponse.resolveType = (obj: any) => {
+	if (obj.message || obj.errors || obj.message) return 'FormError'
+	else return 'Comment'
+}
+
 export const driver = neo4j.driver(
 	process.env.NEO4J_URI || 'bolt://localhost:7687',
 	neo4j.auth.basic(

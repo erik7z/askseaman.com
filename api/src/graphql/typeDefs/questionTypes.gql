@@ -2,7 +2,7 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 	nodeId: ID! @id
 	title: String!
 	text: String!
-	createdAt: DateTime
+	createdAt: DateTime!
 	updatedAt: DateTime
 	viewsCount: Int
 		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")

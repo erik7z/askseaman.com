@@ -1,0 +1,23 @@
+mutation AddComment($data: AddCommentInput!) {
+	AddComment(data: $data) {
+		__typename
+		... on Comment {
+			topic {
+				__typename
+				... on Question {
+					comments(orderBy: createdAt_asc) {
+						...commentFields
+					}
+				}
+				... on Answer {
+					comments(orderBy: createdAt_asc) {
+						...commentFields
+					}
+				}
+			}
+		}
+		... on FormError {
+			...formErrorFields
+		}
+	}
+}

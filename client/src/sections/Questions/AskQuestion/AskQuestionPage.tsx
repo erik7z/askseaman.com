@@ -1,4 +1,5 @@
-import React, { FC, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import { Formik } from 'formik'
 import { Tag as ITag } from 'react-tag-autocomplete'
@@ -13,12 +14,11 @@ import {
 	Tag as TTag,
 } from '../../../types/generated-frontend'
 
-import { TComponentWithHistory } from '../../../types/frontend'
-
 import { askQuestionValidation } from '../../../lib/validation'
 import { normalizeErrors, normalizeTags } from '../../../lib/helpers'
 
-export const AskQuestionPage: FC<TComponentWithHistory> = ({ history }) => {
+export const AskQuestionPage = () => {
+	const history = useHistory()
 	let tagsSuggestions: ITag[] = []
 	const [suggestions, setSuggestions] = useState(tagsSuggestions)
 

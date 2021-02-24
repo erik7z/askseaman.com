@@ -11,7 +11,10 @@ interface IProps {
 }
 
 export const AnswerItem = ({ answer }: IProps) => {
-	if (!answer) return <h1>Something went wrong...</h1>
+	if (!answer) {
+		console.error('No answer in answer item')
+		return <h1>Something went wrong...</h1>
+	}
 
 	return (
 		<Row className='answer-item media'>

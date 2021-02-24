@@ -4,6 +4,7 @@ union SubscribeResponse = Question | Tag
 union AuthResponse = TokenResponse | FormError
 union AskQuestionResponse = Question | FormError
 union AnswerQuestionResponse = Answer | FormError
+union AddCommentResponse = Comment | FormError
 
 type FieldError {
 	field: String

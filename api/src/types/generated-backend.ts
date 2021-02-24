@@ -997,6 +997,8 @@ export type AskQuestionResponse = Question | FormError;
 
 export type AnswerQuestionResponse = Answer | FormError;
 
+export type AddCommentResponse = Comment | FormError;
+
 export type FieldError = {
   __typename?: 'FieldError';
   field?: Maybe<Scalars['String']>;
@@ -1529,7 +1531,7 @@ export type Mutation = {
   EditAnswer: Answer;
   DeleteAnswer: DeleteAnswerResponse;
   ToggleAcceptAnswer?: Maybe<Answer>;
-  AddComment: Comment;
+  AddComment: AddCommentResponse;
   EditComment: Comment;
   DeleteComment: DeleteCommentResponse;
   AskQuestion: AskQuestionResponse;
@@ -1666,6 +1668,8 @@ export type Query = {
   AskQuestionResponse?: Maybe<Array<Maybe<AskQuestionResponse>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AnswerQuestionResponse type nodes. */
   AnswerQuestionResponse?: Maybe<Array<Maybe<AnswerQuestionResponse>>>;
+  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AddCommentResponse type nodes. */
+  AddCommentResponse?: Maybe<Array<Maybe<AddCommentResponse>>>;
 };
 
 
@@ -1752,6 +1756,12 @@ export type QueryAskQuestionResponseArgs = {
 
 
 export type QueryAnswerQuestionResponseArgs = {
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryAddCommentResponseArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
 };
@@ -1884,6 +1894,7 @@ export type ResolversTypes = ResolversObject<{
   AuthResponse: ResolversTypes['TokenResponse'] | ResolversTypes['FormError'];
   AskQuestionResponse: ResolversTypes['Question'] | ResolversTypes['FormError'];
   AnswerQuestionResponse: ResolversTypes['Answer'] | ResolversTypes['FormError'];
+  AddCommentResponse: ResolversTypes['Comment'] | ResolversTypes['FormError'];
   FieldError: ResolverTypeWrapper<FieldError>;
   FormError: ResolverTypeWrapper<FormError>;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
@@ -1958,6 +1969,7 @@ export type ResolversParentTypes = ResolversObject<{
   AuthResponse: ResolversParentTypes['TokenResponse'] | ResolversParentTypes['FormError'];
   AskQuestionResponse: ResolversParentTypes['Question'] | ResolversParentTypes['FormError'];
   AnswerQuestionResponse: ResolversParentTypes['Answer'] | ResolversParentTypes['FormError'];
+  AddCommentResponse: ResolversParentTypes['Comment'] | ResolversParentTypes['FormError'];
   FieldError: FieldError;
   FormError: FormError;
   LoginResponse: LoginResponse;
@@ -2198,6 +2210,10 @@ export type AnswerQuestionResponseResolvers<ContextType = any, ParentType extend
   __resolveType: TypeResolveFn<'Answer' | 'FormError', ParentType, ContextType>;
 }>;
 
+export type AddCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddCommentResponse'] = ResolversParentTypes['AddCommentResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Comment' | 'FormError', ParentType, ContextType>;
+}>;
+
 export type FieldErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
   field?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2342,7 +2358,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   EditAnswer?: Resolver<ResolversTypes['Answer'], ParentType, ContextType, RequireFields<MutationEditAnswerArgs, 'data'>>;
   DeleteAnswer?: Resolver<ResolversTypes['DeleteAnswerResponse'], ParentType, ContextType, RequireFields<MutationDeleteAnswerArgs, 'data'>>;
   ToggleAcceptAnswer?: Resolver<Maybe<ResolversTypes['Answer']>, ParentType, ContextType, RequireFields<MutationToggleAcceptAnswerArgs, 'data'>>;
-  AddComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'data'>>;
+  AddComment?: Resolver<ResolversTypes['AddCommentResponse'], ParentType, ContextType, RequireFields<MutationAddCommentArgs, 'data'>>;
   EditComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationEditCommentArgs, 'data'>>;
   DeleteComment?: Resolver<ResolversTypes['DeleteCommentResponse'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'data'>>;
   AskQuestion?: Resolver<ResolversTypes['AskQuestionResponse'], ParentType, ContextType, RequireFields<MutationAskQuestionArgs, 'data'>>;
@@ -2371,6 +2387,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
   AskQuestionResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AskQuestionResponse']>>>, ParentType, ContextType, RequireFields<QueryAskQuestionResponseArgs, never>>;
   AnswerQuestionResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AnswerQuestionResponse']>>>, ParentType, ContextType, RequireFields<QueryAnswerQuestionResponseArgs, never>>;
+  AddCommentResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AddCommentResponse']>>>, ParentType, ContextType, RequireFields<QueryAddCommentResponseArgs, never>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
@@ -2390,6 +2407,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   AuthResponse?: AuthResponseResolvers<ContextType>;
   AskQuestionResponse?: AskQuestionResponseResolvers<ContextType>;
   AnswerQuestionResponse?: AnswerQuestionResponseResolvers<ContextType>;
+  AddCommentResponse?: AddCommentResponseResolvers<ContextType>;
   FieldError?: FieldErrorResolvers<ContextType>;
   FormError?: FormErrorResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;

@@ -1,17 +1,5 @@
 query QuestionAnswersList($filter: _AnswerFilter) {
 	Answer(filter: $filter) {
-		nodeId
-		text
-		upVotesCount
-		downVotesCount
-		author {
-			...userFields
-		}
-		createdAt {
-			...dateTimeFields
-		}
-		comments {
-			...commentFields
-		}
+		...answerFields
 	}
 }
