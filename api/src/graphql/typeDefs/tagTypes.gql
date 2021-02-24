@@ -3,6 +3,7 @@ type Tag implements CanBeSubscribed {
 	name: String! @unique @upper
 	description: String
 	createdAt: DateTime
+	timestamp: String
 	isSubscribed: Boolean
 		@isAuthenticated
 		@cypher(
@@ -52,7 +53,8 @@ type Mutation {
 				nodeId: apoc.create.uuid(),
 				name: $data.name,
 				description: $data.description,
-				createdAt: DateTime()
+				createdAt: DateTime(),
+				timestamp: timestamp()
 				})-[a:ADDED_BY]->(u)
 			RETURN t
 			"""

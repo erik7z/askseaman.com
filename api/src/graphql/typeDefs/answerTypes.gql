@@ -3,6 +3,7 @@ type Answer implements CanBeCommented & CanBeVoted {
 	text: String!
 	createdAt: DateTime!
 	updatedAt: DateTime
+	timestamp: String
 
 	canAccept: Boolean
 		@isAuthenticated
@@ -38,7 +39,12 @@ type Mutation {
 			statement: """
 			MATCH (u:User {nodeId: $cypherParams.currentUserId})
 			CREATE (a:Answer:CanBeCommented:CanBeVoted)<-[:ANSWERED]-(u)
-			SET a += {text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+			SET a += {
+				text: $data.text,
+				nodeId: apoc.create.uuid(),
+				createdAt: DateTime(),
+				timestamp: timestamp()
+			}
 			WITH a
 			MATCH (q:Question {nodeId: $data.nodeId})
 			CREATE (q)-[r:HAS_ANSWER]->(a)

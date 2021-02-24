@@ -10,10 +10,10 @@ query QuestionPage($nodeId: ID!) {
 			nodeId
 			name
 		}
-		comments(orderBy: createdAt_asc) {
+		comments(orderBy: timestamp_asc) {
 			...commentFields
 		}
-		answers {
+		answers(orderBy: timestamp_asc) {
 			nodeId
 			text
 			upVotesCount

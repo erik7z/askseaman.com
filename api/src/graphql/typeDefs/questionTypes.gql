@@ -4,6 +4,8 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 	text: String!
 	createdAt: DateTime!
 	updatedAt: DateTime
+	timestamp: String
+
 	viewsCount: Int
 		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
 	canVote: Boolean #TODO:logic to decide if user can vote (depended on some rating)
@@ -50,9 +52,14 @@ type Mutation {
 			statement: """
 			MATCH (u:User {nodeId: $cypherParams.currentUserId})
 			CREATE (q:Question:CanBeCommented:CanBeVoted:CanBeSubscribed)<-[:ASKED]-(u)
-			SET q += {title: $data.title, text: $data.text, nodeId: apoc.create.uuid(),
-			viewsCount: 0,
-			createdAt: DateTime()}
+			SET q += {
+				title: $data.title,
+				text: $data.text,
+				nodeId: apoc.create.uuid(),
+				viewsCount: 0,
+				createdAt: DateTime(),
+				timestamp: timestamp()
+			}
 			WITH q
 			CALL {
 				WITH q

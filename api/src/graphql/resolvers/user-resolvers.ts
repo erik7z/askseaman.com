@@ -49,7 +49,8 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 						surname: $data.surname,
 						roles: $data.roles,
 						rank: $data.rank,
-						createdAt: DateTime()
+						createdAt: DateTime(),
+						timestamp: timestamp()
 					}) return u`,
 						{ data: newData }
 					)

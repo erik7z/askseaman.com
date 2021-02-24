@@ -5,12 +5,12 @@ mutation AddComment($data: AddCommentInput!) {
 			topic {
 				__typename
 				... on Question {
-					comments(orderBy: createdAt_asc) {
+					comments(orderBy: timestamp_asc) {
 						...commentFields
 					}
 				}
 				... on Answer {
-					comments(orderBy: createdAt_asc) {
+					comments(orderBy: timestamp_asc) {
 						...commentFields
 					}
 				}

@@ -3,7 +3,7 @@ type Comment implements CanBeLiked {
 	text: String!
 	createdAt: DateTime!
 	updatedAt: DateTime
-
+	timestamp: String
 	likesCount: Int
 		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
 
@@ -19,7 +19,12 @@ type Mutation {
 			statement: """
 			MATCH (u:User {nodeId: $cypherParams.currentUserId})
 			CREATE (c:Comment)<-[:ADDED_COMMENT]-(u)
-			SET c += {text: $data.text, nodeId: apoc.create.uuid(), createdAt: DateTime()}
+			SET c += {
+				text: $data.text,
+				nodeId: apoc.create.uuid(),
+				createdAt: DateTime(),
+				timestamp: timestamp()
+			}
 			WITH c
 			MATCH (t:CanBeCommented {nodeId: $data.nodeId})
 			CREATE (t)-[:HAS_COMMENT]->(c)

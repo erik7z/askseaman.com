@@ -38,6 +38,8 @@ export enum _AnswerOrdering {
   CreatedAtDesc = 'createdAt_desc',
   UpdatedAtAsc = 'updatedAt_asc',
   UpdatedAtDesc = 'updatedAt_desc',
+  TimestampAsc = 'timestamp_asc',
+  TimestampDesc = 'timestamp_desc',
   CanAcceptAsc = 'canAccept_asc',
   CanAcceptDesc = 'canAccept_desc',
   AcceptedAsc = 'accepted_asc',
@@ -93,6 +95,17 @@ export type _AnswerFilter = {
   updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
+  timestamp_not?: Maybe<Scalars['String']>;
+  timestamp_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_not_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_regexp?: Maybe<Scalars['String']>;
+  timestamp_contains?: Maybe<Scalars['String']>;
+  timestamp_not_contains?: Maybe<Scalars['String']>;
+  timestamp_starts_with?: Maybe<Scalars['String']>;
+  timestamp_not_starts_with?: Maybe<Scalars['String']>;
+  timestamp_ends_with?: Maybe<Scalars['String']>;
+  timestamp_not_ends_with?: Maybe<Scalars['String']>;
   author?: Maybe<_UserFilter>;
   author_not?: Maybe<_UserFilter>;
   author_in?: Maybe<Array<_UserFilter>>;
@@ -117,6 +130,7 @@ export type Answer = CanBeCommented & CanBeVoted & {
   text: Scalars['String'];
   createdAt: _Neo4jDateTime;
   updatedAt?: Maybe<_Neo4jDateTime>;
+  timestamp?: Maybe<Scalars['String']>;
   canAccept?: Maybe<Scalars['Boolean']>;
   accepted?: Maybe<Scalars['Boolean']>;
   upVotesCount: Scalars['Int'];
@@ -156,6 +170,8 @@ export enum _CommentOrdering {
   CreatedAtDesc = 'createdAt_desc',
   UpdatedAtAsc = 'updatedAt_asc',
   UpdatedAtDesc = 'updatedAt_desc',
+  TimestampAsc = 'timestamp_asc',
+  TimestampDesc = 'timestamp_desc',
   LikesCountAsc = 'likesCount_asc',
   LikesCountDesc = 'likesCount_desc',
   IdAsc = '_id_asc',
@@ -203,6 +219,17 @@ export type _CommentFilter = {
   updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
+  timestamp_not?: Maybe<Scalars['String']>;
+  timestamp_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_not_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_regexp?: Maybe<Scalars['String']>;
+  timestamp_contains?: Maybe<Scalars['String']>;
+  timestamp_not_contains?: Maybe<Scalars['String']>;
+  timestamp_starts_with?: Maybe<Scalars['String']>;
+  timestamp_not_starts_with?: Maybe<Scalars['String']>;
+  timestamp_ends_with?: Maybe<Scalars['String']>;
+  timestamp_not_ends_with?: Maybe<Scalars['String']>;
   author?: Maybe<_UserFilter>;
   author_not?: Maybe<_UserFilter>;
   author_in?: Maybe<Array<_UserFilter>>;
@@ -223,6 +250,7 @@ export type Comment = CanBeLiked & {
   text: Scalars['String'];
   createdAt: _Neo4jDateTime;
   updatedAt?: Maybe<_Neo4jDateTime>;
+  timestamp?: Maybe<Scalars['String']>;
   likesCount?: Maybe<Scalars['Int']>;
   author?: Maybe<User>;
   topic?: Maybe<CanBeCommented>;
@@ -255,6 +283,8 @@ export enum _QuestionOrdering {
   CreatedAtDesc = 'createdAt_desc',
   UpdatedAtAsc = 'updatedAt_asc',
   UpdatedAtDesc = 'updatedAt_desc',
+  TimestampAsc = 'timestamp_asc',
+  TimestampDesc = 'timestamp_desc',
   ViewsCountAsc = 'viewsCount_asc',
   ViewsCountDesc = 'viewsCount_desc',
   CanVoteAsc = 'canVote_asc',
@@ -329,6 +359,17 @@ export type _QuestionFilter = {
   updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
+  timestamp_not?: Maybe<Scalars['String']>;
+  timestamp_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_not_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_regexp?: Maybe<Scalars['String']>;
+  timestamp_contains?: Maybe<Scalars['String']>;
+  timestamp_not_contains?: Maybe<Scalars['String']>;
+  timestamp_starts_with?: Maybe<Scalars['String']>;
+  timestamp_not_starts_with?: Maybe<Scalars['String']>;
+  timestamp_ends_with?: Maybe<Scalars['String']>;
+  timestamp_not_ends_with?: Maybe<Scalars['String']>;
   canVote?: Maybe<Scalars['Boolean']>;
   canVote_not?: Maybe<Scalars['Boolean']>;
   author?: Maybe<_UserFilter>;
@@ -392,6 +433,7 @@ export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribe
   text: Scalars['String'];
   createdAt: _Neo4jDateTime;
   updatedAt?: Maybe<_Neo4jDateTime>;
+  timestamp?: Maybe<Scalars['String']>;
   viewsCount?: Maybe<Scalars['Int']>;
   canVote?: Maybe<Scalars['Boolean']>;
   upVotesCount?: Maybe<Scalars['Int']>;
@@ -465,6 +507,8 @@ export enum _TagOrdering {
   DescriptionDesc = 'description_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
+  TimestampAsc = 'timestamp_asc',
+  TimestampDesc = 'timestamp_desc',
   IsSubscribedAsc = 'isSubscribed_asc',
   IsSubscribedDesc = 'isSubscribed_desc',
   QuestionsCountAsc = 'questionsCount_asc',
@@ -521,6 +565,17 @@ export type _TagFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
+  timestamp_not?: Maybe<Scalars['String']>;
+  timestamp_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_not_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_regexp?: Maybe<Scalars['String']>;
+  timestamp_contains?: Maybe<Scalars['String']>;
+  timestamp_not_contains?: Maybe<Scalars['String']>;
+  timestamp_starts_with?: Maybe<Scalars['String']>;
+  timestamp_not_starts_with?: Maybe<Scalars['String']>;
+  timestamp_ends_with?: Maybe<Scalars['String']>;
+  timestamp_not_ends_with?: Maybe<Scalars['String']>;
   questions?: Maybe<_QuestionFilter>;
   questions_not?: Maybe<_QuestionFilter>;
   questions_in?: Maybe<Array<_QuestionFilter>>;
@@ -557,6 +612,7 @@ export type Tag = CanBeSubscribed & {
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTime>;
+  timestamp?: Maybe<Scalars['String']>;
   isSubscribed?: Maybe<Scalars['Boolean']>;
   questionsCount?: Maybe<Scalars['Int']>;
   questionsSolvedCount?: Maybe<Scalars['Int']>;
@@ -625,6 +681,8 @@ export enum _UserOrdering {
   RankDesc = 'rank_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
+  TimestampAsc = 'timestamp_asc',
+  TimestampDesc = 'timestamp_desc',
   LocationAsc = 'location_asc',
   LocationDesc = 'location_desc',
   QuestionsCountAsc = 'questionsCount_asc',
@@ -692,6 +750,17 @@ export type _UserFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
+  timestamp_not?: Maybe<Scalars['String']>;
+  timestamp_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_not_in?: Maybe<Array<Scalars['String']>>;
+  timestamp_regexp?: Maybe<Scalars['String']>;
+  timestamp_contains?: Maybe<Scalars['String']>;
+  timestamp_not_contains?: Maybe<Scalars['String']>;
+  timestamp_starts_with?: Maybe<Scalars['String']>;
+  timestamp_not_starts_with?: Maybe<Scalars['String']>;
+  timestamp_ends_with?: Maybe<Scalars['String']>;
+  timestamp_not_ends_with?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Scalars['String']>>;
   roles_not?: Maybe<Array<Scalars['String']>>;
   roles_regexp?: Maybe<Scalars['String']>;
@@ -761,6 +830,7 @@ export type User = {
   surname: Scalars['String'];
   rank?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTime>;
+  timestamp?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
   questionsCount?: Maybe<Scalars['Int']>;
@@ -1683,6 +1753,7 @@ export type QueryAnswerArgs = {
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -1696,6 +1767,7 @@ export type QueryCommentArgs = {
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -1710,6 +1782,7 @@ export type QueryQuestionArgs = {
   text?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
   canVote?: Maybe<Scalars['Boolean']>;
   totalCount?: Maybe<Scalars['Int']>;
   _id?: Maybe<Scalars['String']>;
@@ -1725,6 +1798,7 @@ export type QueryTagArgs = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -1739,6 +1813,7 @@ export type QueryUserArgs = {
   surname?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
+  timestamp?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
   location?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
@@ -2118,7 +2193,7 @@ export const AnswerFieldsFragmentDoc = gql`
   createdAt {
     ...dateTimeFields
   }
-  comments(orderBy: createdAt_asc) {
+  comments(orderBy: timestamp_asc) {
     ...commentFields
   }
 }
@@ -2288,12 +2363,12 @@ export const AddCommentDocument = gql`
       topic {
         __typename
         ... on Question {
-          comments(orderBy: createdAt_asc) {
+          comments(orderBy: timestamp_asc) {
             ...commentFields
           }
         }
         ... on Answer {
-          comments(orderBy: createdAt_asc) {
+          comments(orderBy: timestamp_asc) {
             ...commentFields
           }
         }
@@ -2335,7 +2410,7 @@ export const AnswerCommentsDocument = gql`
     query AnswerComments($nodeId: ID!) {
   Answer(nodeId: $nodeId) {
     nodeId
-    comments(orderBy: createdAt_asc) {
+    comments(orderBy: timestamp_asc) {
       ...commentFields
     }
   }
@@ -2496,7 +2571,7 @@ export const QuestionCommentsDocument = gql`
     query QuestionComments($nodeId: ID!) {
   Question(nodeId: $nodeId) {
     nodeId
-    comments(orderBy: createdAt_asc) {
+    comments(orderBy: timestamp_asc) {
       ...commentFields
     }
   }
@@ -2541,10 +2616,10 @@ export const QuestionPageDocument = gql`
       nodeId
       name
     }
-    comments(orderBy: createdAt_asc) {
+    comments(orderBy: timestamp_asc) {
       ...commentFields
     }
-    answers {
+    answers(orderBy: timestamp_asc) {
       nodeId
       text
       upVotesCount

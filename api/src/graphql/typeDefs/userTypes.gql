@@ -4,6 +4,7 @@ type User {
 	surname: String!
 	rank: String
 	createdAt: DateTime
+	timestamp: String
 	roles: [String]
 	location: String
 

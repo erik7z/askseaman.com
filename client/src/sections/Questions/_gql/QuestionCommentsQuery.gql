@@ -1,7 +1,7 @@
 query QuestionComments($nodeId: ID!) {
 	Question(nodeId: $nodeId) {
 		nodeId
-		comments(orderBy: createdAt_asc) {
+		comments(orderBy: timestamp_asc) {
 			...commentFields
 		}
 	}

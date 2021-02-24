@@ -29,7 +29,7 @@ fragment answerFields on Answer {
 	createdAt {
 		...dateTimeFields
 	}
-	comments(orderBy: createdAt_asc) {
+	comments(orderBy: timestamp_asc) {
 		...commentFields
 	}
 }
