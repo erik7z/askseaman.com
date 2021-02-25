@@ -1,37 +1,44 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Accordion } from 'react-bootstrap'
+import { useAccordionToggle } from 'react-bootstrap'
 import { BsChat, BsEye, BsClock } from 'react-icons/bs'
 import { BiLike } from 'react-icons/bi'
 
 import { _Neo4jDateTime } from '../../types/generated-frontend'
+import { ApolloLazyQuery } from '../../types/frontend'
 import { normalizeTime } from './../../lib/helpers'
 
 interface IProps {
-	toggleEventKey?: string
+	accordionId?: string
 	viewsCount?: number | null | undefined
 	showViews?: boolean
 	subscribersCount?: number | null | undefined
 	showSubscribers?: boolean
-	commentsCount?: number | null | undefined
-	showComments?: boolean
 	likesCount?: number | null | undefined
 	showLikes?: boolean
 	createdAt?: _Neo4jDateTime | null | undefined
+	showComments?: boolean
+	commentsCount?: number | null | undefined
+	getComments?: ApolloLazyQuery
+	commentsLoading?: boolean
 }
 
 export const MetaActions = ({
-	toggleEventKey,
+	accordionId,
 	viewsCount = 0,
 	showViews = false,
 	subscribersCount = 0,
 	showSubscribers = false,
 	commentsCount = 0,
 	showComments = false,
+	getComments,
+	commentsLoading,
 	likesCount = 0,
 	showLikes = false,
 	createdAt,
 }: IProps) => {
+	const [isCommentListExpanded, setCommentListExpanded] = useState(false)
+
 	const subscribersMeta = showSubscribers && (
 		<span>
 			<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
@@ -66,10 +73,19 @@ export const MetaActions = ({
 		</span>
 	) : null
 
-	const commentsButton = toggleEventKey ? (
-		<Accordion.Toggle as={Link} to='#' eventKey={toggleEventKey}>
+	const toggleCommentExpansion = useAccordionToggle(accordionId as string, () =>
+		setCommentListExpanded(!isCommentListExpanded)
+	)
+
+	const commentsButtonClickEvent = (e: React.MouseEvent) => {
+		getComments && !isCommentListExpanded && getComments()
+		toggleCommentExpansion(e)
+	}
+
+	const commentsButton = accordionId ? (
+		<Link to='#showcomments' onClick={commentsButtonClickEvent}>
 			{commentsMeta}
-		</Accordion.Toggle>
+		</Link>
 	) : (
 		commentsMeta
 	)
@@ -77,7 +93,7 @@ export const MetaActions = ({
 	return (
 		<div className='meta d-md-flex align-items-center'>
 			{subscribersMeta}
-			{commentsButton}
+			{commentsLoading ? <span>Loading...</span> : commentsButton}
 			{viewsMeta}
 			{likesMeta}
 			{timeMeta}

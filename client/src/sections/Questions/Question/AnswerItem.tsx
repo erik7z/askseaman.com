@@ -61,7 +61,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 			</Col>
 			<Col md={11} xs={10}>
 				<p className='post-item-text'>{answer.text}</p>
-				<CommentsBox topic={answer as TAnswer} toggleEventKey='acomments-0' />
+				<CommentsBox topic={answer as TAnswer} accordionId={answer.nodeId} />
 			</Col>
 			<Col md={12}>
 				<hr />

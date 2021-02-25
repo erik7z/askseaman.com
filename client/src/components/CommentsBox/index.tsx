@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Accordion, Card, Alert } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 import Apollo from '@apollo/client'
@@ -30,13 +30,12 @@ type TCommentsQueryResponse = {
 }
 
 interface IProps {
-	toggleEventKey: string
+	accordionId: string
 	topic: TAnswer | TQuestion
 }
 
-export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
+export const CommentsBox = ({ accordionId, topic }: IProps) => {
 	let subscribersCount, viewsCount, showSubscribers, showViews
-	let isMounted = useRef(true)
 
 	const isQuestionComments = topic.__typename === 'Question'
 	const topicType = topic.__typename as 'Answer' | 'Question'
@@ -45,7 +44,7 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 		variables: {
 			nodeId: topic?.nodeId,
 		},
-		fetchPolicy: 'cache-and-network',
+		fetchPolicy: 'no-cache',
 	}
 
 	const [commentsList, setCommentsList] = useState<TComment[]>()
@@ -72,15 +71,12 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 	}
 
 	useEffect(() => {
-		console.log('getComments useffect')
-		if (isMounted.current) getComments()
+		console.log('getComments useffect', topicType)
 		if (commentsData) {
+			console.log(commentsData)
 			setCommentsList(commentsData[topicType]?.[0].comments as TComment[])
 		}
-		return () => {
-			isMounted.current = false
-		}
-	}, [getComments, commentsData, topicType])
+	}, [commentsData, topicType])
 
 	if (isQuestionComments) {
 		;({ subscribersCount, viewsCount } = topic as TQuestion)
@@ -89,19 +85,22 @@ export const CommentsBox = ({ toggleEventKey, topic }: IProps) => {
 	}
 
 	return (
-		<Accordion>
+		<Accordion
+		// defaultActiveKey={accordionId}
+		>
 			<MetaActions
-				toggleEventKey={toggleEventKey}
+				accordionId={accordionId}
 				subscribersCount={subscribersCount}
 				showSubscribers={showSubscribers}
 				viewsCount={viewsCount}
 				showViews={showViews}
 				commentsCount={commentsCount}
 				showComments={true}
-				createdAt={topic.createdAt}
+				getComments={getComments}
+				commentsLoading={commentsLoading}
 			/>
 			<Card className='border-0 comments-collapse'>
-				<Accordion.Collapse eventKey={toggleEventKey}>
+				<Accordion.Collapse eventKey={accordionId}>
 					<Card.Body>
 						{commentsError && (
 							<Alert variant='danger'>
