@@ -73,7 +73,6 @@ export const AnswerItem = ({ answer }: IProps) => {
 				<p className='post-item-text'>{answer.text}</p>
 				<CommentsBox
 					topic={answer as TAnswer}
-					accordionId={answer.nodeId}
 					getCommentsHook={getAnswerCommentsHook}
 				/>
 			</Col>

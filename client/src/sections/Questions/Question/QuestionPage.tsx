@@ -115,7 +115,6 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 				<p className='post-item-text'>{question.text}</p>
 				<CommentsBox
 					topic={question as TQuestion}
-					accordionId={question.nodeId}
 					getCommentsHook={getQuestionCommentsHook}
 				/>
 			</div>

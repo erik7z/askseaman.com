@@ -20,18 +20,13 @@ type TCommentsQueryResponse = {
 }
 
 interface IProps {
-	accordionId: string
 	topic: TAnswer | TQuestion
 	getCommentsHook:
 		| ReturnType<typeof useQuestionCommentsLazyQuery>
 		| ReturnType<typeof useAnswerCommentsLazyQuery>
 }
 
-export const CommentsBox = ({
-	accordionId,
-	topic,
-	getCommentsHook,
-}: IProps) => {
+export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 	let subscribersCount, viewsCount, showSubscribers, showViews
 
 	const isQuestionComments = topic.__typename === 'Question'
@@ -73,21 +68,22 @@ export const CommentsBox = ({
 
 	return (
 		<Accordion
-		// defaultActiveKey={accordionId}
+		// defaultActiveKey={topic.nodeId}
 		>
 			<MetaActions
-				accordionId={accordionId}
+				topicId={topic.nodeId}
 				subscribersCount={subscribersCount}
 				showSubscribers={showSubscribers}
 				viewsCount={viewsCount}
 				showViews={showViews}
 				commentsCount={commentsCount}
 				showComments={true}
+				showCommentsButton={true}
 				getComments={getComments}
 				commentsLoading={commentsLoading}
 			/>
 			<Card className='border-0 comments-collapse'>
-				<Accordion.Collapse eventKey={accordionId}>
+				<Accordion.Collapse eventKey={topic.nodeId}>
 					<Card.Body>
 						{commentsError && (
 							<Alert variant='danger'>

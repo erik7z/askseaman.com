@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccordionToggle } from 'react-bootstrap'
 import { BsChat, BsEye, BsClock } from 'react-icons/bs'
 import { BiLike } from 'react-icons/bi'
 
-import { _Neo4jDateTime } from '../../types/generated-frontend'
+import {
+	_Neo4jDateTime,
+	useToggleSubscribeMutation,
+} from '../../types/generated-frontend'
 import { ApolloLazyQuery } from '../../types/frontend'
 import { normalizeTime } from './../../lib/helpers'
 
 interface IProps {
-	accordionId?: string
+	topicId: string
 	viewsCount?: number | null | undefined
 	showViews?: boolean
 	subscribersCount?: number | null | undefined
@@ -18,19 +21,21 @@ interface IProps {
 	showLikes?: boolean
 	createdAt?: _Neo4jDateTime | null | undefined
 	showComments?: boolean
+	showCommentsButton?: boolean
 	commentsCount?: number | null | undefined
 	getComments?: ApolloLazyQuery
 	commentsLoading?: boolean
 }
 
 export const MetaActions = ({
-	accordionId,
+	topicId,
 	viewsCount = 0,
 	showViews = false,
-	subscribersCount = 0,
+	subscribersCount: subscribersCountInitial = 0,
 	showSubscribers = false,
 	commentsCount = 0,
 	showComments = false,
+	showCommentsButton = false,
 	getComments,
 	commentsLoading,
 	likesCount = 0,
@@ -39,13 +44,51 @@ export const MetaActions = ({
 }: IProps) => {
 	const [isCommentListExpanded, setCommentListExpanded] = useState(false)
 
+	const [subscribersCount, setSubscribersCount] = useState(
+		subscribersCountInitial
+	)
+
+	const [
+		toggleSubscribeMutation,
+		{
+			data: toggleSubscribeResponse,
+			error: toggleSubscribeConnErrors,
+			loading: toggleSubscribeLoading,
+		},
+	] = useToggleSubscribeMutation({
+		variables: {
+			data: {
+				nodeId: topicId,
+			},
+		},
+	})
+
+	const handleSubscribe = (e: React.SyntheticEvent) => {
+		e.preventDefault()
+		toggleSubscribeMutation()
+	}
+
+	useEffect(() => {
+		if (toggleSubscribeResponse) {
+			setSubscribersCount(
+				toggleSubscribeResponse.ToggleSubscribe.subscribersCount as number
+			)
+		}
+	}, [toggleSubscribeResponse])
+
 	const subscribersMeta = showSubscribers && (
 		<span>
-			<Link to='#' className='btn btn-sm btn-outline-primary mr-1'>
+			<Link
+				to='#subscribe'
+				className='btn btn-sm btn-outline-primary mr-1'
+				onClick={handleSubscribe}
+			>
 				Subscribe | <b>{subscribersCount} </b>
 			</Link>
 		</span>
 	)
+
+	if (toggleSubscribeConnErrors) console.log(toggleSubscribeConnErrors)
 
 	const likesMeta = showLikes && (
 		<span>
@@ -73,7 +116,7 @@ export const MetaActions = ({
 		</span>
 	) : null
 
-	const toggleCommentExpansion = useAccordionToggle(accordionId as string, () =>
+	const toggleCommentExpansion = useAccordionToggle(topicId as string, () =>
 		setCommentListExpanded(!isCommentListExpanded)
 	)
 
@@ -82,7 +125,7 @@ export const MetaActions = ({
 		toggleCommentExpansion(e)
 	}
 
-	const commentsButton = accordionId ? (
+	const commentsButton = showCommentsButton ? (
 		<Link to='#showcomments' onClick={commentsButtonClickEvent}>
 			{commentsMeta}
 		</Link>
@@ -92,7 +135,7 @@ export const MetaActions = ({
 
 	return (
 		<div className='meta d-md-flex align-items-center'>
-			{subscribersMeta}
+			{toggleSubscribeLoading ? <span>Loading...</span> : subscribersMeta}
 			{commentsLoading ? <span>Loading...</span> : commentsButton}
 			{viewsMeta}
 			{likesMeta}

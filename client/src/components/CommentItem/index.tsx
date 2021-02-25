@@ -30,6 +30,7 @@ export const CommentItem = ({ comment }: IProps) => {
 				<p className='post-item-text'>{comment.text}</p>
 
 				<MetaActions
+					topicId={comment.nodeId}
 					showSubscribers={false}
 					showViews={false}
 					showComments={false}
