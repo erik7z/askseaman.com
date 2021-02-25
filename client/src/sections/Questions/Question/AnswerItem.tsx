@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
@@ -7,6 +7,8 @@ import { CommentsBox, AvatarLink } from '../../../components'
 import {
 	Answer as TAnswer,
 	useAnswerCommentsLazyQuery,
+	useVoteMutation,
+	VoteIntention,
 } from '../../../types/generated-frontend'
 
 interface IProps {
@@ -20,6 +22,45 @@ export const AnswerItem = ({ answer }: IProps) => {
 		},
 		fetchPolicy: 'no-cache',
 	})
+
+	const [rateData, setRateData] = useState({
+		upVotesCount: answer.upVotesCount as number,
+		downVotesCount: answer.downVotesCount as number,
+	})
+
+	const [
+		rateAnswerMutation,
+		{ data, error: rateAnswerError },
+	] = useVoteMutation()
+
+	if (rateAnswerError) console.log(rateAnswerError)
+
+	const rateAnswerResponse = data?.Vote
+
+	useEffect(() => {
+		if (rateAnswerResponse) {
+			setRateData({
+				upVotesCount: rateAnswerResponse.upVotesCount as number,
+				downVotesCount: rateAnswerResponse.downVotesCount as number,
+			})
+		}
+	}, [rateAnswerResponse])
+
+	const handleRateChange = (e: React.SyntheticEvent) => {
+		e.preventDefault()
+		const action =
+			e.currentTarget.id === VoteIntention.UpVote
+				? VoteIntention.UpVote
+				: VoteIntention.DownVote
+		rateAnswerMutation({
+			variables: {
+				data: {
+					nodeId: answer.nodeId,
+					action,
+				},
+			},
+		})
+	}
 
 	if (!answer) {
 		console.error('No answer in answer item')
@@ -50,19 +91,27 @@ export const AnswerItem = ({ answer }: IProps) => {
 				<ul className='question-rating list-unstyled'>
 					<li>
 						<h3 className='rate rate-up mb-1'>
-							<Link to='#'>
+							<Link
+								to='#rateup'
+								id={VoteIntention.UpVote}
+								onClick={handleRateChange}
+							>
 								<BsArrowUpShort />
 							</Link>
 						</h3>
 					</li>
 					<li>
 						<h5 className='rate rate-value text-secondary'>
-							{answer.upVotesCount - answer.downVotesCount}
+							{rateData.upVotesCount - rateData.downVotesCount}
 						</h5>
 					</li>
 					<li>
 						<h3 className='rate rate-down'>
-							<Link to='#'>
+							<Link
+								to='#ratedown'
+								id={VoteIntention.DownVote}
+								onClick={handleRateChange}
+							>
 								<BsArrowDownShort />
 							</Link>
 						</h3>

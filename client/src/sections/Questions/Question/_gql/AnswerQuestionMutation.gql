@@ -5,7 +5,7 @@ mutation AnswerQuestion($data: AnswerQuestionInput!) {
 			nodeId
 			question {
 				nodeId
-				answers {
+				answers(orderBy: timestamp_asc) {
 					...answerFields
 				}
 			}

@@ -126,9 +126,9 @@ export type Answer = CanBeCommented &
 		timestamp?: Maybe<Scalars['String']>
 		canAccept?: Maybe<Scalars['Boolean']>
 		accepted?: Maybe<Scalars['Boolean']>
-		upVotesCount: Scalars['Int']
-		downVotesCount: Scalars['Int']
-		commentsCount: Scalars['Int']
+		upVotesCount?: Maybe<Scalars['Int']>
+		downVotesCount?: Maybe<Scalars['Int']>
+		commentsCount?: Maybe<Scalars['Int']>
 		author: User
 		question: Question
 		comments?: Maybe<Array<Maybe<Comment>>>
@@ -1890,6 +1890,27 @@ export type CurrentUserQuery = { __typename?: 'Query' } & {
 	CurrentUser: { __typename?: 'User' } & UserFieldsFragment
 }
 
+export type AskQuestionMutationVariables = Exact<{
+	data: AskQuestionInput
+}>
+
+export type AskQuestionMutation = { __typename?: 'Mutation' } & {
+	AskQuestion:
+		| ({ __typename: 'Question' } & Pick<Question, 'nodeId' | 'title' | 'text'>)
+		| ({ __typename: 'FormError' } & Pick<FormError, 'message'> & {
+					errors?: Maybe<
+						Array<
+							Maybe<
+								{ __typename?: 'FieldError' } & Pick<
+									FieldError,
+									'field' | 'message'
+								>
+							>
+						>
+					>
+				})
+}
+
 export type AddCommentMutationVariables = Exact<{
 	data: AddCommentInput
 }>
@@ -1944,27 +1965,6 @@ export type AnswerQuestionMutation = { __typename?: 'Mutation' } & {
 							>
 						}
 				})
-		| ({ __typename: 'FormError' } & Pick<FormError, 'message'> & {
-					errors?: Maybe<
-						Array<
-							Maybe<
-								{ __typename?: 'FieldError' } & Pick<
-									FieldError,
-									'field' | 'message'
-								>
-							>
-						>
-					>
-				})
-}
-
-export type AskQuestionMutationVariables = Exact<{
-	data: AskQuestionInput
-}>
-
-export type AskQuestionMutation = { __typename?: 'Mutation' } & {
-	AskQuestion:
-		| ({ __typename: 'Question' } & Pick<Question, 'nodeId' | 'title' | 'text'>)
 		| ({ __typename: 'FormError' } & Pick<FormError, 'message'> & {
 					errors?: Maybe<
 						Array<
@@ -2069,6 +2069,22 @@ export type QuestionPageQuery = { __typename?: 'Query' } & {
 			>
 		>
 	>
+}
+
+export type VoteMutationVariables = Exact<{
+	data: VoteInput
+}>
+
+export type VoteMutation = { __typename?: 'Mutation' } & {
+	Vote:
+		| ({ __typename: 'Question' } & Pick<
+				Question,
+				'nodeId' | 'upVotesCount' | 'downVotesCount'
+		  >)
+		| ({ __typename: 'Answer' } & Pick<
+				Answer,
+				'nodeId' | 'upVotesCount' | 'downVotesCount'
+		  >)
 }
 
 export type QuestionsListQueryVariables = Exact<{
@@ -2451,6 +2467,66 @@ export type CurrentUserQueryResult = Apollo.QueryResult<
 	CurrentUserQuery,
 	CurrentUserQueryVariables
 >
+export const AskQuestionDocument = gql`
+	mutation AskQuestion($data: AskQuestionInput!) {
+		AskQuestion(data: $data) {
+			__typename
+			... on Question {
+				nodeId
+				title
+				text
+			}
+			... on FormError {
+				message
+				errors {
+					field
+					message
+				}
+			}
+		}
+	}
+`
+export type AskQuestionMutationFn = Apollo.MutationFunction<
+	AskQuestionMutation,
+	AskQuestionMutationVariables
+>
+
+/**
+ * __useAskQuestionMutation__
+ *
+ * To run a mutation, you first call `useAskQuestionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAskQuestionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [askQuestionMutation, { data, loading, error }] = useAskQuestionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAskQuestionMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		AskQuestionMutation,
+		AskQuestionMutationVariables
+	>
+) {
+	return Apollo.useMutation<AskQuestionMutation, AskQuestionMutationVariables>(
+		AskQuestionDocument,
+		baseOptions
+	)
+}
+export type AskQuestionMutationHookResult = ReturnType<
+	typeof useAskQuestionMutation
+>
+export type AskQuestionMutationResult = Apollo.MutationResult<AskQuestionMutation>
+export type AskQuestionMutationOptions = Apollo.BaseMutationOptions<
+	AskQuestionMutation,
+	AskQuestionMutationVariables
+>
 export const AddCommentDocument = gql`
 	mutation AddComment($data: AddCommentInput!) {
 		AddComment(data: $data) {
@@ -2587,7 +2663,7 @@ export const AnswerQuestionDocument = gql`
 				nodeId
 				question {
 					nodeId
-					answers {
+					answers(orderBy: timestamp_asc) {
 						...answerFields
 					}
 				}
@@ -2643,66 +2719,6 @@ export type AnswerQuestionMutationResult = Apollo.MutationResult<AnswerQuestionM
 export type AnswerQuestionMutationOptions = Apollo.BaseMutationOptions<
 	AnswerQuestionMutation,
 	AnswerQuestionMutationVariables
->
-export const AskQuestionDocument = gql`
-	mutation AskQuestion($data: AskQuestionInput!) {
-		AskQuestion(data: $data) {
-			__typename
-			... on Question {
-				nodeId
-				title
-				text
-			}
-			... on FormError {
-				message
-				errors {
-					field
-					message
-				}
-			}
-		}
-	}
-`
-export type AskQuestionMutationFn = Apollo.MutationFunction<
-	AskQuestionMutation,
-	AskQuestionMutationVariables
->
-
-/**
- * __useAskQuestionMutation__
- *
- * To run a mutation, you first call `useAskQuestionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAskQuestionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [askQuestionMutation, { data, loading, error }] = useAskQuestionMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useAskQuestionMutation(
-	baseOptions?: Apollo.MutationHookOptions<
-		AskQuestionMutation,
-		AskQuestionMutationVariables
-	>
-) {
-	return Apollo.useMutation<AskQuestionMutation, AskQuestionMutationVariables>(
-		AskQuestionDocument,
-		baseOptions
-	)
-}
-export type AskQuestionMutationHookResult = ReturnType<
-	typeof useAskQuestionMutation
->
-export type AskQuestionMutationResult = Apollo.MutationResult<AskQuestionMutation>
-export type AskQuestionMutationOptions = Apollo.BaseMutationOptions<
-	AskQuestionMutation,
-	AskQuestionMutationVariables
 >
 export const QuestionAnswersListDocument = gql`
 	query QuestionAnswersList($filter: _AnswerFilter) {
@@ -2916,6 +2932,59 @@ export type QuestionPageLazyQueryHookResult = ReturnType<
 export type QuestionPageQueryResult = Apollo.QueryResult<
 	QuestionPageQuery,
 	QuestionPageQueryVariables
+>
+export const VoteDocument = gql`
+	mutation Vote($data: VoteInput!) {
+		Vote(data: $data) {
+			__typename
+			... on Answer {
+				nodeId
+				upVotesCount
+				downVotesCount
+			}
+			... on Question {
+				nodeId
+				upVotesCount
+				downVotesCount
+			}
+		}
+	}
+`
+export type VoteMutationFn = Apollo.MutationFunction<
+	VoteMutation,
+	VoteMutationVariables
+>
+
+/**
+ * __useVoteMutation__
+ *
+ * To run a mutation, you first call `useVoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [voteMutation, { data, loading, error }] = useVoteMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useVoteMutation(
+	baseOptions?: Apollo.MutationHookOptions<VoteMutation, VoteMutationVariables>
+) {
+	return Apollo.useMutation<VoteMutation, VoteMutationVariables>(
+		VoteDocument,
+		baseOptions
+	)
+}
+export type VoteMutationHookResult = ReturnType<typeof useVoteMutation>
+export type VoteMutationResult = Apollo.MutationResult<VoteMutation>
+export type VoteMutationOptions = Apollo.BaseMutationOptions<
+	VoteMutation,
+	VoteMutationVariables
 >
 export const QuestionsListDocument = gql`
 	query QuestionsList(

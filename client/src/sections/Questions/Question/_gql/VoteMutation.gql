@@ -1,0 +1,15 @@
+mutation Vote($data: VoteInput!) {
+	Vote(data: $data) {
+		__typename
+		... on Answer {
+			nodeId
+			upVotesCount
+			downVotesCount
+		}
+		... on Question {
+			nodeId
+			upVotesCount
+			downVotesCount
+		}
+	}
+}
