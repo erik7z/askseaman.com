@@ -17,6 +17,7 @@ import {
 	Answer as TAnswer,
 	useQuestionPageLazyQuery,
 	useQuestionAnswersListLazyQuery,
+	useQuestionCommentsLazyQuery,
 } from '../../../types/generated-frontend'
 
 interface IProps {
@@ -73,12 +74,19 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 		setAnswersList(answers)
 	}
 
-	if (!question || error) {
+	const getQuestionCommentsHook = useQuestionCommentsLazyQuery({
+		variables: {
+			nodeId: questionId,
+		},
+		fetchPolicy: 'no-cache',
+	})
+
+	if (error) {
 		console.log(error)
 		return <h1>Something went wrong</h1>
 	}
 
-	if (loading) return <Skeleton count={25} />
+	if (!question || loading) return <Skeleton count={25} />
 
 	// setSectionTitle(question.title)
 
@@ -108,6 +116,7 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 				<CommentsBox
 					topic={question as TQuestion}
 					accordionId={question.nodeId}
+					getCommentsHook={getQuestionCommentsHook}
 				/>
 			</div>
 			<h5 className='module-header text-right'>Answers on question &lt;</h5>

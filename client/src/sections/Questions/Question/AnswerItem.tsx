@@ -4,13 +4,23 @@ import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
 
 import { CommentsBox, AvatarLink } from '../../../components'
-import { Answer as TAnswer } from '../../../types/generated-frontend'
+import {
+	Answer as TAnswer,
+	useAnswerCommentsLazyQuery,
+} from '../../../types/generated-frontend'
 
 interface IProps {
 	answer: TAnswer
 }
 
 export const AnswerItem = ({ answer }: IProps) => {
+	const getAnswerCommentsHook = useAnswerCommentsLazyQuery({
+		variables: {
+			nodeId: answer.nodeId,
+		},
+		fetchPolicy: 'no-cache',
+	})
+
 	if (!answer) {
 		console.error('No answer in answer item')
 		return <h1>Something went wrong...</h1>
@@ -61,7 +71,11 @@ export const AnswerItem = ({ answer }: IProps) => {
 			</Col>
 			<Col md={11} xs={10}>
 				<p className='post-item-text'>{answer.text}</p>
-				<CommentsBox topic={answer as TAnswer} accordionId={answer.nodeId} />
+				<CommentsBox
+					topic={answer as TAnswer}
+					accordionId={answer.nodeId}
+					getCommentsHook={getAnswerCommentsHook}
+				/>
 			</Col>
 			<Col md={12}>
 				<hr />

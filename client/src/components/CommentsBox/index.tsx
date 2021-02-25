@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Accordion, Card, Alert } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
-import Apollo from '@apollo/client'
 
 import { CommentItem, MetaActions, UserTextFormInput } from '..'
 
@@ -14,16 +13,7 @@ import {
 	CanBeCommented,
 	Answer as TAnswer,
 	Question as TQuestion,
-	QuestionCommentsQuery as TQuestionCommentsQuery,
-	QuestionCommentsQueryVariables as TQuestionCommentsQueryVariables,
-	AnswerCommentsQuery as TAnswerCommentsQuery,
-	AnswerCommentsQueryVariables as TAnswerCommentsQueryVariables,
 } from '../../types/generated-frontend'
-
-type TCommentsQuery = Apollo.LazyQueryHookOptions<
-	TQuestionCommentsQuery | TAnswerCommentsQuery,
-	TQuestionCommentsQueryVariables | TAnswerCommentsQueryVariables
->
 
 type TCommentsQueryResponse = {
 	[key: string]: CanBeCommented[]
@@ -32,31 +22,28 @@ type TCommentsQueryResponse = {
 interface IProps {
 	accordionId: string
 	topic: TAnswer | TQuestion
+	getCommentsHook:
+		| ReturnType<typeof useQuestionCommentsLazyQuery>
+		| ReturnType<typeof useAnswerCommentsLazyQuery>
 }
 
-export const CommentsBox = ({ accordionId, topic }: IProps) => {
+export const CommentsBox = ({
+	accordionId,
+	topic,
+	getCommentsHook,
+}: IProps) => {
 	let subscribersCount, viewsCount, showSubscribers, showViews
 
 	const isQuestionComments = topic.__typename === 'Question'
 	const topicType = topic.__typename as 'Answer' | 'Question'
 
-	const queryOptions: TCommentsQuery = {
-		variables: {
-			nodeId: topic?.nodeId,
-		},
-		fetchPolicy: 'no-cache',
-	}
-
 	const [commentsList, setCommentsList] = useState<TComment[]>()
 	const [commentsCount, setCommentsCount] = useState(topic.commentsCount)
-
-	const getQuestionCommentsHook = useQuestionCommentsLazyQuery(queryOptions)
-	const getAnswersCommentsHook = useAnswerCommentsLazyQuery(queryOptions)
 
 	const [
 		getComments,
 		{ data, loading: commentsLoading, error: commentsError },
-	] = isQuestionComments ? getQuestionCommentsHook : getAnswersCommentsHook
+	] = getCommentsHook
 
 	const commentsData = data as TCommentsQueryResponse
 
