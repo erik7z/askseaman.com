@@ -7,6 +7,7 @@ import { BiLike } from 'react-icons/bi'
 import {
 	_Neo4jDateTime,
 	useToggleSubscribeMutation,
+	useToggleLikeMutation,
 } from '../../types/generated-frontend'
 import { ApolloLazyQuery } from '../../types/frontend'
 import { normalizeTime } from './../../lib/helpers'
@@ -19,6 +20,7 @@ interface IProps {
 	showSubscribers?: boolean
 	likesCount?: number | null | undefined
 	showLikes?: boolean
+	canLike?: boolean | null | undefined
 	createdAt?: _Neo4jDateTime | null | undefined
 	showComments?: boolean
 	showCommentsButton?: boolean
@@ -38,8 +40,9 @@ export const MetaActions = ({
 	showCommentsButton = false,
 	getComments,
 	commentsLoading,
-	likesCount = 0,
 	showLikes = false,
+	likesCount: likesCountInitial = 0,
+	canLike: canLikeInitial = false,
 	createdAt,
 }: IProps) => {
 	const [isCommentListExpanded, setCommentListExpanded] = useState(false)
@@ -76,6 +79,42 @@ export const MetaActions = ({
 		}
 	}, [toggleSubscribeResponse])
 
+	const [likeStatus, setLikeStatus] = useState({
+		canLike: canLikeInitial,
+		likesCount: likesCountInitial,
+	})
+
+	const [
+		toggleLikeMutation,
+		{
+			data: toggleLikeResponse,
+			error: toggleLikeConnErrors,
+			loading: toggleLikeLoading,
+		},
+	] = useToggleLikeMutation({
+		variables: {
+			data: {
+				nodeId: topicId,
+			},
+		},
+	})
+
+	if (toggleLikeConnErrors) console.log(toggleLikeConnErrors)
+
+	useEffect(() => {
+		if (toggleLikeResponse) {
+			setLikeStatus({
+				likesCount: toggleLikeResponse.ToggleLike.likesCount as number,
+				canLike: toggleLikeResponse.ToggleLike.canLike as boolean,
+			})
+		}
+	}, [toggleLikeResponse])
+
+	const handleLike = (e: React.SyntheticEvent) => {
+		e.preventDefault()
+		toggleLikeMutation()
+	}
+
 	const subscribersMeta = showSubscribers && (
 		<span>
 			<Link
@@ -92,8 +131,18 @@ export const MetaActions = ({
 
 	const likesMeta = showLikes && (
 		<span>
-			<Link to='#' className=''>
-				<BiLike /> Like | <b>{likesCount} </b>
+			<Link
+				to='#like'
+				className={likeStatus.canLike ? 'text-gray' : ''}
+				onClick={handleLike}
+			>
+				{toggleLikeLoading ? (
+					'Loading...'
+				) : (
+					<>
+						<BiLike /> Like | <b>{likeStatus.likesCount} </b>
+					</>
+				)}
 			</Link>
 		</span>
 	)

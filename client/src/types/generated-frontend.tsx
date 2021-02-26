@@ -185,6 +185,8 @@ export enum _CommentOrdering {
   TimestampDesc = 'timestamp_desc',
   LikesCountAsc = 'likesCount_asc',
   LikesCountDesc = 'likesCount_desc',
+  CanLikeAsc = 'canLike_asc',
+  CanLikeDesc = 'canLike_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -241,10 +243,6 @@ export type _CommentFilter = {
   timestamp_not_starts_with?: Maybe<Scalars['String']>;
   timestamp_ends_with?: Maybe<Scalars['String']>;
   timestamp_not_ends_with?: Maybe<Scalars['String']>;
-  author?: Maybe<_UserFilter>;
-  author_not?: Maybe<_UserFilter>;
-  author_in?: Maybe<Array<_UserFilter>>;
-  author_not_in?: Maybe<Array<_UserFilter>>;
   likes?: Maybe<_UserFilter>;
   likes_not?: Maybe<_UserFilter>;
   likes_in?: Maybe<Array<_UserFilter>>;
@@ -253,6 +251,10 @@ export type _CommentFilter = {
   likes_none?: Maybe<_UserFilter>;
   likes_single?: Maybe<_UserFilter>;
   likes_every?: Maybe<_UserFilter>;
+  author?: Maybe<_UserFilter>;
+  author_not?: Maybe<_UserFilter>;
+  author_in?: Maybe<Array<_UserFilter>>;
+  author_not_in?: Maybe<Array<_UserFilter>>;
 };
 
 export type Comment = CanBeLiked & {
@@ -262,17 +264,13 @@ export type Comment = CanBeLiked & {
   createdAt?: Maybe<_Neo4jDateTime>;
   updatedAt?: Maybe<_Neo4jDateTime>;
   timestamp?: Maybe<Scalars['String']>;
+  likes?: Maybe<Array<Maybe<User>>>;
   likesCount?: Maybe<Scalars['Int']>;
+  canLike?: Maybe<Scalars['Boolean']>;
   author?: Maybe<User>;
   topic?: Maybe<CanBeCommented>;
-  likes?: Maybe<Array<Maybe<User>>>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
-};
-
-
-export type CommentAuthorArgs = {
-  filter?: Maybe<_UserFilter>;
 };
 
 
@@ -280,6 +278,11 @@ export type CommentLikesArgs = {
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
+  filter?: Maybe<_UserFilter>;
+};
+
+
+export type CommentAuthorArgs = {
   filter?: Maybe<_UserFilter>;
 };
 
@@ -314,6 +317,8 @@ export enum _QuestionOrdering {
   CommentsCountDesc = 'commentsCount_desc',
   LikesCountAsc = 'likesCount_asc',
   LikesCountDesc = 'likesCount_desc',
+  CanLikeAsc = 'canLike_asc',
+  CanLikeDesc = 'canLike_desc',
   SubscribersCountAsc = 'subscribersCount_asc',
   SubscribersCountDesc = 'subscribersCount_desc',
   TotalCountAsc = 'totalCount_asc',
@@ -458,6 +463,7 @@ export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribe
   answersCount?: Maybe<Scalars['Int']>;
   commentsCount?: Maybe<Scalars['Int']>;
   likesCount?: Maybe<Scalars['Int']>;
+  canLike?: Maybe<Scalars['Boolean']>;
   subscribersCount?: Maybe<Scalars['Int']>;
   author?: Maybe<User>;
   answers?: Maybe<Array<Maybe<Answer>>>;
@@ -1040,8 +1046,9 @@ export type CanBeCommentedCommentsArgs = {
 
 export type CanBeLiked = {
   nodeId: Scalars['ID'];
-  likesCount?: Maybe<Scalars['Int']>;
   likes?: Maybe<Array<Maybe<User>>>;
+  likesCount?: Maybe<Scalars['Int']>;
+  canLike?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -1862,6 +1869,22 @@ export type QueryAddCommentResponseArgs = {
   offset?: Maybe<Scalars['Int']>;
 };
 
+export type ToggleLikeMutationVariables = Exact<{
+  data: NodeIdInput;
+}>;
+
+
+export type ToggleLikeMutation = (
+  { __typename?: 'Mutation' }
+  & { ToggleLike: (
+    { __typename: 'Question' }
+    & Pick<Question, 'likesCount' | 'canLike'>
+  ) | (
+    { __typename: 'Comment' }
+    & Pick<Comment, 'likesCount' | 'canLike'>
+  ) }
+);
+
 export type ToggleSubscribeMutationVariables = Exact<{
   data: NodeIdInput;
 }>;
@@ -1885,7 +1908,7 @@ export type UserFieldsFragment = (
 
 export type CommentFieldsFragment = (
   { __typename?: 'Comment' }
-  & Pick<Comment, 'nodeId' | 'text' | 'likesCount'>
+  & Pick<Comment, 'nodeId' | 'text' | 'canLike' | 'likesCount'>
   & { createdAt?: Maybe<(
     { __typename?: '_Neo4jDateTime' }
     & DateTimeFieldsFragment
@@ -2213,6 +2236,7 @@ export const CommentFieldsFragmentDoc = gql`
     fragment commentFields on Comment {
   nodeId
   text
+  canLike
   likesCount
   createdAt {
     ...dateTimeFields
@@ -2255,6 +2279,46 @@ export const FormErrorFieldsFragmentDoc = gql`
   }
 }
     `;
+export const ToggleLikeDocument = gql`
+    mutation ToggleLike($data: nodeIdInput!) {
+  ToggleLike(data: $data) {
+    __typename
+    ... on Comment {
+      likesCount
+      canLike
+    }
+    ... on Question {
+      likesCount
+      canLike
+    }
+  }
+}
+    `;
+export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
+
+/**
+ * __useToggleLikeMutation__
+ *
+ * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useToggleLikeMutation(baseOptions?: Apollo.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>) {
+        return Apollo.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, baseOptions);
+      }
+export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
+export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
+export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
 export const ToggleSubscribeDocument = gql`
     mutation ToggleSubscribe($data: nodeIdInput!) {
   ToggleSubscribe(data: $data) {

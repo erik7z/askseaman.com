@@ -6,8 +6,9 @@ interface CanBeCommented {
 
 interface CanBeLiked {
 	nodeId: ID!
-	likesCount: Int
 	likes: [User]
+	likesCount: Int
+	canLike: Boolean
 }
 
 interface CanBeSubscribed {

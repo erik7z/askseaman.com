@@ -36,6 +36,7 @@ export const CommentItem = ({ comment }: IProps) => {
 					showComments={false}
 					showLikes={true}
 					likesCount={comment.likesCount}
+					canLike={comment.canLike}
 					createdAt={comment.createdAt}
 				/>
 			</div>
