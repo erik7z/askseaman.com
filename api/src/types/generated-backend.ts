@@ -44,6 +44,12 @@ export enum _AnswerOrdering {
   CanAcceptDesc = 'canAccept_desc',
   AcceptedAsc = 'accepted_asc',
   AcceptedDesc = 'accepted_desc',
+  CanVoteAsc = 'canVote_asc',
+  CanVoteDesc = 'canVote_desc',
+  CanVoteUpAsc = 'canVoteUp_asc',
+  CanVoteUpDesc = 'canVoteUp_desc',
+  CanVoteDownAsc = 'canVoteDown_asc',
+  CanVoteDownDesc = 'canVoteDown_desc',
   UpVotesCountAsc = 'upVotesCount_asc',
   UpVotesCountDesc = 'upVotesCount_desc',
   DownVotesCountAsc = 'downVotesCount_asc',
@@ -106,6 +112,8 @@ export type _AnswerFilter = {
   timestamp_not_starts_with?: Maybe<Scalars['String']>;
   timestamp_ends_with?: Maybe<Scalars['String']>;
   timestamp_not_ends_with?: Maybe<Scalars['String']>;
+  canVote?: Maybe<Scalars['Boolean']>;
+  canVote_not?: Maybe<Scalars['Boolean']>;
   author?: Maybe<_UserFilter>;
   author_not?: Maybe<_UserFilter>;
   author_in?: Maybe<Array<_UserFilter>>;
@@ -133,6 +141,9 @@ export type Answer = CanBeCommented & CanBeVoted & {
   timestamp?: Maybe<Scalars['String']>;
   canAccept?: Maybe<Scalars['Boolean']>;
   accepted?: Maybe<Scalars['Boolean']>;
+  canVote?: Maybe<Scalars['Boolean']>;
+  canVoteUp?: Maybe<Scalars['Boolean']>;
+  canVoteDown?: Maybe<Scalars['Boolean']>;
   upVotesCount?: Maybe<Scalars['Int']>;
   downVotesCount?: Maybe<Scalars['Int']>;
   commentsCount?: Maybe<Scalars['Int']>;
@@ -289,6 +300,10 @@ export enum _QuestionOrdering {
   ViewsCountDesc = 'viewsCount_desc',
   CanVoteAsc = 'canVote_asc',
   CanVoteDesc = 'canVote_desc',
+  CanVoteUpAsc = 'canVoteUp_asc',
+  CanVoteUpDesc = 'canVoteUp_desc',
+  CanVoteDownAsc = 'canVoteDown_asc',
+  CanVoteDownDesc = 'canVoteDown_desc',
   UpVotesCountAsc = 'upVotesCount_asc',
   UpVotesCountDesc = 'upVotesCount_desc',
   DownVotesCountAsc = 'downVotesCount_asc',
@@ -436,6 +451,8 @@ export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribe
   timestamp?: Maybe<Scalars['String']>;
   viewsCount?: Maybe<Scalars['Int']>;
   canVote?: Maybe<Scalars['Boolean']>;
+  canVoteUp?: Maybe<Scalars['Boolean']>;
+  canVoteDown?: Maybe<Scalars['Boolean']>;
   upVotesCount?: Maybe<Scalars['Int']>;
   downVotesCount?: Maybe<Scalars['Int']>;
   answersCount?: Maybe<Scalars['Int']>;
@@ -1053,6 +1070,9 @@ export type CanBeVoted = {
   nodeId: Scalars['ID'];
   upVotesCount?: Maybe<Scalars['Int']>;
   downVotesCount?: Maybe<Scalars['Int']>;
+  canVote?: Maybe<Scalars['Boolean']>;
+  canVoteUp?: Maybe<Scalars['Boolean']>;
+  canVoteDown?: Maybe<Scalars['Boolean']>;
 };
 
 export type LikeResponse = Question | Comment;
@@ -1754,6 +1774,7 @@ export type QueryAnswerArgs = {
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   updatedAt?: Maybe<_Neo4jDateTimeInput>;
   timestamp?: Maybe<Scalars['String']>;
+  canVote?: Maybe<Scalars['Boolean']>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -1924,8 +1945,8 @@ export type ResolversTypes = ResolversObject<{
   _AnswerFilter: _AnswerFilter;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Answer: ResolverTypeWrapper<Answer>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Answer: ResolverTypeWrapper<Answer>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   _CommentOrdering: _CommentOrdering;
   _CommentFilter: _CommentFilter;
@@ -2006,8 +2027,8 @@ export type ResolversParentTypes = ResolversObject<{
   _AnswerFilter: _AnswerFilter;
   ID: Scalars['ID'];
   String: Scalars['String'];
-  Answer: Answer;
   Boolean: Scalars['Boolean'];
+  Answer: Answer;
   Int: Scalars['Int'];
   _CommentFilter: _CommentFilter;
   Comment: Comment;
@@ -2135,6 +2156,9 @@ export type AnswerResolvers<ContextType = any, ParentType extends ResolversParen
   timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   canAccept?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   accepted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVote?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVoteUp?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVoteDown?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   upVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   downVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   commentsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -2168,6 +2192,8 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   viewsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   canVote?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVoteUp?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVoteDown?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   upVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   downVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   answersCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -2264,6 +2290,9 @@ export type CanBeVotedResolvers<ContextType = any, ParentType extends ResolversP
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   upVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   downVotesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  canVote?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVoteUp?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canVoteDown?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
 }>;
 
 export type LikeResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LikeResponse'] = ResolversParentTypes['LikeResponse']> = ResolversObject<{

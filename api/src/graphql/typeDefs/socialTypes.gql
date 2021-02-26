@@ -43,23 +43,38 @@ type Mutation {
 			statement: """
 			MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeVoted {nodeId: $data.nodeId})
 				WHERE $data.action = "upVote"
-				CREATE (u)-[:VOTED_UP]->(t)
-				WITH u, t
 			CALL {
-				MATCH (u)-[r:VOTED_UP|VOTED_DOWN]->(t), (u)-[:VOTED_UP]->(t)
+				WITH u,t
+				WITH u,t
+				WHERE NOT (u)-[:VOTED_DOWN]->(t)
+				MERGE (u)-[:VOTED_UP]->(t)
+				RETURN t as g
+
+						UNION
+
+				WITH u,t
+				MATCH (u)-[r:VOTED_DOWN]->(t)
 				DELETE r
 				RETURN t as g
 			}
+
 			RETURN g
 
 			UNION
 
 			MATCH (u:User {nodeId: $cypherParams.currentUserId}), (t:CanBeVoted {nodeId: $data.nodeId})
 				WHERE $data.action = "downVote"
-				CREATE (u)-[:VOTED_DOWN]->(t)
-				WITH u, t
 			CALL {
-				MATCH (u)-[r:VOTED_UP|VOTED_DOWN]->(t), (u)-[:VOTED_DOWN]->(t)
+				WITH u,t
+				WITH u,t
+				WHERE NOT (u)-[:VOTED_UP]->(t)
+				MERGE (u)-[:VOTED_DOWN]->(t)
+				RETURN t as g
+
+						UNION
+
+				WITH u,t
+				MATCH (u)-[r:VOTED_UP]->(t)
 				DELETE r
 				RETURN t as g
 			}

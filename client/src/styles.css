@@ -1527,6 +1527,10 @@ p {
 	color: #1eafed !important;
 }
 
+.text-gray {
+	color: #cacaca !important;
+}
+
 .bg-grey {
 	background-color: #f8f9fa !important;
 }

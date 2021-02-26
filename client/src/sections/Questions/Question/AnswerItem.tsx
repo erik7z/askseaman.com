@@ -26,6 +26,8 @@ export const AnswerItem = ({ answer }: IProps) => {
 	const [rateData, setRateData] = useState({
 		upVotesCount: answer.upVotesCount as number,
 		downVotesCount: answer.downVotesCount as number,
+		canVoteUp: answer.canVoteUp as boolean,
+		canVoteDown: answer.canVoteDown as boolean,
 	})
 
 	const [
@@ -42,6 +44,8 @@ export const AnswerItem = ({ answer }: IProps) => {
 			setRateData({
 				upVotesCount: rateAnswerResponse.upVotesCount as number,
 				downVotesCount: rateAnswerResponse.downVotesCount as number,
+				canVoteUp: rateAnswerResponse.canVoteUp as boolean,
+				canVoteDown: rateAnswerResponse.canVoteDown as boolean,
 			})
 		}
 	}, [rateAnswerResponse])
@@ -90,11 +94,12 @@ export const AnswerItem = ({ answer }: IProps) => {
 			<Col md={1} xs={2} className='text-center align-items-center'>
 				<ul className='question-rating list-unstyled'>
 					<li>
-						<h3 className='rate rate-up mb-1'>
+						<h3 className='rate rate-up mb-1 '>
 							<Link
 								to='#rateup'
 								id={VoteIntention.UpVote}
 								onClick={handleRateChange}
+								className={rateData.canVoteUp ? '' : 'text-gray'}
 							>
 								<BsArrowUpShort />
 							</Link>
@@ -111,6 +116,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 								to='#ratedown'
 								id={VoteIntention.DownVote}
 								onClick={handleRateChange}
+								className={rateData.canVoteDown ? '' : 'text-gray'}
 							>
 								<BsArrowDownShort />
 							</Link>

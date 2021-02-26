@@ -22,6 +22,9 @@ fragment answerFields on Answer {
 	text
 	upVotesCount
 	downVotesCount
+	canVote
+	canVoteUp
+	canVoteDown
 	commentsCount
 	author {
 		...userFields

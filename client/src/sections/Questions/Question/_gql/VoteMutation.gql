@@ -5,11 +5,17 @@ mutation Vote($data: VoteInput!) {
 			nodeId
 			upVotesCount
 			downVotesCount
+			canVote
+			canVoteUp
+			canVoteDown
 		}
 		... on Question {
 			nodeId
 			upVotesCount
 			downVotesCount
+			canVote
+			canVoteUp
+			canVoteDown
 		}
 	}
 }

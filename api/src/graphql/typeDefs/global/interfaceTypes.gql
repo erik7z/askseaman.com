@@ -20,4 +20,7 @@ interface CanBeVoted {
 	nodeId: ID!
 	upVotesCount: Int
 	downVotesCount: Int
+	canVote: Boolean
+	canVoteUp: Boolean
+	canVoteDown: Boolean
 }

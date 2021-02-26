@@ -9,6 +9,14 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 	viewsCount: Int
 		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
 	canVote: Boolean #TODO:logic to decide if user can vote (depended on some rating)
+	canVoteUp: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:VOTED_UP]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as canVoteUp"
+		)
+	canVoteDown: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:VOTED_DOWN]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as canVoteDown"
+		)
 	upVotesCount: Int
 		@cypher(
 			statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upVotesCount"
