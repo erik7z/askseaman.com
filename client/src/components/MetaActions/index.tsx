@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccordionToggle } from 'react-bootstrap'
 import { BsChat, BsEye, BsClock } from 'react-icons/bs'
 import { BiLike } from 'react-icons/bi'
 
-import {
-	_Neo4jDateTime,
-	useToggleSubscribeMutation,
-	useToggleLikeMutation,
-} from '../../types/generated-frontend'
-import { ApolloLazyQuery } from '../../types/frontend'
+import { _Neo4jDateTime } from '../../types/generated-frontend'
+import { ApolloLazyQuery as TApolloLazyQuery } from '../../types/frontend'
 import { normalizeTime } from './../../lib/helpers'
+import { useToggleLike, useToggleSubscribe } from '../../lib/hooks'
 
 interface IProps {
 	topicId: string
@@ -25,12 +22,13 @@ interface IProps {
 	showComments?: boolean
 	showCommentsButton?: boolean
 	commentsCount?: number | null | undefined
-	getComments?: ApolloLazyQuery
+	getComments?: TApolloLazyQuery
 	commentsLoading?: boolean
 }
 
 export const MetaActions = ({
 	topicId,
+	getComments,
 	viewsCount = 0,
 	showViews = false,
 	subscribersCount: subscribersCountInitial = 0,
@@ -38,7 +36,6 @@ export const MetaActions = ({
 	commentsCount = 0,
 	showComments = false,
 	showCommentsButton = false,
-	getComments,
 	commentsLoading,
 	showLikes = false,
 	likesCount: likesCountInitial = 0,
@@ -47,73 +44,13 @@ export const MetaActions = ({
 }: IProps) => {
 	const [isCommentListExpanded, setCommentListExpanded] = useState(false)
 
-	const [subscribersCount, setSubscribersCount] = useState(
-		subscribersCountInitial
-	)
-
-	const [
-		toggleSubscribeMutation,
-		{
-			data: toggleSubscribeResponse,
-			error: toggleSubscribeConnErrors,
-			loading: toggleSubscribeLoading,
-		},
-	] = useToggleSubscribeMutation({
-		variables: {
-			data: {
-				nodeId: topicId,
-			},
-		},
-	})
-
-	const handleSubscribe = (e: React.SyntheticEvent) => {
-		e.preventDefault()
-		toggleSubscribeMutation()
-	}
-
-	useEffect(() => {
-		if (toggleSubscribeResponse) {
-			setSubscribersCount(
-				toggleSubscribeResponse.ToggleSubscribe.subscribersCount as number
-			)
-		}
-	}, [toggleSubscribeResponse])
-
-	const [likeStatus, setLikeStatus] = useState({
-		canLike: canLikeInitial,
-		likesCount: likesCountInitial,
-	})
-
-	const [
-		toggleLikeMutation,
-		{
-			data: toggleLikeResponse,
-			error: toggleLikeConnErrors,
-			loading: toggleLikeLoading,
-		},
-	] = useToggleLikeMutation({
-		variables: {
-			data: {
-				nodeId: topicId,
-			},
-		},
-	})
-
-	if (toggleLikeConnErrors) console.log(toggleLikeConnErrors)
-
-	useEffect(() => {
-		if (toggleLikeResponse) {
-			setLikeStatus({
-				likesCount: toggleLikeResponse.ToggleLike.likesCount as number,
-				canLike: toggleLikeResponse.ToggleLike.canLike as boolean,
-			})
-		}
-	}, [toggleLikeResponse])
-
-	const handleLike = (e: React.SyntheticEvent) => {
-		e.preventDefault()
-		toggleLikeMutation()
-	}
+	const {
+		handleSubscribe,
+		subscribersCount,
+		toggleSubscribeLoading,
+		toggleSubscribeConnErrors,
+	} = useToggleSubscribe(topicId, subscribersCountInitial)
+	if (toggleSubscribeConnErrors) console.log(toggleSubscribeConnErrors)
 
 	const subscribersMeta = showSubscribers && (
 		<span>
@@ -127,7 +64,13 @@ export const MetaActions = ({
 		</span>
 	)
 
-	if (toggleSubscribeConnErrors) console.log(toggleSubscribeConnErrors)
+	const {
+		handleLike,
+		likeStatus,
+		toggleLikeLoading,
+		toggleLikeConnErrors,
+	} = useToggleLike(topicId, likesCountInitial, canLikeInitial)
+	if (toggleLikeConnErrors) console.log(toggleLikeConnErrors)
 
 	const likesMeta = showLikes && (
 		<span>
