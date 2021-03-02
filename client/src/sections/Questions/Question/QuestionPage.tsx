@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
@@ -10,12 +10,12 @@ import {
 } from '../../../components'
 import { answerQuestionHandler } from './../../../components/UserTextFormInput/lib/helpers'
 import { AnswersList } from './AnswersList'
+import { useGetQuestion } from './../../../lib/hooks/useGetQuestion'
 import {
 	useAnswerQuestionMutation,
 	Question as TQuestion,
 	Tag as TTag,
 	Answer as TAnswer,
-	useQuestionPageLazyQuery,
 	useQuestionAnswersListLazyQuery,
 	useQuestionCommentsLazyQuery,
 } from '../../../types/generated-frontend'
@@ -27,15 +27,9 @@ interface IProps {
 export const QuestionPage = ({ setSectionTitle }: IProps) => {
 	const { questionId } = useParams<{ questionId: string }>()
 
-	const [answersList, setAnswersList] = useState<TAnswer[]>([])
+	const { question, loading, error } = useGetQuestion(questionId)
 
-	const [getQuestion, { data, loading, error }] = useQuestionPageLazyQuery({
-		variables: {
-			nodeId: questionId,
-		},
-		fetchPolicy: 'cache-and-network',
-	})
-	const [question] = data?.Question || [null]
+	const [answersList, setAnswersList] = useState<TAnswer[]>([])
 
 	const [
 		getQuestionAnswers,
@@ -52,18 +46,11 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 	})
 
 	useEffect(() => {
-		console.log('getQuestion useffect')
-
-		getQuestion()
-		if (question) setAnswersList(question.answers as TAnswer[])
-	}, [getQuestion, question])
-
-	useEffect(() => {
 		console.log('getQuestionAnswers useffect')
 
 		getQuestionAnswers()
-		if (answersData?.Answer) setAnswersList(answersData?.Answer as TAnswer[])
-	}, [getQuestionAnswers, answersData?.Answer])
+		if (answersData) setAnswersList(answersData.Answer as TAnswer[])
+	}, [getQuestionAnswers, answersData])
 
 	const [
 		answerQuestionMutation,
@@ -80,6 +67,8 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 		},
 		fetchPolicy: 'no-cache',
 	})
+
+	const getCommentsHookRef = useRef(getQuestionCommentsHook)
 
 	if (error) {
 		console.log(error)
@@ -115,7 +104,7 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 				<p className='post-item-text'>{question.text}</p>
 				<CommentsBox
 					topic={question as TQuestion}
-					getCommentsHook={getQuestionCommentsHook}
+					getCommentsHook={getCommentsHookRef.current}
 				/>
 			</div>
 			<h5 className='module-header text-right'>Answers on question &lt;</h5>

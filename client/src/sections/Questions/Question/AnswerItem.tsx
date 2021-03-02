@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
@@ -22,6 +22,8 @@ export const AnswerItem = ({ answer }: IProps) => {
 		},
 		fetchPolicy: 'no-cache',
 	})
+
+	const getAnswerCommentsHookRef = useRef(getAnswerCommentsHook)
 
 	const [rateData, setRateData] = useState({
 		upVotesCount: answer.upVotesCount as number,
@@ -128,7 +130,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 				<p className='post-item-text'>{answer.text}</p>
 				<CommentsBox
 					topic={answer as TAnswer}
-					getCommentsHook={getAnswerCommentsHook}
+					getCommentsHook={getAnswerCommentsHookRef.current}
 				/>
 			</Col>
 			<Col md={12}>

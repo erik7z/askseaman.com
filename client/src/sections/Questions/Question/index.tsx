@@ -9,7 +9,6 @@ import { QuestionPage } from './QuestionPage'
 
 export const Question = () => {
 	const [sectionTitle, setSectionTitle] = useState('')
-
 	return (
 		<>
 			<Section

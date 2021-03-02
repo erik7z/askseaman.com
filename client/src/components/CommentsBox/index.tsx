@@ -27,6 +27,8 @@ interface IProps {
 }
 
 export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
+	console.log('commentsbox rendered--------------')
+
 	let subscribersCount, viewsCount, showSubscribers, showViews
 
 	const isQuestionComments = topic.__typename === 'Question'
