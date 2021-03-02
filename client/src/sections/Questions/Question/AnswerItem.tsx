@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
 
 import { CommentsBox, AvatarLink } from '../../../components'
+import { useAnswerRate } from './../../../lib/hooks'
 import {
 	Answer as TAnswer,
 	useAnswerCommentsLazyQuery,
-	useVoteMutation,
 	VoteIntention,
 } from '../../../types/generated-frontend'
 
@@ -16,6 +16,8 @@ interface IProps {
 }
 
 export const AnswerItem = ({ answer }: IProps) => {
+	const { rateData, handleRateChange } = useAnswerRate(answer)
+
 	const getAnswerCommentsHook = useAnswerCommentsLazyQuery({
 		variables: {
 			nodeId: answer.nodeId,
@@ -24,49 +26,6 @@ export const AnswerItem = ({ answer }: IProps) => {
 	})
 
 	const getAnswerCommentsHookRef = useRef(getAnswerCommentsHook)
-
-	const [rateData, setRateData] = useState({
-		upVotesCount: answer.upVotesCount as number,
-		downVotesCount: answer.downVotesCount as number,
-		canVoteUp: answer.canVoteUp as boolean,
-		canVoteDown: answer.canVoteDown as boolean,
-	})
-
-	const [
-		rateAnswerMutation,
-		{ data, error: rateAnswerError },
-	] = useVoteMutation()
-
-	if (rateAnswerError) console.log(rateAnswerError)
-
-	const rateAnswerResponse = data?.Vote
-
-	useEffect(() => {
-		if (rateAnswerResponse) {
-			setRateData({
-				upVotesCount: rateAnswerResponse.upVotesCount as number,
-				downVotesCount: rateAnswerResponse.downVotesCount as number,
-				canVoteUp: rateAnswerResponse.canVoteUp as boolean,
-				canVoteDown: rateAnswerResponse.canVoteDown as boolean,
-			})
-		}
-	}, [rateAnswerResponse])
-
-	const handleRateChange = (e: React.SyntheticEvent) => {
-		e.preventDefault()
-		const action =
-			e.currentTarget.id === VoteIntention.UpVote
-				? VoteIntention.UpVote
-				: VoteIntention.DownVote
-		rateAnswerMutation({
-			variables: {
-				data: {
-					nodeId: answer.nodeId,
-					action,
-				},
-			},
-		})
-	}
 
 	if (!answer) {
 		console.error('No answer in answer item')

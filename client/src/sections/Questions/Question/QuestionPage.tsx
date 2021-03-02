@@ -10,8 +10,7 @@ import {
 } from '../../../components'
 import { answerQuestionHandler } from './../../../components/UserTextFormInput/lib/helpers'
 import { AnswersList } from './AnswersList'
-import { useGetQuestion } from './../../../lib/hooks/useGetQuestion'
-import { useGetQuestionAnswers } from './../../../lib/hooks/useGetQuestionAnswers'
+import { useGetQuestionAnswers, useGetQuestion } from './../../../lib/hooks'
 import {
 	useAnswerQuestionMutation,
 	Question as TQuestion,
