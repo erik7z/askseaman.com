@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useRef } from 'react'
 import { Accordion, Card, Alert } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 
 import { CommentItem, MetaActions, UserTextFormInput } from '..'
 
 import { addCommentHandler } from './../UserTextFormInput/lib/helpers'
+import { useGetComments } from './../../lib/hooks'
 import {
-	useQuestionCommentsLazyQuery,
-	useAnswerCommentsLazyQuery,
 	useAddCommentMutation,
 	Comment as TComment,
-	CanBeCommented,
-	Answer as TAnswer,
 	Question as TQuestion,
+	Answer as TAnswer,
+	useQuestionCommentsLazyQuery,
+	useAnswerCommentsLazyQuery,
 } from '../../types/generated-frontend'
-
-type TCommentsQueryResponse = {
-	[key: string]: CanBeCommented[]
-}
 
 interface IProps {
 	topic: TAnswer | TQuestion
@@ -27,45 +23,38 @@ interface IProps {
 }
 
 export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
-	console.log('commentsbox rendered--------------')
-
 	let subscribersCount, viewsCount, showSubscribers, showViews
 
 	const isQuestionComments = topic.__typename === 'Question'
-	const topicType = topic.__typename as 'Answer' | 'Question'
 
-	const [commentsList, setCommentsList] = useState<TComment[]>()
-	const [commentsCount, setCommentsCount] = useState(topic.commentsCount)
+	if (isQuestionComments) {
+		;({ subscribersCount, viewsCount } = topic as TQuestion)
+		showSubscribers = true
+		showViews = true
+	}
 
-	const [
+	const {
 		getComments,
-		{ data, loading: commentsLoading, error: commentsError },
-	] = getCommentsHook
+		commentsList,
+		setCommentsList,
+		commentsCount,
+		setCommentsCount,
+		commentsLoading,
+		commentsError,
+	} = useGetComments(topic, getCommentsHook)
 
-	const commentsData = data as TCommentsQueryResponse
+	const getCommentsRef = useRef(getComments)
 
 	const [
 		addCommentsMutation,
 		{ error: addCommentConnErrors },
 	] = useAddCommentMutation()
 
+	const addCommentsRef = useRef(addCommentsMutation)
+
 	const handleAddCommentSuccess = (comments: TComment[]) => {
 		setCommentsList(comments)
 		setCommentsCount(comments.length)
-	}
-
-	useEffect(() => {
-		console.log('getComments useffect', topicType)
-		if (commentsData) {
-			console.log(commentsData)
-			setCommentsList(commentsData[topicType]?.[0].comments as TComment[])
-		}
-	}, [commentsData, topicType])
-
-	if (isQuestionComments) {
-		;({ subscribersCount, viewsCount } = topic as TQuestion)
-		showSubscribers = true
-		showViews = true
 	}
 
 	return (
@@ -81,7 +70,7 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 				commentsCount={commentsCount}
 				showComments={true}
 				showCommentsButton={true}
-				getComments={getComments}
+				getComments={getCommentsRef.current}
 				commentsLoading={commentsLoading}
 			/>
 			<Card className='border-0 comments-collapse'>
@@ -105,7 +94,7 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 						<hr className='hr-header hr-bold' />
 						<UserTextFormInput<typeof addCommentsMutation>
 							topicId={topic.nodeId}
-							submitMutation={addCommentsMutation}
+							submitMutation={addCommentsRef.current}
 							submitHandler={addCommentHandler}
 							successFn={handleAddCommentSuccess}
 							connErrors={addCommentConnErrors}
