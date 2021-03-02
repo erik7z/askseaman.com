@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
@@ -11,12 +11,12 @@ import {
 import { answerQuestionHandler } from './../../../components/UserTextFormInput/lib/helpers'
 import { AnswersList } from './AnswersList'
 import { useGetQuestion } from './../../../lib/hooks/useGetQuestion'
+import { useGetQuestionAnswers } from './../../../lib/hooks/useGetQuestionAnswers'
 import {
 	useAnswerQuestionMutation,
 	Question as TQuestion,
 	Tag as TTag,
 	Answer as TAnswer,
-	useQuestionAnswersListLazyQuery,
 	useQuestionCommentsLazyQuery,
 } from '../../../types/generated-frontend'
 
@@ -26,40 +26,19 @@ interface IProps {
 
 export const QuestionPage = ({ setSectionTitle }: IProps) => {
 	const { questionId } = useParams<{ questionId: string }>()
-
 	const { question, loading, error } = useGetQuestion(questionId)
 
-	const [answersList, setAnswersList] = useState<TAnswer[]>([])
-
-	const [
-		getQuestionAnswers,
-		{ data: answersData, loading: answersLoading, error: answersError },
-	] = useQuestionAnswersListLazyQuery({
-		variables: {
-			filter: {
-				question: {
-					nodeId: questionId,
-				},
-			},
-		},
-		fetchPolicy: 'cache-and-network',
-	})
-
-	useEffect(() => {
-		console.log('getQuestionAnswers useffect')
-
-		getQuestionAnswers()
-		if (answersData) setAnswersList(answersData.Answer as TAnswer[])
-	}, [getQuestionAnswers, answersData])
+	const {
+		answersList,
+		setAnswersList,
+		answersLoading,
+		answersError,
+	} = useGetQuestionAnswers(questionId)
 
 	const [
 		answerQuestionMutation,
 		{ error: answerQuestionConnErrors },
 	] = useAnswerQuestionMutation()
-
-	const handleAnswerQuestionSuccess = (answers: TAnswer[]) => {
-		setAnswersList(answers)
-	}
 
 	const getQuestionCommentsHook = useQuestionCommentsLazyQuery({
 		variables: {
@@ -70,14 +49,16 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 
 	const getCommentsHookRef = useRef(getQuestionCommentsHook)
 
+	useEffect(() => {
+		if (question) setSectionTitle(question.title)
+	}, [question, setSectionTitle])
+
 	if (error) {
 		console.log(error)
 		return <h1>Something went wrong</h1>
 	}
 
 	if (!question || loading) return <Skeleton count={25} />
-
-	// setSectionTitle(question.title)
 
 	return (
 		<>
@@ -120,7 +101,7 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 				topicId={question.nodeId}
 				submitMutation={answerQuestionMutation}
 				submitHandler={answerQuestionHandler}
-				successFn={handleAnswerQuestionSuccess}
+				successFn={(answers: TAnswer[]) => setAnswersList(answers)}
 				connErrors={answerQuestionConnErrors}
 			/>
 		</>
