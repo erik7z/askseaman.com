@@ -25,8 +25,6 @@ export const AnswerItem = ({ answer }: IProps) => {
 		fetchPolicy: 'no-cache',
 	})
 
-	const getAnswerCommentsHookRef = useRef(getAnswerCommentsHook)
-
 	if (!answer) {
 		console.error('No answer in answer item')
 		return <h1>Something went wrong...</h1>
@@ -89,7 +87,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 				<p className='post-item-text'>{answer.text}</p>
 				<CommentsBox
 					topic={answer as TAnswer}
-					getCommentsHook={getAnswerCommentsHookRef.current}
+					getCommentsHook={getAnswerCommentsHook}
 				/>
 			</Col>
 			<Col md={12}>
