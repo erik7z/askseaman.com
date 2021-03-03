@@ -12,7 +12,7 @@ export const AvatarLink = ({ size }: IProps) => {
 		<Link
 			to='#'
 			className={'img author-avatar author-avatar-' + size}
-			style={{ backgroundImage: 'url(/images/bg_1.jpg)' }}
+			style={{ backgroundImage: 'url(/images/avatar_512.png)' }}
 		></Link>
 	)
 }

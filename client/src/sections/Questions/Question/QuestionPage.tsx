@@ -73,7 +73,7 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 							<Link to={`/user/${question.author?.nodeId}`}>
 								{question.author?.name}
 							</Link>
-							,<span className='author-position'>{question.author?.rank}</span>
+							, <span className='author-position'>{question.author?.rank}</span>
 						</h5>
 						{question.tags && (
 							<TagsInlineList
