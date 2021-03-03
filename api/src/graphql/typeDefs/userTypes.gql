@@ -3,6 +3,7 @@ type User {
 	name: String!
 	surname: String!
 	rank: String
+	description: String
 	createdAt: DateTime
 	timestamp: String
 	roles: [String]
@@ -40,6 +41,14 @@ type User {
 	liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
 	subscriptions: [CanBeSubscribed] @relation(name: "SUBSCRIBED", direction: OUT)
 	moderatingTags: [Tag] @relation(name: "MODERATED_BY", direction: IN)
+}
+
+type Profile {
+	name: String
+	surname: String
+	rank: String
+	description: String
+	isPasswordChanged: String
 }
 
 type LocalAccount {
@@ -86,6 +95,21 @@ type Mutation {
 			MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
 			SET l.password = $data.new_password, l.code = null
 			RETURN u
+			"""
+		)
+
+	EditProfile(data: UserProfileInput!): EditProfileResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:AUTHENTICATED_WITH]->(l:LocalAccount)
+
+			WITH {
+						name: u.name,
+						surname: u.surname,
+						rank: u.roles,
+						description: u.description
+					} as Profile RETURN Profile
 			"""
 		)
 }

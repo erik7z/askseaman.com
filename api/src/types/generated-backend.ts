@@ -719,6 +719,8 @@ export enum _UserOrdering {
   SurnameDesc = 'surname_desc',
   RankAsc = 'rank_asc',
   RankDesc = 'rank_desc',
+  DescriptionAsc = 'description_asc',
+  DescriptionDesc = 'description_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
   TimestampAsc = 'timestamp_asc',
@@ -782,6 +784,17 @@ export type _UserFilter = {
   rank_not_starts_with?: Maybe<Scalars['String']>;
   rank_ends_with?: Maybe<Scalars['String']>;
   rank_not_ends_with?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  description_not?: Maybe<Scalars['String']>;
+  description_in?: Maybe<Array<Scalars['String']>>;
+  description_not_in?: Maybe<Array<Scalars['String']>>;
+  description_regexp?: Maybe<Scalars['String']>;
+  description_contains?: Maybe<Scalars['String']>;
+  description_not_contains?: Maybe<Scalars['String']>;
+  description_starts_with?: Maybe<Scalars['String']>;
+  description_not_starts_with?: Maybe<Scalars['String']>;
+  description_ends_with?: Maybe<Scalars['String']>;
+  description_not_ends_with?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_not?: Maybe<_Neo4jDateTimeInput>;
   createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
@@ -869,6 +882,7 @@ export type User = {
   name: Scalars['String'];
   surname: Scalars['String'];
   rank?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTime>;
   timestamp?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -936,6 +950,14 @@ export type UserModeratingTagsArgs = {
   filter?: Maybe<_TagFilter>;
 };
 
+export type Profile = {
+  __typename?: 'Profile';
+  name?: Maybe<Scalars['String']>;
+  surname?: Maybe<Scalars['String']>;
+  rank?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
 export type LocalAccount = {
   __typename?: 'LocalAccount';
   user: User;
@@ -971,6 +993,14 @@ export type RegisterUserInput = {
   name: Scalars['String'];
   surname: Scalars['String'];
   rank?: Maybe<UserRank>;
+};
+
+export type UserProfileInput = {
+  password?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  surname?: Maybe<Scalars['String']>;
+  rank?: Maybe<UserRank>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type LoginUserInput = {
@@ -1109,13 +1139,15 @@ export type VoteResponse = Question | Answer;
 
 export type SubscribeResponse = Question | Tag;
 
-export type AuthResponse = TokenResponse | FormError;
-
 export type AskQuestionResponse = Question | FormError;
 
 export type AnswerQuestionResponse = Answer | FormError;
 
 export type AddCommentResponse = Comment | FormError;
+
+export type AuthResponse = TokenResponse | FormError;
+
+export type EditProfileResponse = Profile | FormError;
 
 export type FieldError = {
   __typename?: 'FieldError';
@@ -1665,6 +1697,7 @@ export type Mutation = {
   ChangePassRequest: RedirectUriResponse;
   ChangePassConfirm: RedirectUriResponse;
   ChangePassComplete: RedirectUriResponse;
+  EditProfile: EditProfileResponse;
 };
 
 
@@ -1767,6 +1800,11 @@ export type MutationChangePassCompleteArgs = {
   data: NewPassInput;
 };
 
+
+export type MutationEditProfileArgs = {
+  data: UserProfileInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   QuestionCount?: Maybe<Question>;
@@ -1782,12 +1820,6 @@ export type Query = {
   Tag?: Maybe<Array<Maybe<Tag>>>;
   /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
   User?: Maybe<Array<Maybe<User>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AskQuestionResponse type nodes. */
-  AskQuestionResponse?: Maybe<Array<Maybe<AskQuestionResponse>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AnswerQuestionResponse type nodes. */
-  AnswerQuestionResponse?: Maybe<Array<Maybe<AnswerQuestionResponse>>>;
-  /** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AddCommentResponse type nodes. */
-  AddCommentResponse?: Maybe<Array<Maybe<AddCommentResponse>>>;
 };
 
 
@@ -1859,6 +1891,7 @@ export type QueryUserArgs = {
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   timestamp?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -1868,24 +1901,6 @@ export type QueryUserArgs = {
   offset?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<Array<Maybe<_UserOrdering>>>;
   filter?: Maybe<_UserFilter>;
-};
-
-
-export type QueryAskQuestionResponseArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryAnswerQuestionResponseArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryAddCommentResponseArgs = {
-  first?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -1986,11 +2001,13 @@ export type ResolversTypes = ResolversObject<{
   _UserOrdering: _UserOrdering;
   _UserFilter: _UserFilter;
   User: ResolverTypeWrapper<User>;
+  Profile: ResolverTypeWrapper<Profile>;
   LocalAccount: ResolverTypeWrapper<LocalAccount>;
   VoteIntention: VoteIntention;
   Role: Role;
   ResponseStatus: ResponseStatus;
   RegisterUserInput: RegisterUserInput;
+  UserProfileInput: UserProfileInput;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
   nodeIdInput: NodeIdInput;
@@ -2013,10 +2030,11 @@ export type ResolversTypes = ResolversObject<{
   LikeResponse: ResolversTypes['Question'] | ResolversTypes['Comment'];
   VoteResponse: ResolversTypes['Question'] | ResolversTypes['Answer'];
   SubscribeResponse: ResolversTypes['Question'] | ResolversTypes['Tag'];
-  AuthResponse: ResolversTypes['TokenResponse'] | ResolversTypes['FormError'];
   AskQuestionResponse: ResolversTypes['Question'] | ResolversTypes['FormError'];
   AnswerQuestionResponse: ResolversTypes['Answer'] | ResolversTypes['FormError'];
   AddCommentResponse: ResolversTypes['Comment'] | ResolversTypes['FormError'];
+  AuthResponse: ResolversTypes['TokenResponse'] | ResolversTypes['FormError'];
+  EditProfileResponse: ResolversTypes['Profile'] | ResolversTypes['FormError'];
   FieldError: ResolverTypeWrapper<FieldError>;
   FormError: ResolverTypeWrapper<FormError>;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
@@ -2064,8 +2082,10 @@ export type ResolversParentTypes = ResolversObject<{
   Tag: Tag;
   _UserFilter: _UserFilter;
   User: User;
+  Profile: Profile;
   LocalAccount: LocalAccount;
   RegisterUserInput: RegisterUserInput;
+  UserProfileInput: UserProfileInput;
   LoginUserInput: LoginUserInput;
   EmailInput: EmailInput;
   nodeIdInput: NodeIdInput;
@@ -2088,10 +2108,11 @@ export type ResolversParentTypes = ResolversObject<{
   LikeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Comment'];
   VoteResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Answer'];
   SubscribeResponse: ResolversParentTypes['Question'] | ResolversParentTypes['Tag'];
-  AuthResponse: ResolversParentTypes['TokenResponse'] | ResolversParentTypes['FormError'];
   AskQuestionResponse: ResolversParentTypes['Question'] | ResolversParentTypes['FormError'];
   AnswerQuestionResponse: ResolversParentTypes['Answer'] | ResolversParentTypes['FormError'];
   AddCommentResponse: ResolversParentTypes['Comment'] | ResolversParentTypes['FormError'];
+  AuthResponse: ResolversParentTypes['TokenResponse'] | ResolversParentTypes['FormError'];
+  EditProfileResponse: ResolversParentTypes['Profile'] | ResolversParentTypes['FormError'];
   FieldError: FieldError;
   FormError: FormError;
   LoginResponse: LoginResponse;
@@ -2271,6 +2292,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -2288,6 +2310,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   subscriptions?: Resolver<Maybe<Array<Maybe<ResolversTypes['CanBeSubscribed']>>>, ParentType, ContextType>;
   moderatingTags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<UserModeratingTagsArgs, never>>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Profile'] = ResolversParentTypes['Profile']> = ResolversObject<{
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  surname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  rank?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2347,10 +2377,6 @@ export type SubscribeResponseResolvers<ContextType = any, ParentType extends Res
   __resolveType: TypeResolveFn<'Question' | 'Tag', ParentType, ContextType>;
 }>;
 
-export type AuthResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'TokenResponse' | 'FormError', ParentType, ContextType>;
-}>;
-
 export type AskQuestionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AskQuestionResponse'] = ResolversParentTypes['AskQuestionResponse']> = ResolversObject<{
   __resolveType: TypeResolveFn<'Question' | 'FormError', ParentType, ContextType>;
 }>;
@@ -2361,6 +2387,14 @@ export type AnswerQuestionResponseResolvers<ContextType = any, ParentType extend
 
 export type AddCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddCommentResponse'] = ResolversParentTypes['AddCommentResponse']> = ResolversObject<{
   __resolveType: TypeResolveFn<'Comment' | 'FormError', ParentType, ContextType>;
+}>;
+
+export type AuthResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthResponse'] = ResolversParentTypes['AuthResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'TokenResponse' | 'FormError', ParentType, ContextType>;
+}>;
+
+export type EditProfileResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['EditProfileResponse'] = ResolversParentTypes['EditProfileResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Profile' | 'FormError', ParentType, ContextType>;
 }>;
 
 export type FieldErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['FieldError'] = ResolversParentTypes['FieldError']> = ResolversObject<{
@@ -2523,6 +2557,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   ChangePassRequest?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassRequestArgs, 'data'>>;
   ChangePassConfirm?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassConfirmArgs, 'data'>>;
   ChangePassComplete?: Resolver<ResolversTypes['RedirectUriResponse'], ParentType, ContextType, RequireFields<MutationChangePassCompleteArgs, 'data'>>;
+  EditProfile?: Resolver<ResolversTypes['EditProfileResponse'], ParentType, ContextType, RequireFields<MutationEditProfileArgs, 'data'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -2534,9 +2569,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   Question?: Resolver<Maybe<Array<Maybe<ResolversTypes['Question']>>>, ParentType, ContextType, RequireFields<QueryQuestionArgs, never>>;
   Tag?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tag']>>>, ParentType, ContextType, RequireFields<QueryTagArgs, never>>;
   User?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QueryUserArgs, never>>;
-  AskQuestionResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AskQuestionResponse']>>>, ParentType, ContextType, RequireFields<QueryAskQuestionResponseArgs, never>>;
-  AnswerQuestionResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AnswerQuestionResponse']>>>, ParentType, ContextType, RequireFields<QueryAnswerQuestionResponseArgs, never>>;
-  AddCommentResponse?: Resolver<Maybe<Array<Maybe<ResolversTypes['AddCommentResponse']>>>, ParentType, ContextType, RequireFields<QueryAddCommentResponseArgs, never>>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
@@ -2545,6 +2577,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Question?: QuestionResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Profile?: ProfileResolvers<ContextType>;
   LocalAccount?: LocalAccountResolvers<ContextType>;
   CanBeCommented?: CanBeCommentedResolvers<ContextType>;
   CanBeLiked?: CanBeLikedResolvers<ContextType>;
@@ -2553,10 +2586,11 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   LikeResponse?: LikeResponseResolvers<ContextType>;
   VoteResponse?: VoteResponseResolvers<ContextType>;
   SubscribeResponse?: SubscribeResponseResolvers<ContextType>;
-  AuthResponse?: AuthResponseResolvers<ContextType>;
   AskQuestionResponse?: AskQuestionResponseResolvers<ContextType>;
   AnswerQuestionResponse?: AnswerQuestionResponseResolvers<ContextType>;
   AddCommentResponse?: AddCommentResponseResolvers<ContextType>;
+  AuthResponse?: AuthResponseResolvers<ContextType>;
+  EditProfileResponse?: EditProfileResponseResolvers<ContextType>;
   FieldError?: FieldErrorResolvers<ContextType>;
   FormError?: FormErrorResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;

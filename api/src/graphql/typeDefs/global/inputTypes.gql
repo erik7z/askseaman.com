@@ -6,6 +6,14 @@ input RegisterUserInput {
 	rank: UserRank
 }
 
+input UserProfileInput {
+	password: String
+	name: String
+	surname: String
+	rank: UserRank
+	description: String
+}
+
 input LoginUserInput {
 	email: String!
 	password: String!

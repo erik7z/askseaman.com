@@ -31,12 +31,17 @@ export const schema = makeAugmentedSchema({
 				'SignedToken',
 				'RedirectUri',
 				'LocalAccount',
+				'Profile',
 				'LoginResponse',
 				'AuthResponse',
+				'EditProfileResponse',
 				'TokenResponse',
 				'RedirectUriResponse',
 				'FormError',
 				'FieldError',
+				'AskQuestionResponse',
+				'AnswerQuestionResponse',
+				'AddCommentResponse',
 				'LikeResponse',
 				'VoteResponse',
 				'SubscribeResponse',
@@ -59,6 +64,12 @@ schema._typeMap.AuthResponse.resolveType = (obj: any) => {
 	if (obj.message || obj.errors || obj.message) return 'FormError'
 	else return 'TokenResponse'
 }
+
+schema._typeMap.EditProfileResponse.resolveType = (obj: any) => {
+	if (obj.message || obj.errors || obj.message) return 'FormError'
+	else return 'Profile'
+}
+
 schema._typeMap.AskQuestionResponse.resolveType = (obj: any) => {
 	if (obj.message || obj.errors || obj.message) return 'FormError'
 	else return 'Question'

@@ -6,7 +6,7 @@ import {
 } from './../../types/generated-backend'
 import { ApolloServerContext, TkvPair } from './../../types/backend'
 import { createToken } from '../../utils/auth'
-import { neo4jgraphql } from 'neo4j-graphql-js'
+import { neo4jgraphql, cypherMutation } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
 
 import { ranks } from './../../data/ranks'
@@ -177,6 +177,58 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 				redirect: HOST_URI + AUTH_LOGIN_UI_URI,
 				status: ResponseStatus.Success,
 				message: 'Password has been changed, please log in using new password',
+			}
+		},
+
+		async EditProfile(parent, params, ctx, resolveInfo) {
+			const errorField = ''
+
+			const [, queryParams] = cypherMutation(params, ctx, resolveInfo)
+
+			if (queryParams.data.password) {
+				const salt = bcrypt.genSaltSync(10)
+				queryParams.data.password = bcrypt.hashSync(
+					queryParams.data.password,
+					salt
+				)
+			}
+
+			if (queryParams.data.rank)
+				queryParams.data.rank = (<TkvPair>ranks)[
+					<string>queryParams.data.rank
+				] as UserRank
+
+			try {
+				return await ctx.driver
+					.session()
+					.run(
+						`
+						MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:AUTHENTICATED_WITH]->(l:LocalAccount)
+						SET
+						u += $data,
+						l += $data
+						WITH {
+									name: u.name,
+									surname: u.surname,
+									rank: u.rank,
+									description: u.description,
+									isPasswordChanged: l.password = $data.password
+								} as Profile
+						RETURN Profile
+						`,
+						queryParams
+					)
+					.then((res) => res.records[0].get(0))
+			} catch (e) {
+				const errors: FieldError[] = []
+				errors.push({
+					field: errorField,
+					message: e.message,
+				})
+				return {
+					message: e.message,
+					errors,
+				}
 			}
 		},
 	},

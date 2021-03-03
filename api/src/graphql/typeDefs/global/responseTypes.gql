@@ -1,10 +1,11 @@
 union LikeResponse = Question | Comment
 union VoteResponse = Question | Answer
 union SubscribeResponse = Question | Tag
-union AuthResponse = TokenResponse | FormError
 union AskQuestionResponse = Question | FormError
 union AnswerQuestionResponse = Answer | FormError
 union AddCommentResponse = Comment | FormError
+union AuthResponse = TokenResponse | FormError
+union EditProfileResponse = Profile | FormError
 
 type FieldError {
 	field: String
