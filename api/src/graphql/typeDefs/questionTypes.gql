@@ -5,17 +5,21 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 	createdAt: DateTime
 	updatedAt: DateTime
 	timestamp: String
-
+	author: User @relation(name: "ASKED", direction: IN)
 	viewsCount: Int
 		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
-	canVote: Boolean #TODO:logic to decide if user can vote (depended on some rating)
-	canVoteUp: Boolean
+
+	canVote: Boolean
 		@cypher(
-			statement: "MATCH (this)<-[r:VOTED_UP]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as canVoteUp"
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canSubscribe"
 		)
-	canVoteDown: Boolean
+	isVotedUp: Boolean
 		@cypher(
-			statement: "MATCH (this)<-[r:VOTED_DOWN]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as canVoteDown"
+			statement: "MATCH (this)<-[r:VOTED_UP]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) > 0 as isVotedUp"
+		)
+	isVotedDown: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:VOTED_DOWN]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) > 0 as isVotedDown"
 		)
 	upVotesCount: Int
 		@cypher(
@@ -25,31 +29,50 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 		@cypher(
 			statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downVotesCount"
 		)
+
+	answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
 	answersCount: Int
 		@cypher(
 			statement: "RETURN size((this)-[:HAS_ANSWER]->(:Answer)) as answersCount"
 		)
+
+	comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 	commentsCount: Int
 		@cypher(
 			statement: "RETURN size((this)-[:HAS_COMMENT]->(:Comment)) as commentsCount"
 		)
+	canComment: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canComment"
+		)
+
+	likes: [User] @relation(name: "LIKED", direction: IN)
 	likesCount: Int
 		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
 	canLike: Boolean
 		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canLike"
+		)
+	isLiked: Boolean
+		@cypher(
 			statement: "MATCH (this)<-[r:LIKED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as canLike"
 		)
+
+	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
 	subscribersCount: Int
 		@cypher(
 			statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
 		)
+	canSubscribe: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canSubscribe"
+		)
+	isSubscribed: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as isSubscribed"
+		)
 
-	author: User @relation(name: "ASKED", direction: IN)
-	answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
-	comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
 	tags: [Tag] @relation(name: "TAGGED", direction: IN)
-	likes: [User] @relation(name: "LIKED", direction: IN)
-	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
 	totalCount: Int
 }
 

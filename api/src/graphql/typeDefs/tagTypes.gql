@@ -4,12 +4,10 @@ type Tag implements CanBeSubscribed {
 	description: String
 	createdAt: DateTime
 	timestamp: String
-	isSubscribed: Boolean
-		@isAuthenticated
-		@cypher(
-			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:SUBSCRIBED]->(this) RETURN count(u) > 0 as isSubscribed"
-		)
+	addedBy: User @relation(name: "ADDED_BY", direction: OUT)
+	moderators: [User] @relation(name: "MODERATED_BY", direction: OUT)
 
+	questions: [Question] @relation(name: "TAGGED", direction: OUT)
 	questionsCount: Int
 		@cypher(
 			statement: "RETURN size((this)-[:TAGGED]->(:Question)) as questionsCount"
@@ -18,10 +16,21 @@ type Tag implements CanBeSubscribed {
 		@cypher(
 			statement: "RETURN size((this)-[:TAGGED]->(:Question)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
 		)
+
+	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
 	subscribersCount: Int
 		@cypher(
 			statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
 		)
+	canSubscribe: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canSubscribe"
+		)
+	isSubscribed: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as isSubscribed"
+		)
+
 	topUsers: [User]  #TODO:complete logic to select top users
 		@cypher(
 			statement: """
@@ -30,17 +39,12 @@ type Tag implements CanBeSubscribed {
 			MATCH (this)-[:TAGGED]->(:Question)-[:HAS_ANSWER]->(:Answer)<-[:ANSWERED]-(u:User) RETURN u as topUsers
 			"""
 		)
-
 	topQuestions: [Question]  #TODO:complete logic to select top questions
 		@cypher(
 			statement: """
 			MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN q as topQuestions
 			"""
 		)
-	questions: [Question] @relation(name: "TAGGED", direction: OUT)
-	addedBy: User @relation(name: "ADDED_BY", direction: OUT)
-	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
-	moderators: [User] @relation(name: "MODERATED_BY", direction: OUT)
 }
 
 type Mutation {

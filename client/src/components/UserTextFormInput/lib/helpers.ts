@@ -24,27 +24,32 @@ export const addCommentHandler: FormikSubmit<AddCommentMutationFn> = async (
 ) => {
 	setSubmitting(true)
 
-	const { data } = await submitMutation({
-		variables: {
-			data: {
-				nodeId: topicId,
-				text: values.text,
+	try {
+		const { data } = await submitMutation({
+			variables: {
+				data: {
+					nodeId: topicId,
+					text: values.text,
+				},
 			},
-		},
-	})
+		})
 
-	const submitResponse = data?.AddComment
+		const submitResponse = data?.AddComment
 
-	if (submitResponse) {
-		if (submitResponse.__typename === 'FormError') {
-			const formErrors = submitResponse.errors as FieldError[]
-			setErrors(normalizeErrors(formErrors))
+		if (submitResponse) {
+			if (submitResponse.__typename === 'FormError') {
+				const formErrors = submitResponse.errors as FieldError[]
+				setErrors(normalizeErrors(formErrors))
+			}
+			if (submitResponse.__typename === 'Comment') {
+				resetForm()
+				successFn(submitResponse.topic?.comments)
+			}
 		}
-		if (submitResponse.__typename === 'Comment') {
-			resetForm()
-			successFn(submitResponse.topic?.comments)
-		}
+	} catch (e) {
+		console.log(e)
 	}
+
 	setSubmitting(false)
 }
 
@@ -56,27 +61,31 @@ export const answerQuestionHandler: FormikSubmit<AnswerQuestionMutationFn> = asy
 	{ setSubmitting, setErrors, resetForm }
 ) => {
 	setSubmitting(true)
-
-	const { data } = await submitMutation({
-		variables: {
-			data: {
-				nodeId: topicId,
-				text: values.text,
+	try {
+		const { data } = await submitMutation({
+			variables: {
+				data: {
+					nodeId: topicId,
+					text: values.text,
+				},
 			},
-		},
-	})
+		})
 
-	const submitResponse = data?.AnswerQuestion
+		const submitResponse = data?.AnswerQuestion
 
-	if (submitResponse) {
-		if (submitResponse.__typename === 'FormError') {
-			const formErrors = submitResponse.errors as FieldError[]
-			setErrors(normalizeErrors(formErrors))
+		if (submitResponse) {
+			if (submitResponse.__typename === 'FormError') {
+				const formErrors = submitResponse.errors as FieldError[]
+				setErrors(normalizeErrors(formErrors))
+			}
+			if (submitResponse.__typename === 'Answer') {
+				resetForm()
+				successFn(submitResponse.question.answers)
+			}
 		}
-		if (submitResponse.__typename === 'Answer') {
-			resetForm()
-			successFn(submitResponse.question.answers)
-		}
+	} catch (e) {
+		console.error(e)
 	}
+
 	setSubmitting(false)
 }

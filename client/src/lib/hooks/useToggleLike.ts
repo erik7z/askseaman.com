@@ -5,10 +5,10 @@ import { useToggleLikeMutation } from '../../types/generated-frontend'
 export const useToggleLike = (
 	topicId: string,
 	likesCountInitial: number | null | undefined,
-	canLikeInitial: boolean | null | undefined
+	isLikedInitial: boolean | null | undefined
 ) => {
 	const [likeStatus, setLikeStatus] = useState({
-		canLike: canLikeInitial,
+		isLiked: isLikedInitial,
 		likesCount: likesCountInitial,
 	})
 
@@ -31,14 +31,16 @@ export const useToggleLike = (
 		if (toggleLikeResponse) {
 			setLikeStatus({
 				likesCount: toggleLikeResponse.ToggleLike.likesCount as number,
-				canLike: toggleLikeResponse.ToggleLike.canLike as boolean,
+				isLiked: toggleLikeResponse.ToggleLike.isLiked as boolean,
 			})
 		}
 	}, [toggleLikeResponse])
 
 	const handleLike = (e: React.SyntheticEvent) => {
 		e.preventDefault()
-		toggleLikeMutation()
+		toggleLikeMutation().catch((e) => {
+			console.error(e)
+		})
 	}
 
 	return {

@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { Card } from 'react-bootstrap'
 
 import {
 	UserTextFormInput,
@@ -11,6 +12,8 @@ import {
 import { answerQuestionHandler } from './../../../components/UserTextFormInput/lib/helpers'
 import { AnswersList } from './AnswersList'
 import { useGetQuestionAnswers, useGetQuestion } from './../../../lib/hooks'
+import { CurrentUserContext } from './../../../lib/contexts'
+
 import {
 	useAnswerQuestionMutation,
 	Question as TQuestion,
@@ -24,6 +27,8 @@ interface IProps {
 }
 
 export const QuestionPage = ({ setSectionTitle }: IProps) => {
+	const [currentUserState] = useContext(CurrentUserContext)
+
 	const { questionId } = useParams<{ questionId: string }>()
 	const { question, loading, error } = useGetQuestion(questionId)
 
@@ -45,8 +50,6 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 		},
 		fetchPolicy: 'no-cache',
 	})
-
-	const getCommentsHookRef = useRef(getQuestionCommentsHook)
 
 	useEffect(() => {
 		if (question) setSectionTitle(question.title)
@@ -84,7 +87,7 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 				<p className='post-item-text'>{question.text}</p>
 				<CommentsBox
 					topic={question as TQuestion}
-					getCommentsHook={getCommentsHookRef.current}
+					getCommentsHook={getQuestionCommentsHook}
 				/>
 			</div>
 			<h5 className='module-header text-right'>Answers on question &lt;</h5>
@@ -96,13 +99,35 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 			/>
 			<h5 className='module-header'>&gt; Your answer</h5>
 			<hr className='hr-header hr-bold' />
-			<UserTextFormInput<typeof answerQuestionMutation>
-				topicId={question.nodeId}
-				submitMutation={answerQuestionMutation}
-				submitHandler={answerQuestionHandler}
-				successFn={(answers: TAnswer[]) => setAnswersList(answers)}
-				connErrors={answerQuestionConnErrors}
-			/>
+
+			{currentUserState.isLoggedIn ? (
+				<UserTextFormInput<typeof answerQuestionMutation>
+					topicId={question.nodeId}
+					submitMutation={answerQuestionMutation}
+					submitHandler={answerQuestionHandler}
+					successFn={(answers: TAnswer[]) => setAnswersList(answers)}
+					connErrors={answerQuestionConnErrors}
+				/>
+			) : (
+				<Card
+					border='success'
+					style={{
+						width: '30rem',
+						margin: ' 0 auto',
+						float: 'none',
+						marginBottom: '10px',
+					}}
+				>
+					<Card.Body>
+						<Card.Text>
+							Only registered users can add answers, so please{' '}
+							<Link to='/auth' className='btn btn-outline-success btn-sm'>
+								Sign In
+							</Link>
+						</Card.Text>
+					</Card.Body>
+				</Card>
+			)}
 		</>
 	)
 }

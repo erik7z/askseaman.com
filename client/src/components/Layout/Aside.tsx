@@ -12,21 +12,8 @@ import { ucFirstLetter } from '../../lib/helpers'
 const Aside = () => {
 	const [currentUserState, userDispatch] = useContext(CurrentUserContext)
 	const { currentUser } = currentUserState
-	let authModule = (
-		<>
-			<Row className='text-center'>
-				<Col md={12}>
-					<Link to='/auth' className='btn btn-outline-success btn-sm px-5'>
-						Sign In
-					</Link>
-					<hr />
-				</Col>
-			</Row>
-		</>
-	)
-
-	if (currentUser && currentUserState.isLoggedIn) {
-		authModule = (
+	const authModule =
+		currentUser && currentUserState.isLoggedIn ? (
 			<>
 				<Row className='auth-module'>
 					<Col md={3} className='text-right pr-0 pt-1'>
@@ -65,8 +52,18 @@ const Aside = () => {
 					</Col>
 				</Row>
 			</>
+		) : (
+			<>
+				<Row className='text-center'>
+					<Col md={12}>
+						<Link to='/auth' className='btn btn-outline-success btn-sm px-5'>
+							Sign In
+						</Link>
+						<hr />
+					</Col>
+				</Row>
+			</>
 		)
-	}
 
 	return (
 		<>
@@ -87,16 +84,16 @@ const Aside = () => {
 								<span className='icon-question'></span> Questions
 							</NavLink>
 						</li>
-						<li>
+						{/* <li>
 							<NavLink exact={true} to='/tags' activeClassName='as-active'>
 								<span className='icon-tag'></span> Tags
 							</NavLink>
-						</li>
-						<li>
+						</li> */}
+						{/* <li>
 							<NavLink exact={true} to='/users' activeClassName='as-active'>
 								<span className='icon-user'></span> Users
 							</NavLink>
-						</li>
+						</li> */}
 					</ul>
 				</nav>
 

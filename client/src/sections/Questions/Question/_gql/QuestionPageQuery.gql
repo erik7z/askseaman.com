@@ -4,11 +4,6 @@ query QuestionPage($nodeId: ID!) {
 		title
 		text
 		viewsCount
-		upVotesCount
-		downVotesCount
-		subscribersCount
-		answersCount
-		commentsCount
 		author {
 			...userFields
 		}
@@ -16,14 +11,23 @@ query QuestionPage($nodeId: ID!) {
 			nodeId
 			name
 		}
-		comments(orderBy: timestamp_asc) {
-			...commentFields
+		createdAt {
+			...dateTimeFields
 		}
+
+		answersCount
 		answers(orderBy: timestamp_asc) {
 			...answerFields
 		}
-		createdAt {
-			...dateTimeFields
+
+		canSubscribe
+		isSubscribed
+		subscribersCount
+
+		canComment
+		commentsCount
+		comments(orderBy: timestamp_asc) {
+			...commentFields
 		}
 	}
 }

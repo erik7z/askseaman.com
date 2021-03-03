@@ -12,10 +12,6 @@ query QuestionsList(
 		author {
 			...userFields
 		}
-		viewsCount
-		answersCount
-		subscribersCount
-		commentsCount
 		createdAt {
 			...dateTimeFields
 		}
@@ -23,6 +19,13 @@ query QuestionsList(
 			nodeId
 			name
 		}
+		viewsCount
+		answersCount
+		commentsCount
+
+		canSubscribe
+		isSubscribed
+		subscribersCount
 	}
 	QuestionCount(filter: $filter) {
 		totalCount

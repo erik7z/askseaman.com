@@ -3,10 +3,12 @@ mutation ToggleLike($data: nodeIdInput!) {
 		__typename
 		... on Comment {
 			likesCount
+			isLiked
 			canLike
 		}
 		... on Question {
 			likesCount
+			isLiked
 			canLike
 		}
 	}

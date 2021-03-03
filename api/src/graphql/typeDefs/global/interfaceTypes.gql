@@ -1,7 +1,8 @@
 interface CanBeCommented {
 	nodeId: ID!
-	commentsCount: Int
 	comments: [Comment]
+	commentsCount: Int
+	canComment: Boolean
 }
 
 interface CanBeLiked {
@@ -9,12 +10,15 @@ interface CanBeLiked {
 	likes: [User]
 	likesCount: Int
 	canLike: Boolean
+	isLiked: Boolean
 }
 
 interface CanBeSubscribed {
 	nodeId: ID!
-	subscribersCount: Int
 	subscribers: [User]
+	subscribersCount: Int
+	canSubscribe: Boolean
+	isSubscribed: Boolean
 }
 
 interface CanBeVoted {
@@ -22,6 +26,6 @@ interface CanBeVoted {
 	upVotesCount: Int
 	downVotesCount: Int
 	canVote: Boolean
-	canVoteUp: Boolean
-	canVoteDown: Boolean
+	isVotedUp: Boolean
+	isVotedDown: Boolean
 }

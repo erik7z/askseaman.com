@@ -1,4 +1,6 @@
-import React, { useRef } from 'react'
+import React, { useRef, useContext } from 'react'
+import { Link } from 'react-router-dom'
+
 import { Accordion, Card, Alert } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 
@@ -6,6 +8,8 @@ import { CommentItem, MetaActions, UserTextFormInput } from '..'
 
 import { addCommentHandler } from './../UserTextFormInput/lib/helpers'
 import { useGetComments } from './../../lib/hooks'
+import { CurrentUserContext } from './../../lib/contexts'
+
 import {
 	useAddCommentMutation,
 	Comment as TComment,
@@ -23,12 +27,14 @@ interface IProps {
 }
 
 export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
-	let subscribersCount, viewsCount, showSubscribers, showViews
+	const [currentUserState] = useContext(CurrentUserContext)
+
+	let subscribersCount, canSubscribe, viewsCount, showSubscribers, showViews
 
 	const isQuestionComments = topic.__typename === 'Question'
 
 	if (isQuestionComments) {
-		;({ subscribersCount, viewsCount } = topic as TQuestion)
+		;({ subscribersCount, viewsCount, canSubscribe } = topic as TQuestion)
 		showSubscribers = true
 		showViews = true
 	}
@@ -63,6 +69,7 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 		>
 			<MetaActions
 				topicId={topic.nodeId}
+				canSubscribe={canSubscribe}
 				subscribersCount={subscribersCount}
 				showSubscribers={showSubscribers}
 				viewsCount={viewsCount}
@@ -92,13 +99,35 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 
 						<h5 className='module-header'>&gt; Your comment</h5>
 						<hr className='hr-header hr-bold' />
-						<UserTextFormInput<typeof addCommentsMutation>
-							topicId={topic.nodeId}
-							submitMutation={addCommentsRef.current}
-							submitHandler={addCommentHandler}
-							successFn={handleAddCommentSuccess}
-							connErrors={addCommentConnErrors}
-						/>
+
+						{currentUserState.isLoggedIn ? (
+							<UserTextFormInput<typeof addCommentsMutation>
+								topicId={topic.nodeId}
+								submitMutation={addCommentsRef.current}
+								submitHandler={addCommentHandler}
+								successFn={handleAddCommentSuccess}
+								connErrors={addCommentConnErrors}
+							/>
+						) : (
+							<Card
+								border='success'
+								style={{
+									width: '30rem',
+									margin: ' 0 auto',
+									float: 'none',
+									marginBottom: '10px',
+								}}
+							>
+								<Card.Body>
+									<Card.Text>
+										Only registered users can add comments, so please{' '}
+										<Link to='/auth' className='btn btn-outline-success btn-sm'>
+											Sign In
+										</Link>
+									</Card.Text>
+								</Card.Body>
+							</Card>
+						)}
 					</Card.Body>
 				</Accordion.Collapse>
 			</Card>

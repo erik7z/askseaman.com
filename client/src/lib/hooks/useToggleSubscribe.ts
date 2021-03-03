@@ -27,7 +27,9 @@ export const useToggleSubscribe = (
 
 	const handleSubscribe = (e: React.SyntheticEvent) => {
 		e.preventDefault()
-		toggleSubscribeMutation()
+		toggleSubscribeMutation().catch((e) => {
+			console.error(e)
+		})
 	}
 
 	useEffect(() => {

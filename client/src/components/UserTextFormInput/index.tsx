@@ -66,7 +66,7 @@ export function UserTextFormInput<MutationFunctionType>({
 									<Form.Control
 										as='textarea'
 										rows={5}
-										placeholder='Provide your answer...'
+										placeholder='Write something...'
 										{...getFieldProps('text')}
 										isValid={touched.text && !errors.text}
 										isInvalid={!!errors.text}

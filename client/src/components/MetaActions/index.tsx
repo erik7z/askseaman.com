@@ -1,24 +1,31 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useAccordionToggle } from 'react-bootstrap'
-import { BsChat, BsEye, BsClock } from 'react-icons/bs'
+import { BsChat, BsEye, BsClock, BsFillPeopleFill } from 'react-icons/bs'
 import { BiLike } from 'react-icons/bi'
 
 import { _Neo4jDateTime } from '../../types/generated-frontend'
 import { ApolloLazyQuery as TApolloLazyQuery } from '../../types/frontend'
 import { normalizeTime } from './../../lib/helpers'
 import { useToggleLike, useToggleSubscribe } from '../../lib/hooks'
+import { CurrentUserContext } from '../../lib/contexts'
 
 interface IProps {
 	topicId: string
-	viewsCount?: number | null | undefined
 	showViews?: boolean
+	viewsCount?: number | null | undefined
+
+	canSubscribe?: boolean | null | undefined
 	subscribersCount?: number | null | undefined
 	showSubscribers?: boolean
+
+	canLike?: boolean | null | undefined
+	isLiked?: boolean | null | undefined
 	likesCount?: number | null | undefined
 	showLikes?: boolean
-	canLike?: boolean | null | undefined
+
 	createdAt?: _Neo4jDateTime | null | undefined
+
 	showComments?: boolean
 	showCommentsButton?: boolean
 	commentsCount?: number | null | undefined
@@ -28,20 +35,27 @@ interface IProps {
 
 export const MetaActions = ({
 	topicId,
-	getComments,
 	viewsCount = 0,
 	showViews = false,
-	subscribersCount: subscribersCountInitial = 0,
+	createdAt,
+
+	canSubscribe = false,
 	showSubscribers = false,
-	commentsCount = 0,
+	subscribersCount: subscribersCountInitial = 0,
+
 	showComments = false,
 	showCommentsButton = false,
+	commentsCount = 0,
 	commentsLoading,
+	getComments,
+
+	canLike = false,
+	isLiked: isLikedInitial = false,
 	showLikes = false,
 	likesCount: likesCountInitial = 0,
-	canLike: canLikeInitial = false,
-	createdAt,
 }: IProps) => {
+	const [currentUserState] = useContext(CurrentUserContext)
+
 	const [isCommentListExpanded, setCommentListExpanded] = useState(false)
 
 	const {
@@ -52,43 +66,57 @@ export const MetaActions = ({
 	} = useToggleSubscribe(topicId, subscribersCountInitial)
 	if (toggleSubscribeConnErrors) console.log(toggleSubscribeConnErrors)
 
-	const subscribersMeta = showSubscribers && (
-		<span>
-			<Link
-				to='#subscribe'
-				className='btn btn-sm btn-outline-primary mr-1'
-				onClick={handleSubscribe}
-			>
-				Subscribe | <b>{subscribersCount} </b>
-			</Link>
-		</span>
-	)
+	const subscribersButton =
+		currentUserState.isLoggedIn && canSubscribe ? (
+			<span>
+				<Link
+					to='#subscribe'
+					className='btn btn-sm btn-outline-primary mr-1'
+					onClick={handleSubscribe}
+				>
+					Subscribe | <b>{subscribersCount} </b>
+				</Link>
+			</span>
+		) : (
+			<span>
+				<BsFillPeopleFill /> <b>{subscribersCount}</b> Subscribers
+			</span>
+		)
+
+	const subscribersMeta = showSubscribers && subscribersButton
 
 	const {
 		handleLike,
 		likeStatus,
 		toggleLikeLoading,
 		toggleLikeConnErrors,
-	} = useToggleLike(topicId, likesCountInitial, canLikeInitial)
+	} = useToggleLike(topicId, likesCountInitial, isLikedInitial)
 	if (toggleLikeConnErrors) console.log(toggleLikeConnErrors)
 
-	const likesMeta = showLikes && (
-		<span>
-			<Link
-				to='#like'
-				className={likeStatus.canLike ? 'text-gray' : ''}
-				onClick={handleLike}
-			>
-				{toggleLikeLoading ? (
-					'Loading...'
-				) : (
-					<>
-						<BiLike /> Like | <b>{likeStatus.likesCount} </b>
-					</>
-				)}
-			</Link>
-		</span>
-	)
+	const likeButton =
+		currentUserState.isLoggedIn && canLike ? (
+			<span>
+				<Link
+					to='#like'
+					className={likeStatus.isLiked ? 'text-gray' : ''}
+					onClick={handleLike}
+				>
+					{toggleLikeLoading ? (
+						'Loading...'
+					) : (
+						<>
+							<BiLike /> Like | <b>{likeStatus.likesCount} </b>
+						</>
+					)}
+				</Link>
+			</span>
+		) : (
+			<span>
+				<BiLike /> <b>{likeStatus.likesCount} </b> Likes
+			</span>
+		)
+
+	const likesMeta = showLikes && likeButton
 
 	const commentsMeta = showComments && (
 		<span>

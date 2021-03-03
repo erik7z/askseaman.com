@@ -1,10 +1,12 @@
-import React, { useRef } from 'react'
+import React, { useContext } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
 
 import { CommentsBox, AvatarLink } from '../../../components'
-import { useAnswerRate } from './../../../lib/hooks'
+import { useAnswerVote } from './../../../lib/hooks'
+import { CurrentUserContext } from './../../../lib/contexts'
+
 import {
 	Answer as TAnswer,
 	useAnswerCommentsLazyQuery,
@@ -16,7 +18,9 @@ interface IProps {
 }
 
 export const AnswerItem = ({ answer }: IProps) => {
-	const { rateData, handleRateChange } = useAnswerRate(answer)
+	const [currentUserState] = useContext(CurrentUserContext)
+
+	const { rateData, handleRateChange } = useAnswerVote(answer)
 
 	const getAnswerCommentsHook = useAnswerCommentsLazyQuery({
 		variables: {
@@ -24,6 +28,34 @@ export const AnswerItem = ({ answer }: IProps) => {
 		},
 		fetchPolicy: 'no-cache',
 	})
+
+	const rateUpButton =
+		currentUserState.isLoggedIn && answer.canVote ? (
+			<Link
+				to='#rateup'
+				id={VoteIntention.UpVote}
+				onClick={handleRateChange}
+				className={rateData.isVotedUp ? 'text-gray' : ''}
+			>
+				<BsArrowUpShort />
+			</Link>
+		) : (
+			<BsArrowUpShort className='text-gray' />
+		)
+
+	const rateDownButton =
+		currentUserState.isLoggedIn && answer.canVote ? (
+			<Link
+				to='#ratedown'
+				id={VoteIntention.DownVote}
+				onClick={handleRateChange}
+				className={rateData.isVotedDown ? 'text-gray' : ''}
+			>
+				<BsArrowDownShort />
+			</Link>
+		) : (
+			<BsArrowDownShort className='text-gray' />
+		)
 
 	if (!answer) {
 		console.error('No answer in answer item')
@@ -53,16 +85,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 			<Col md={1} xs={2} className='text-center align-items-center'>
 				<ul className='question-rating list-unstyled'>
 					<li>
-						<h3 className='rate rate-up mb-1 '>
-							<Link
-								to='#rateup'
-								id={VoteIntention.UpVote}
-								onClick={handleRateChange}
-								className={rateData.canVoteUp ? '' : 'text-gray'}
-							>
-								<BsArrowUpShort />
-							</Link>
-						</h3>
+						<h3 className='rate rate-up mb-1 '>{rateUpButton}</h3>
 					</li>
 					<li>
 						<h5 className='rate rate-value text-secondary'>
@@ -70,16 +93,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 						</h5>
 					</li>
 					<li>
-						<h3 className='rate rate-down'>
-							<Link
-								to='#ratedown'
-								id={VoteIntention.DownVote}
-								onClick={handleRateChange}
-								className={rateData.canVoteDown ? '' : 'text-gray'}
-							>
-								<BsArrowDownShort />
-							</Link>
-						</h3>
+						<h3 className='rate rate-down'>{rateDownButton}</h3>
 					</li>
 				</ul>
 			</Col>

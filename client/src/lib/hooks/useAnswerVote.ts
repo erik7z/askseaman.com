@@ -6,12 +6,12 @@ import {
 	VoteIntention,
 } from '../../types/generated-frontend'
 
-export const useAnswerRate = (answer: TAnswer) => {
+export const useAnswerVote = (answer: TAnswer) => {
 	const [rateData, setRateData] = useState({
 		upVotesCount: answer.upVotesCount as number,
 		downVotesCount: answer.downVotesCount as number,
-		canVoteUp: answer.canVoteUp as boolean,
-		canVoteDown: answer.canVoteDown as boolean,
+		isVotedUp: answer.isVotedUp as boolean,
+		isVotedDown: answer.isVotedDown as boolean,
 	})
 
 	const [
@@ -28,8 +28,8 @@ export const useAnswerRate = (answer: TAnswer) => {
 			setRateData({
 				upVotesCount: rateAnswerResponse.upVotesCount as number,
 				downVotesCount: rateAnswerResponse.downVotesCount as number,
-				canVoteUp: rateAnswerResponse.canVoteUp as boolean,
-				canVoteDown: rateAnswerResponse.canVoteDown as boolean,
+				isVotedUp: rateAnswerResponse.isVotedUp as boolean,
+				isVotedDown: rateAnswerResponse.isVotedDown as boolean,
 			})
 		}
 	}, [rateAnswerResponse])
@@ -47,6 +47,8 @@ export const useAnswerRate = (answer: TAnswer) => {
 					action,
 				},
 			},
+		}).catch((e) => {
+			console.error(e)
 		})
 	}
 

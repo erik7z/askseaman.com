@@ -8,8 +8,9 @@ fragment userFields on User {
 fragment commentFields on Comment {
 	nodeId
 	text
-	canLike
 	likesCount
+	isLiked
+	canLike
 	createdAt {
 		...dateTimeFields
 	}
@@ -21,12 +22,6 @@ fragment commentFields on Comment {
 fragment answerFields on Answer {
 	nodeId
 	text
-	upVotesCount
-	downVotesCount
-	canVote
-	canVoteUp
-	canVoteDown
-	commentsCount
 	author {
 		...userFields
 	}
@@ -36,6 +31,15 @@ fragment answerFields on Answer {
 	comments(orderBy: timestamp_asc) {
 		...commentFields
 	}
+
+	canVote
+	upVotesCount
+	downVotesCount
+	isVotedUp
+	isVotedDown
+
+	canComment
+	commentsCount
 }
 
 fragment formErrorFields on FormError {

@@ -6,16 +6,16 @@ mutation Vote($data: VoteInput!) {
 			upVotesCount
 			downVotesCount
 			canVote
-			canVoteUp
-			canVoteDown
+			isVotedUp
+			isVotedDown
 		}
 		... on Question {
 			nodeId
 			upVotesCount
 			downVotesCount
 			canVote
-			canVoteUp
-			canVoteDown
+			isVotedUp
+			isVotedDown
 		}
 	}
 }
