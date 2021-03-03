@@ -698,6 +698,8 @@ export enum _UserOrdering {
 	SurnameDesc = 'surname_desc',
 	RankAsc = 'rank_asc',
 	RankDesc = 'rank_desc',
+	DescriptionAsc = 'description_asc',
+	DescriptionDesc = 'description_desc',
 	CreatedAtAsc = 'createdAt_asc',
 	CreatedAtDesc = 'createdAt_desc',
 	TimestampAsc = 'timestamp_asc',
@@ -761,6 +763,17 @@ export type _UserFilter = {
 	rank_not_starts_with?: Maybe<Scalars['String']>
 	rank_ends_with?: Maybe<Scalars['String']>
 	rank_not_ends_with?: Maybe<Scalars['String']>
+	description?: Maybe<Scalars['String']>
+	description_not?: Maybe<Scalars['String']>
+	description_in?: Maybe<Array<Scalars['String']>>
+	description_not_in?: Maybe<Array<Scalars['String']>>
+	description_regexp?: Maybe<Scalars['String']>
+	description_contains?: Maybe<Scalars['String']>
+	description_not_contains?: Maybe<Scalars['String']>
+	description_starts_with?: Maybe<Scalars['String']>
+	description_not_starts_with?: Maybe<Scalars['String']>
+	description_ends_with?: Maybe<Scalars['String']>
+	description_not_ends_with?: Maybe<Scalars['String']>
 	createdAt?: Maybe<_Neo4jDateTimeInput>
 	createdAt_not?: Maybe<_Neo4jDateTimeInput>
 	createdAt_in?: Maybe<Array<_Neo4jDateTimeInput>>
@@ -848,6 +861,7 @@ export type User = {
 	name: Scalars['String']
 	surname: Scalars['String']
 	rank?: Maybe<Scalars['String']>
+	description?: Maybe<Scalars['String']>
 	createdAt?: Maybe<_Neo4jDateTime>
 	timestamp?: Maybe<Scalars['String']>
 	roles?: Maybe<Array<Maybe<Scalars['String']>>>
@@ -909,6 +923,15 @@ export type UserModeratingTagsArgs = {
 	filter?: Maybe<_TagFilter>
 }
 
+export type Profile = {
+	__typename?: 'Profile'
+	name?: Maybe<Scalars['String']>
+	surname?: Maybe<Scalars['String']>
+	rank?: Maybe<Scalars['String']>
+	description?: Maybe<Scalars['String']>
+	isPasswordChanged?: Maybe<Scalars['String']>
+}
+
 export type LocalAccount = {
 	__typename?: 'LocalAccount'
 	user: User
@@ -943,6 +966,14 @@ export type RegisterUserInput = {
 	name: Scalars['String']
 	surname: Scalars['String']
 	rank?: Maybe<UserRank>
+}
+
+export type UserProfileInput = {
+	password?: Maybe<Scalars['String']>
+	name?: Maybe<Scalars['String']>
+	surname?: Maybe<Scalars['String']>
+	rank?: Maybe<UserRank>
+	description?: Maybe<Scalars['String']>
 }
 
 export type LoginUserInput = {
@@ -1078,13 +1109,15 @@ export type VoteResponse = Question | Answer
 
 export type SubscribeResponse = Question | Tag
 
-export type AuthResponse = TokenResponse | FormError
-
 export type AskQuestionResponse = Question | FormError
 
 export type AnswerQuestionResponse = Answer | FormError
 
 export type AddCommentResponse = Comment | FormError
+
+export type AuthResponse = TokenResponse | FormError
+
+export type EditProfileResponse = Profile | FormError
 
 export type FieldError = {
 	__typename?: 'FieldError'
@@ -1632,6 +1665,7 @@ export type Mutation = {
 	ChangePassRequest: RedirectUriResponse
 	ChangePassConfirm: RedirectUriResponse
 	ChangePassComplete: RedirectUriResponse
+	EditProfile: EditProfileResponse
 }
 
 export type MutationAnswerQuestionArgs = {
@@ -1714,6 +1748,10 @@ export type MutationChangePassCompleteArgs = {
 	data: NewPassInput
 }
 
+export type MutationEditProfileArgs = {
+	data: UserProfileInput
+}
+
 export type Query = {
 	__typename?: 'Query'
 	QuestionCount?: Maybe<Question>
@@ -1729,12 +1767,6 @@ export type Query = {
 	Tag?: Maybe<Array<Maybe<Tag>>>
 	/** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for User type nodes. */
 	User?: Maybe<Array<Maybe<User>>>
-	/** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AskQuestionResponse type nodes. */
-	AskQuestionResponse?: Maybe<Array<Maybe<AskQuestionResponse>>>
-	/** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AnswerQuestionResponse type nodes. */
-	AnswerQuestionResponse?: Maybe<Array<Maybe<AnswerQuestionResponse>>>
-	/** [Generated query](https://grandstack.io/docs/graphql-schema-generation-augmentation#generated-queries) for AddCommentResponse type nodes. */
-	AddCommentResponse?: Maybe<Array<Maybe<AddCommentResponse>>>
 }
 
 export type QueryQuestionCountArgs = {
@@ -1800,6 +1832,7 @@ export type QueryUserArgs = {
 	name?: Maybe<Scalars['String']>
 	surname?: Maybe<Scalars['String']>
 	rank?: Maybe<Scalars['String']>
+	description?: Maybe<Scalars['String']>
 	createdAt?: Maybe<_Neo4jDateTimeInput>
 	timestamp?: Maybe<Scalars['String']>
 	roles?: Maybe<Array<Maybe<Scalars['String']>>>
@@ -1809,21 +1842,6 @@ export type QueryUserArgs = {
 	offset?: Maybe<Scalars['Int']>
 	orderBy?: Maybe<Array<Maybe<_UserOrdering>>>
 	filter?: Maybe<_UserFilter>
-}
-
-export type QueryAskQuestionResponseArgs = {
-	first?: Maybe<Scalars['Int']>
-	offset?: Maybe<Scalars['Int']>
-}
-
-export type QueryAnswerQuestionResponseArgs = {
-	first?: Maybe<Scalars['Int']>
-	offset?: Maybe<Scalars['Int']>
-}
-
-export type QueryAddCommentResponseArgs = {
-	first?: Maybe<Scalars['Int']>
-	offset?: Maybe<Scalars['Int']>
 }
 
 export type ToggleLikeMutationVariables = Exact<{
@@ -1857,7 +1875,7 @@ export type ToggleSubscribeMutation = { __typename?: 'Mutation' } & {
 
 export type UserFieldsFragment = { __typename?: 'User' } & Pick<
 	User,
-	'nodeId' | 'name' | 'surname' | 'rank'
+	'nodeId' | 'name' | 'surname' | 'rank' | 'description'
 >
 
 export type CommentFieldsFragment = { __typename?: 'Comment' } & Pick<
@@ -1916,18 +1934,7 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = { __typename?: 'Mutation' } & {
 	Register:
 		| ({ __typename: 'TokenResponse' } & Pick<TokenResponse, 'token'>)
-		| ({ __typename: 'FormError' } & Pick<FormError, 'message'> & {
-					errors?: Maybe<
-						Array<
-							Maybe<
-								{ __typename?: 'FieldError' } & Pick<
-									FieldError,
-									'field' | 'message'
-								>
-							>
-						>
-					>
-				})
+		| ({ __typename: 'FormError' } & FormErrorFieldsFragment)
 }
 
 export type SignInMutationVariables = Exact<{
@@ -1959,6 +1966,19 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>
 
 export type CurrentUserQuery = { __typename?: 'Query' } & {
 	CurrentUser: { __typename?: 'User' } & UserFieldsFragment
+}
+
+export type EditProfileMutationVariables = Exact<{
+	data: UserProfileInput
+}>
+
+export type EditProfileMutation = { __typename?: 'Mutation' } & {
+	EditProfile:
+		| ({ __typename: 'Profile' } & Pick<
+				Profile,
+				'name' | 'surname' | 'rank' | 'description' | 'isPasswordChanged'
+		  >)
+		| ({ __typename: 'FormError' } & FormErrorFieldsFragment)
 }
 
 export type AskQuestionMutationVariables = Exact<{
@@ -2200,6 +2220,7 @@ export const UserFieldsFragmentDoc = gql`
 		name
 		surname
 		rank
+		description
 	}
 `
 export const DateTimeFieldsFragmentDoc = gql`
@@ -2384,14 +2405,11 @@ export const RegisterDocument = gql`
 				token
 			}
 			... on FormError {
-				message
-				errors {
-					field
-					message
-				}
+				...formErrorFields
 			}
 		}
 	}
+	${FormErrorFieldsFragmentDoc}
 `
 export type RegisterMutationFn = Apollo.MutationFunction<
 	RegisterMutation,
@@ -2589,6 +2607,65 @@ export type CurrentUserLazyQueryHookResult = ReturnType<
 export type CurrentUserQueryResult = Apollo.QueryResult<
 	CurrentUserQuery,
 	CurrentUserQueryVariables
+>
+export const EditProfileDocument = gql`
+	mutation EditProfile($data: UserProfileInput!) {
+		EditProfile(data: $data) {
+			__typename
+			... on Profile {
+				name
+				surname
+				rank
+				description
+				isPasswordChanged
+			}
+			... on FormError {
+				...formErrorFields
+			}
+		}
+	}
+	${FormErrorFieldsFragmentDoc}
+`
+export type EditProfileMutationFn = Apollo.MutationFunction<
+	EditProfileMutation,
+	EditProfileMutationVariables
+>
+
+/**
+ * __useEditProfileMutation__
+ *
+ * To run a mutation, you first call `useEditProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editProfileMutation, { data, loading, error }] = useEditProfileMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEditProfileMutation(
+	baseOptions?: Apollo.MutationHookOptions<
+		EditProfileMutation,
+		EditProfileMutationVariables
+	>
+) {
+	return Apollo.useMutation<EditProfileMutation, EditProfileMutationVariables>(
+		EditProfileDocument,
+		baseOptions
+	)
+}
+export type EditProfileMutationHookResult = ReturnType<
+	typeof useEditProfileMutation
+>
+export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>
+export type EditProfileMutationOptions = Apollo.BaseMutationOptions<
+	EditProfileMutation,
+	EditProfileMutationVariables
 >
 export const AskQuestionDocument = gql`
 	mutation AskQuestion($data: AskQuestionInput!) {

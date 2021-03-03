@@ -1,0 +1,15 @@
+mutation EditProfile($data: UserProfileInput!) {
+	EditProfile(data: $data) {
+		__typename
+		... on Profile {
+			name
+			surname
+			rank
+			description
+			isPasswordChanged
+		}
+		... on FormError {
+			...formErrorFields
+		}
+	}
+}

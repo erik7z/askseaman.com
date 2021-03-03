@@ -5,11 +5,7 @@ mutation Register($data: RegisterUserInput!) {
 			token
 		}
 		... on FormError {
-			message
-			errors {
-				field
-				message
-			}
+			...formErrorFields
 		}
 	}
 }

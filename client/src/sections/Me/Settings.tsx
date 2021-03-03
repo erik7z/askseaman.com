@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
 import { Formik } from 'formik'
-import { Col, Form, Button, Alert, Card } from 'react-bootstrap'
+import { Col, Form, Button, Alert } from 'react-bootstrap'
 
 import { SideAskBox } from '../../components'
 
@@ -9,17 +9,25 @@ import Section from '../../components/Layout/Section'
 import SideBar from '../../components/Layout/SideBar'
 
 import { TkvPair } from '../../types/frontend'
-import { FieldError, useUserRanksQuery } from '../../types/generated-frontend'
+import {
+	FieldError,
+	useUserRanksQuery,
+	useCurrentUserQuery,
+	useEditProfileMutation,
+	UserRank,
+} from '../../types/generated-frontend'
 
 import { userSettingsValidation } from '../../lib/validation'
-import { CurrentUserContext } from '../../lib/contexts'
 
 import { normalizeErrors } from '../../lib/helpers'
 
 export const Settings = () => {
-	const [currentUserState] = useContext(CurrentUserContext)
+	const [editProfileMutation, { error: connErrors }] = useEditProfileMutation()
 	const { data: ranksData } = useUserRanksQuery()
 	const ranks: TkvPair = ranksData?.UserRanks
+	const { data: profileRequest } = useCurrentUserQuery()
+
+	const profileData = profileRequest?.CurrentUser
 
 	return (
 		<>
@@ -33,37 +41,38 @@ export const Settings = () => {
 					onSubmit={async (values, { setSubmitting, setErrors }) => {
 						setSubmitting(true)
 
-						// const { data: askResponse } = await askQuestionMutation({
-						// 	variables: {
-						// 		data: {
-						// 			title: values.title,
-						// 			text: values.text,
-						// 			tags: values.tags ? values.tags.toUpperCase().split(',') : [],
-						// 		},
-						// 	},
-						// })
-						// if (askResponse) {
-						// 	if (askResponse.AskQuestion.__typename === 'FormError') {
-						// 		const formErrors = askResponse.AskQuestion
-						// 			.errors as FieldError[]
-						// 		setErrors(normalizeErrors(formErrors))
-						// 	}
+						const { data: editResponse } = await editProfileMutation({
+							variables: {
+								data: {
+									name: values.name,
+									surname: values.surname,
+									password: values.password,
+									rank: values.rank as UserRank,
+									description: values.description,
+								},
+							},
+						})
+						if (editResponse) {
+							if (editResponse.EditProfile.__typename === 'FormError') {
+								const formErrors = editResponse.EditProfile
+									.errors as FieldError[]
+								setErrors(normalizeErrors(formErrors))
+							}
 
-						// 	if (askResponse.AskQuestion.__typename === 'Question') {
-						// 		// const title = askResponse.AskQuestion.title
+							if (editResponse.EditProfile.__typename === 'Profile') {
+								console.log(editResponse.EditProfile)
+							}
+						}
 
-						// 		history.push('/')
-						// 	}
-						// }
 						setSubmitting(false)
 					}}
 					initialValues={{
-						name: '',
-						surname: '',
-						rank: '',
+						name: profileData?.name,
+						surname: profileData?.surname,
+						rank: profileData?.rank,
 						password: '',
 						password2: '',
-						description: '',
+						description: profileData?.description,
 					}}
 				>
 					{({
@@ -77,12 +86,12 @@ export const Settings = () => {
 					}) => (
 						<Form noValidate onSubmit={handleSubmit}>
 							<Form.Row>
-								{/* {connErrors && (
+								{connErrors && (
 									<Alert variant='danger'>
 										<Alert.Heading>Ooops! Something went wrong</Alert.Heading>
 										<p>{connErrors.message}</p>
 									</Alert>
-								)} */}
+								)}
 							</Form.Row>
 
 							<Form.Row>

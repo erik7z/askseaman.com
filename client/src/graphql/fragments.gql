@@ -3,6 +3,7 @@ fragment userFields on User {
 	name
 	surname
 	rank
+	description
 }
 
 fragment commentFields on Comment {
