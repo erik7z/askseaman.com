@@ -32,7 +32,9 @@ const Aside = () => {
 					</Col>
 					<Col md={1} className='pt-1'>
 						<span className='text-secondary'>
-							<BsGear />
+							<Link to='/me/settings' className='text-secondary'>
+								<BsGear />
+							</Link>
 						</span>
 						<br />
 						<Link

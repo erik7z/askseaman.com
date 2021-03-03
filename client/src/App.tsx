@@ -11,6 +11,7 @@ import { User } from './sections/Users/User'
 import { Question } from './sections/Questions/Question'
 import { AskQuestion } from './sections/Questions/AskQuestion'
 import { Notifications } from './sections/Me/Notifications'
+import { Settings } from './sections/Me/Settings'
 import { Register } from './sections/Auth/Register'
 import { useAuthCurrentUser } from './lib/hooks/'
 
@@ -37,6 +38,7 @@ export const App = () => {
 						'/user',
 						'/me',
 						'/me/notifications',
+						'/me/settings',
 						'/tags',
 						'/tag',
 					]}
@@ -58,6 +60,9 @@ export const App = () => {
 							</Route>
 							<Route exact path='/me/notifications'>
 								<Notifications />
+							</Route>
+							<Route exact path='/me/settings'>
+								<Settings />
 							</Route>
 							<Route exact path='/tags'>
 								<Tags />

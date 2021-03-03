@@ -10,12 +10,12 @@ export const regValidation = yup.object({
 	// .matches(emailRegexp, '*Email is not valid'),
 	name: yup
 		.string()
-		.min(2, '*Names must have at least 2 characters')
+		.min(5, '*Names must have at least 5 characters')
 		.max(16, "*Names can't be longer than 16 characters")
 		.required(),
 	surname: yup
 		.string()
-		.min(2, '*Names must have at least 2 characters')
+		.min(5, '*Names must have at least 5 characters')
 		.max(16, "*Names can't be longer than 16 characters")
 		.required(),
 	rank: yup.string().required(),
@@ -43,6 +43,25 @@ export const askQuestionValidation = yup.object({
 		.max(64, "*Title can't be longer than 64 characters"),
 	tags: yup.string().required('Tags are required'),
 	text: yup.string().required('Question description is required'),
+})
+
+export const userSettingsValidation = yup.object({
+	name: yup
+		.string()
+		.min(5, '*Names must have at least 5 characters')
+		.max(16, "*Names can't be longer than 16 characters")
+		.required(),
+	surname: yup
+		.string()
+		.min(5, '*Names must have at least 5 characters')
+		.max(16, "*Names can't be longer than 16 characters")
+		.required(),
+	rank: yup.string().required(),
+	password: yup.string().required('Password is required'),
+	password2: yup
+		.string()
+		.oneOf([yup.ref('password'), null], 'Passwords must match'),
+	description: yup.string().required('Tell few words about yourself'),
 })
 
 export const userTextValidation = yup.object({
