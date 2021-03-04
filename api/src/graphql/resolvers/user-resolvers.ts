@@ -183,12 +183,13 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			}
 		},
 
-		async EditProfile(parent, params, ctx, resolveInfo) {
+		async EditProfile(_, params, ctx, resolveInfo) {
 			const errorField = ''
 
-			const imageUrl = await cloudinary.upload(params.data.avatar)
-
-			params.data.avatar = imageUrl
+			if (params.data.avatar && params.data.avatar != '') {
+				const imageUrl = await cloudinary.upload(params.data.avatar)
+				params.data.avatar = imageUrl
+			}
 
 			const [, queryParams] = cypherMutation(params, ctx, resolveInfo)
 

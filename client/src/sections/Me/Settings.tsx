@@ -16,12 +16,24 @@ import {
 	useEditProfileMutation,
 	UserRank,
 	User,
+	UserProfileInput,
 } from '../../types/generated-frontend'
 
-import { userSettingsValidation } from '../../lib/validation'
+import {
+	userSettingsValidation,
+	validateImageUpload,
+} from '../../lib/validation'
 import { normalizeErrors, getKeyByValue } from '../../lib/helpers'
 import { CurrentUserContext } from '../../lib/contexts'
 import { BLANK_AVATAR_URL } from '../../env'
+
+type FormikSetFieldValue = (
+	field: string,
+	value: any,
+	shouldValidate?: boolean | undefined
+) => void
+
+type FormikSetFieldError = (field: string, message: string | undefined) => void
 
 export const Settings = () => {
 	const [currentUserState, userDispatch] = useContext(CurrentUserContext)
@@ -36,11 +48,31 @@ export const Settings = () => {
 		? getKeyByValue(ranksData.UserRanks, currentUser.rank as string)
 		: ''
 
-	const [avatarImage, setAvatarImage] = useState<FileReader['result']>(
-		currentUser.avatar as string
-	)
+	const [avatarImage, setAvatarImage] = useState(currentUser.avatar as string)
 
 	const [isProfileUpdated, setIsProfileUpdated] = useState(false)
+
+	const handleFileUpload = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		setFieldValue: FormikSetFieldValue,
+		setFieldError: FormikSetFieldError
+	) => {
+		if (event.currentTarget.files) {
+			try {
+				const reader = new FileReader()
+				const file = event.currentTarget.files[0]
+				if (validateImageUpload(file)) {
+					reader.onloadend = () => {
+						setAvatarImage(reader.result as string)
+						setFieldValue('avatar', reader.result)
+					}
+					reader.readAsDataURL(file)
+				}
+			} catch (e) {
+				setFieldError('avatar', e.message)
+			}
+		}
+	}
 
 	return (
 		<>
@@ -54,16 +86,21 @@ export const Settings = () => {
 					onSubmit={async (values, { setSubmitting, setErrors }) => {
 						setSubmitting(true)
 
+						const newProfileData: UserProfileInput = {
+							name: values.name,
+							surname: values.surname,
+							avatar: values.avatar,
+							password: values.password,
+							rank: values.rank as UserRank,
+							description: values.description,
+						}
+
+						if (currentUser.avatar === values.avatar)
+							delete newProfileData.avatar
+
 						const { data: editResponse } = await editProfileMutation({
 							variables: {
-								data: {
-									name: values.name,
-									surname: values.surname,
-									avatar: values.avatar,
-									password: values.password,
-									rank: values.rank as UserRank,
-									description: values.description,
-								},
+								data: newProfileData,
 							},
 						})
 						if (editResponse) {
@@ -91,7 +128,6 @@ export const Settings = () => {
 								setTimeout(() => {
 									setIsProfileUpdated(false)
 								}, 3000)
-								console.log(editResponse.EditProfile)
 							}
 						}
 
@@ -100,11 +136,11 @@ export const Settings = () => {
 					initialValues={{
 						name: currentUser.name,
 						surname: currentUser.surname,
-						avatar: BLANK_AVATAR_URL,
+						avatar: avatarImage,
 						rank: rankEnum,
 						password: '',
 						password2: '',
-						description: currentUser.description,
+						description: currentUser.description ? currentUser.description : '',
 					}}
 				>
 					{({
@@ -115,6 +151,7 @@ export const Settings = () => {
 						isValid,
 						getFieldProps,
 						setFieldValue,
+						setFieldError,
 					}) => (
 						<Form noValidate onSubmit={handleSubmit}>
 							<Form.Row>
@@ -124,29 +161,11 @@ export const Settings = () => {
 										<p>{connErrors.message}</p>
 									</Alert>
 								)}
-
-								{isProfileUpdated && (
-									<Alert
-										variant='success'
-										style={{
-											margin: '5px auto',
-											float: 'none',
-										}}
-									>
-										<span>
-											<BsCheckCircle /> Your profile has been updated
-										</span>
-									</Alert>
-								)}
 							</Form.Row>
 							<Form.Row className='justify-content-md-center'>
 								<Col xs={6} md={4}>
 									<Image
-										src={
-											avatarImage
-												? (avatarImage as string)
-												: (BLANK_AVATAR_URL as string)
-										}
+										src={avatarImage ? avatarImage : BLANK_AVATAR_URL}
 										alt='Profile Avatar'
 										height='128px'
 										roundedCircle
@@ -161,18 +180,14 @@ export const Settings = () => {
 										custom
 										label='Choose avatar image'
 										accept='image/*'
+										isInvalid={!!errors.avatar}
 										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											if (event.currentTarget.files) {
-												const reader = new FileReader()
-												const file = event.currentTarget.files[0]
-												reader.onloadend = () => {
-													setAvatarImage(reader.result)
-													setFieldValue('avatar', reader.result)
-												}
-												reader.readAsDataURL(file)
-											}
+											handleFileUpload(event, setFieldValue, setFieldError)
 										}}
 									/>
+									<div className='text-danger'>
+										<small>{errors.avatar}</small>
+									</div>
 									<hr />
 								</Col>
 							</Form.Row>
@@ -283,8 +298,17 @@ export const Settings = () => {
 								</Form.Group>
 							</Form.Row>
 
-							<Form.Row className='mb3 text-right'>
-								<Col md={12}>
+							<Form.Row className='mb3'>
+								<Col md={10} className='text-center'>
+									{isProfileUpdated && (
+										<Alert variant='success'>
+											<span>
+												<BsCheckCircle /> Your profile has been updated
+											</span>
+										</Alert>
+									)}
+								</Col>
+								<Col md={2} className='text-right'>
 									<Button
 										variant='primary'
 										type='submit'

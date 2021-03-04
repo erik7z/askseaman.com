@@ -1,4 +1,5 @@
 import * as yup from 'yup'
+// import { mixed } from 'yup'
 
 // const emailRegexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -57,6 +58,12 @@ export const userSettingsValidation = yup.object({
 		.max(16, "*Names can't be longer than 16 characters")
 		.required(),
 	rank: yup.string().required(),
+	// avatar: mixed().test('fileSize', 'The file is too large', (value) => {
+	// 	console.log(value)
+	// 	return true
+	// 	// if (!value.length) return true // attachment is optional
+	// 	// return value[0].size <= 2000000
+	// }),
 	password: yup.string().required('Password is required'),
 	password2: yup
 		.string()
@@ -67,3 +74,19 @@ export const userSettingsValidation = yup.object({
 export const userTextValidation = yup.object({
 	text: yup.string().required('Text is required'),
 })
+
+export const validateImageUpload = (file: File) => {
+	const fileIsValidImage =
+		file.type === 'image/jpeg' || file.type === 'image/png'
+	const fileSizeInMB = file.size / 1024 / 1024
+	const fileIsVaildSize = fileSizeInMB < 1
+
+	if (!fileIsValidImage)
+		throw new Error("You're only able to upload valid JPG or PNG files!")
+
+	if (!fileIsVaildSize)
+		throw new Error(
+			"You're only able to upload valid images files of under 1MB in size!"
+		)
+	return true
+}

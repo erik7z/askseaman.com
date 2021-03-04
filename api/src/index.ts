@@ -22,7 +22,7 @@ export const AUTH_CHANGE_PASS_UI_URI =
 	process.env.AUTH_CHANGE_PASS_UI_URI || '/auth/change-pass?code='
 
 export const app = express()
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '5mb' }))
 
 const checkErrorHeaderMiddleware = async (
 	req: Request,
