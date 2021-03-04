@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 import { Formik } from 'formik'
 import { Col, Form, Button, Alert } from 'react-bootstrap'
@@ -13,27 +13,31 @@ import { TKVPair } from '../../types/frontend'
 import {
 	FieldError,
 	useUserRanksQuery,
-	useCurrentUserQuery,
+	// useCurrentUserQuery,
 	useEditProfileMutation,
 	UserRank,
+	User,
 } from '../../types/generated-frontend'
 
 import { userSettingsValidation } from '../../lib/validation'
-
 import { normalizeErrors, getKeyByValue } from '../../lib/helpers'
+import { CurrentUserContext } from '../../lib/contexts'
 
 export const Settings = () => {
+	const [currentUserState, userDispatch] = useContext(CurrentUserContext)
+	const { currentUser } = currentUserState
+
 	const [editProfileMutation, { error: connErrors }] = useEditProfileMutation()
 
 	const { data: ranksData } = useUserRanksQuery()
 	const ranks: TKVPair = ranksData?.UserRanks
 
-	const { data: profileRequest } = useCurrentUserQuery()
-	const profileData = profileRequest?.CurrentUser
-	const initialRank =
-		ranksData?.UserRanks && profileData?.rank
-			? getKeyByValue(ranksData.UserRanks, profileData?.rank)
-			: ''
+	// const { data: profileRequest } = useCurrentUserQuery()
+	// const profileData = profileRequest?.CurrentUser
+
+	const rankEnum = ranksData?.UserRanks
+		? getKeyByValue(ranksData.UserRanks, currentUser.rank as string)
+		: ''
 
 	const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
@@ -68,6 +72,18 @@ export const Settings = () => {
 							}
 
 							if (editResponse.EditProfile.__typename === 'Profile') {
+								const updatedData = editResponse.EditProfile
+
+								userDispatch({
+									type: 'UPDATE_USER',
+									payload: {
+										name: updatedData.name,
+										surname: updatedData.surname,
+										rank: updatedData.rank,
+										description: updatedData.description,
+									} as User,
+								})
+
 								setIsProfileUpdated(true)
 								setTimeout(() => {
 									setIsProfileUpdated(false)
@@ -79,12 +95,12 @@ export const Settings = () => {
 						setSubmitting(false)
 					}}
 					initialValues={{
-						name: profileData?.name,
-						surname: profileData?.surname,
-						rank: initialRank,
+						name: currentUser.name,
+						surname: currentUser.surname,
+						rank: rankEnum,
 						password: '',
 						password2: '',
-						description: profileData?.description,
+						description: currentUser.description,
 					}}
 				>
 					{({
@@ -171,6 +187,9 @@ export const Settings = () => {
 								</Form.Group>
 
 								<Form.Group as={Col} md='6' controlId='password'>
+									<small id='password_help' className='form-text'>
+										Old password or new password.
+									</small>
 									<Form.Label>Password</Form.Label>
 									<Form.Control
 										type='password'
@@ -185,6 +204,9 @@ export const Settings = () => {
 								</Form.Group>
 
 								<Form.Group as={Col} md='6' controlId='password2'>
+									<small id='password_help' className='form-text'>
+										.
+									</small>
 									<Form.Label>Repeat Password</Form.Label>
 									<Form.Control
 										type='password'

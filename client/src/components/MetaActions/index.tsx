@@ -98,7 +98,7 @@ export const MetaActions = ({
 			<span>
 				<Link
 					to='#like'
-					className={likeStatus.isLiked ? 'text-gray' : ''}
+					className={likeStatus.isLiked ? '' : 'text-gray'}
 					onClick={handleLike}
 				>
 					{toggleLikeLoading ? (

@@ -24,6 +24,7 @@ type ActionType =
 	| { type: 'LOADING' }
 	| { type: 'SET_TOKEN'; payload: string | null | undefined }
 	| { type: 'SIGN_IN'; payload: CurrentUserQueryType }
+	| { type: 'UPDATE_USER'; payload: UserType }
 	| { type: 'SIGN_OUT' }
 
 const initialUser = {
@@ -42,28 +43,37 @@ const initialState: IUserState = {
 }
 
 const userReducer = (state: IUserState = initialState, action: ActionType) => {
+	let currentUser
 	switch (action.type) {
 		case 'LOADING':
 			return {
 				...state,
 				isLoading: true,
 			}
+
+		case 'UPDATE_USER':
+			currentUser = action.payload
+			return {
+				...state,
+				currentUser,
+			}
+
 		case 'SET_TOKEN':
 			localStorage.setItem(TOKEN_FIELD, action.payload as string)
-
 			return {
 				...state,
 				token: action.payload,
 				isLoggedIn: false,
 			}
-		case 'SIGN_IN':
-			const currentUser = action.payload.CurrentUser as UserType
 
+		case 'SIGN_IN':
+			currentUser = action.payload.CurrentUser as UserType
 			return {
 				...state,
 				isLoggedIn: true,
 				currentUser,
 			}
+
 		case 'SIGN_OUT':
 			localStorage.setItem(TOKEN_FIELD, '')
 			return {

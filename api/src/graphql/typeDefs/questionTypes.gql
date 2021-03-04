@@ -55,7 +55,7 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 		)
 	isLiked: Boolean
 		@cypher(
-			statement: "MATCH (this)<-[r:LIKED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as canLike"
+			statement: "MATCH (this)<-[r:LIKED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isLiked"
 		)
 
 	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
