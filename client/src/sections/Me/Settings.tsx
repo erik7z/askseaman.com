@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 
 import { Formik } from 'formik'
-import { Col, Form, Button, Alert } from 'react-bootstrap'
+import { Col, Form, Button, Alert, Image } from 'react-bootstrap'
 import { BsCheckCircle } from 'react-icons/bs'
 
 import { SideAskBox } from '../../components'
@@ -13,7 +13,6 @@ import { TKVPair } from '../../types/frontend'
 import {
 	FieldError,
 	useUserRanksQuery,
-	// useCurrentUserQuery,
 	useEditProfileMutation,
 	UserRank,
 	User,
@@ -32,12 +31,13 @@ export const Settings = () => {
 	const { data: ranksData } = useUserRanksQuery()
 	const ranks: TKVPair = ranksData?.UserRanks
 
-	// const { data: profileRequest } = useCurrentUserQuery()
-	// const profileData = profileRequest?.CurrentUser
-
 	const rankEnum = ranksData?.UserRanks
 		? getKeyByValue(ranksData.UserRanks, currentUser.rank as string)
 		: ''
+
+	const [avatarImage, setAvatarImage] = useState<FileReader['result']>(
+		currentUser.avatar as string
+	)
 
 	const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
@@ -50,7 +50,7 @@ export const Settings = () => {
 			>
 				<Formik
 					validationSchema={userSettingsValidation}
-					onSubmit={async (values, { setSubmitting, setErrors, setValues }) => {
+					onSubmit={async (values, { setSubmitting, setErrors }) => {
 						setSubmitting(true)
 
 						const { data: editResponse } = await editProfileMutation({
@@ -58,6 +58,7 @@ export const Settings = () => {
 								data: {
 									name: values.name,
 									surname: values.surname,
+									avatar: values.avatar,
 									password: values.password,
 									rank: values.rank as UserRank,
 									description: values.description,
@@ -80,6 +81,7 @@ export const Settings = () => {
 										name: updatedData.name,
 										surname: updatedData.surname,
 										rank: updatedData.rank,
+										avatar: updatedData.avatar,
 										description: updatedData.description,
 									} as User,
 								})
@@ -97,6 +99,7 @@ export const Settings = () => {
 					initialValues={{
 						name: currentUser.name,
 						surname: currentUser.surname,
+						avatar: '',
 						rank: rankEnum,
 						password: '',
 						password2: '',
@@ -110,6 +113,7 @@ export const Settings = () => {
 						isSubmitting,
 						isValid,
 						getFieldProps,
+						setFieldValue,
 					}) => (
 						<Form noValidate onSubmit={handleSubmit}>
 							<Form.Row>
@@ -133,6 +137,39 @@ export const Settings = () => {
 										</span>
 									</Alert>
 								)}
+							</Form.Row>
+							<Form.Row className='justify-content-md-center'>
+								<Col xs={6} md={4}>
+									<Image
+										src={avatarImage as string}
+										alt='Profile Avatar'
+										height='128px'
+										roundedCircle
+										className='mb-3 mt-1'
+									/>
+								</Col>
+								<Col md={12}>
+									<Form.File
+										id='avatar'
+										name='avatar'
+										type='file'
+										custom
+										label='Choose avatar image'
+										accept='image/*'
+										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+											if (event.currentTarget.files) {
+												const reader = new FileReader()
+												const file = event.currentTarget.files[0]
+												reader.onloadend = () => {
+													setAvatarImage(reader.result)
+													setFieldValue('avatar', reader.result)
+												}
+												reader.readAsDataURL(file)
+											}
+										}}
+									/>
+									<hr />
+								</Col>
 							</Form.Row>
 
 							<Form.Row>

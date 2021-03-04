@@ -2,6 +2,7 @@ fragment userFields on User {
 	nodeId
 	name
 	surname
+	avatar
 	rank
 	description
 }

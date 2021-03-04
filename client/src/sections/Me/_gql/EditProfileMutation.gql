@@ -4,6 +4,7 @@ mutation EditProfile($data: UserProfileInput!) {
 		... on Profile {
 			name
 			surname
+			avatar
 			rank
 			description
 			isPasswordChanged

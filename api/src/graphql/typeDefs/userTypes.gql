@@ -2,6 +2,7 @@ type User {
 	nodeId: ID! @id
 	name: String!
 	surname: String!
+	avatar: String
 	rank: String
 	description: String
 	createdAt: DateTime
@@ -46,6 +47,7 @@ type User {
 type Profile {
 	name: String
 	surname: String
+	avatar: String
 	rank: String
 	description: String
 	isPasswordChanged: String
@@ -102,14 +104,8 @@ type Mutation {
 		@isAuthenticated
 		@cypher(
 			statement: """
-			MATCH (u:User {nodeId: $cypherParams.currentUserId})-[:AUTHENTICATED_WITH]->(l:LocalAccount)
-
-			WITH {
-						name: u.name,
-						surname: u.surname,
-						rank: u.roles,
-						description: u.description
-					} as Profile RETURN Profile
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			RETURN u
 			"""
 		)
 }

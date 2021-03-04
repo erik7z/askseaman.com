@@ -10,6 +10,7 @@ input UserProfileInput {
 	password: String
 	name: String
 	surname: String
+	avatar: String
 	rank: UserRank
 	description: String
 }

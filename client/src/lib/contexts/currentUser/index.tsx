@@ -31,6 +31,7 @@ const initialUser = {
 	nodeId: '',
 	name: '',
 	surname: '',
+	avatar: '',
 	rank: null,
 }
 

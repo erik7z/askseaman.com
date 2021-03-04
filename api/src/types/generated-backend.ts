@@ -717,6 +717,8 @@ export enum _UserOrdering {
   NameDesc = 'name_desc',
   SurnameAsc = 'surname_asc',
   SurnameDesc = 'surname_desc',
+  AvatarAsc = 'avatar_asc',
+  AvatarDesc = 'avatar_desc',
   RankAsc = 'rank_asc',
   RankDesc = 'rank_desc',
   DescriptionAsc = 'description_asc',
@@ -773,6 +775,17 @@ export type _UserFilter = {
   surname_not_starts_with?: Maybe<Scalars['String']>;
   surname_ends_with?: Maybe<Scalars['String']>;
   surname_not_ends_with?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
+  avatar_not?: Maybe<Scalars['String']>;
+  avatar_in?: Maybe<Array<Scalars['String']>>;
+  avatar_not_in?: Maybe<Array<Scalars['String']>>;
+  avatar_regexp?: Maybe<Scalars['String']>;
+  avatar_contains?: Maybe<Scalars['String']>;
+  avatar_not_contains?: Maybe<Scalars['String']>;
+  avatar_starts_with?: Maybe<Scalars['String']>;
+  avatar_not_starts_with?: Maybe<Scalars['String']>;
+  avatar_ends_with?: Maybe<Scalars['String']>;
+  avatar_not_ends_with?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['String']>;
   rank_not?: Maybe<Scalars['String']>;
   rank_in?: Maybe<Array<Scalars['String']>>;
@@ -881,6 +894,7 @@ export type User = {
   nodeId: Scalars['ID'];
   name: Scalars['String'];
   surname: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTime>;
@@ -954,8 +968,10 @@ export type Profile = {
   __typename?: 'Profile';
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  isPasswordChanged?: Maybe<Scalars['String']>;
 };
 
 export type LocalAccount = {
@@ -999,6 +1015,7 @@ export type UserProfileInput = {
   password?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
   rank?: Maybe<UserRank>;
   description?: Maybe<Scalars['String']>;
 };
@@ -1890,6 +1907,7 @@ export type QueryUserArgs = {
   nodeId?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   surname?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
   rank?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
@@ -2291,6 +2309,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   rank?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
@@ -2316,8 +2335,10 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type ProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Profile'] = ResolversParentTypes['Profile']> = ResolversObject<{
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   surname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   rank?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  isPasswordChanged?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

@@ -1,3 +1,8 @@
+import { neo4jgraphql, cypherMutation } from 'neo4j-graphql-js'
+import bcrypt from 'bcryptjs'
+
+import { cloudinary } from '../../utils/api/cloudinary'
+
 import {
 	ResponseStatus,
 	FieldError,
@@ -6,8 +11,6 @@ import {
 } from './../../types/generated-backend'
 import { ApolloServerContext, TKVPair } from './../../types/backend'
 import { createToken } from '../../utils/auth'
-import { neo4jgraphql, cypherMutation } from 'neo4j-graphql-js'
-import bcrypt from 'bcryptjs'
 
 import { ranks } from './../../data/ranks'
 
@@ -183,6 +186,10 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 		async EditProfile(parent, params, ctx, resolveInfo) {
 			const errorField = ''
 
+			const imageUrl = await cloudinary.upload(params.data.avatar)
+
+			params.data.avatar = imageUrl
+
 			const [, queryParams] = cypherMutation(params, ctx, resolveInfo)
 
 			if (queryParams.data.password) {
@@ -211,6 +218,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 									name: u.name,
 									surname: u.surname,
 									rank: u.rank,
+									avatar: u.avatar,
 									description: u.description,
 									isPasswordChanged: l.password = $data.password
 								} as Profile
