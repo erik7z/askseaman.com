@@ -77,7 +77,7 @@ export const AnswerItem = ({ answer }: IProps) => {
 						</div>
 					</Col>
 					<Col md={1} xs={5} className='pl-0'>
-						<AvatarLink size='md' />
+						<AvatarLink size='md' avatarUrl={answer.author?.avatar} />
 					</Col>
 				</Row>
 			</Col>

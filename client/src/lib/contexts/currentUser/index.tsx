@@ -4,7 +4,7 @@ import {
 	CurrentUserQuery as CurrentUserQueryType,
 } from '../../../types/generated-frontend'
 
-import { TOKEN_FIELD } from '../../../env'
+import { BLANK_AVATAR_URL, TOKEN_FIELD } from '../../../env'
 
 interface IProps {
 	children: ReactNode
@@ -31,7 +31,7 @@ const initialUser = {
 	nodeId: '',
 	name: '',
 	surname: '',
-	avatar: '',
+	avatar: BLANK_AVATAR_URL,
 	rank: null,
 }
 

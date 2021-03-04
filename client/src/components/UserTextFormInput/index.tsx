@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Formik } from 'formik'
 import { Row, Col, Form, Button, Alert } from 'react-bootstrap'
 import { ApolloError } from '@apollo/client'
@@ -6,6 +6,7 @@ import { ApolloError } from '@apollo/client'
 import { AvatarLink } from '../'
 import { userTextValidation } from '../../lib/validation'
 import { FormikSubmit } from './lib/helpers'
+import { CurrentUserContext } from '../../lib/contexts'
 
 interface IProps<MutationFunctionType> {
 	topicId: string
@@ -22,10 +23,13 @@ export function UserTextFormInput<MutationFunctionType>({
 	successFn,
 	connErrors,
 }: IProps<MutationFunctionType>) {
+	const [currentUserState] = useContext(CurrentUserContext)
+	const { currentUser } = currentUserState
+
 	return (
 		<Row className='SECTION-user-input'>
 			<Col md={1} xs={2} className='pr-0 text-right'>
-				<AvatarLink size='md' />
+				<AvatarLink size='md' avatarUrl={currentUser.avatar} />
 			</Col>
 			<Col md={11} xs={10}>
 				<Formik

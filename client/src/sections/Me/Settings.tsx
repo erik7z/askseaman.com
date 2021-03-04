@@ -21,6 +21,7 @@ import {
 import { userSettingsValidation } from '../../lib/validation'
 import { normalizeErrors, getKeyByValue } from '../../lib/helpers'
 import { CurrentUserContext } from '../../lib/contexts'
+import { BLANK_AVATAR_URL } from '../../env'
 
 export const Settings = () => {
 	const [currentUserState, userDispatch] = useContext(CurrentUserContext)
@@ -99,7 +100,7 @@ export const Settings = () => {
 					initialValues={{
 						name: currentUser.name,
 						surname: currentUser.surname,
-						avatar: '',
+						avatar: BLANK_AVATAR_URL,
 						rank: rankEnum,
 						password: '',
 						password2: '',
@@ -141,7 +142,11 @@ export const Settings = () => {
 							<Form.Row className='justify-content-md-center'>
 								<Col xs={6} md={4}>
 									<Image
-										src={avatarImage as string}
+										src={
+											avatarImage
+												? (avatarImage as string)
+												: (BLANK_AVATAR_URL as string)
+										}
 										alt='Profile Avatar'
 										height='128px'
 										roundedCircle

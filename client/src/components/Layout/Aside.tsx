@@ -17,7 +17,7 @@ const Aside = () => {
 			<>
 				<Row className='auth-module'>
 					<Col md={3} className='text-right pr-0 pt-1'>
-						<AvatarLink size='md' />
+						<AvatarLink size='md' avatarUrl={currentUser.avatar} />
 					</Col>
 					<Col md={7}>
 						<Link to='#' className='text-secondary'>
