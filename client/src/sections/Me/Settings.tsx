@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Formik } from 'formik'
 import { Col, Form, Button, Alert } from 'react-bootstrap'
+import { BsCheckCircle } from 'react-icons/bs'
 
 import { SideAskBox } from '../../components'
 
 import Section from '../../components/Layout/Section'
 import SideBar from '../../components/Layout/SideBar'
 
-import { TkvPair } from '../../types/frontend'
+import { TKVPair } from '../../types/frontend'
 import {
 	FieldError,
 	useUserRanksQuery,
@@ -19,15 +20,22 @@ import {
 
 import { userSettingsValidation } from '../../lib/validation'
 
-import { normalizeErrors } from '../../lib/helpers'
+import { normalizeErrors, getKeyByValue } from '../../lib/helpers'
 
 export const Settings = () => {
 	const [editProfileMutation, { error: connErrors }] = useEditProfileMutation()
-	const { data: ranksData } = useUserRanksQuery()
-	const ranks: TkvPair = ranksData?.UserRanks
-	const { data: profileRequest } = useCurrentUserQuery()
 
+	const { data: ranksData } = useUserRanksQuery()
+	const ranks: TKVPair = ranksData?.UserRanks
+
+	const { data: profileRequest } = useCurrentUserQuery()
 	const profileData = profileRequest?.CurrentUser
+	const initialRank =
+		ranksData?.UserRanks && profileData?.rank
+			? getKeyByValue(ranksData.UserRanks, profileData?.rank)
+			: ''
+
+	const [isProfileUpdated, setIsProfileUpdated] = useState(false)
 
 	return (
 		<>
@@ -38,7 +46,7 @@ export const Settings = () => {
 			>
 				<Formik
 					validationSchema={userSettingsValidation}
-					onSubmit={async (values, { setSubmitting, setErrors }) => {
+					onSubmit={async (values, { setSubmitting, setErrors, setValues }) => {
 						setSubmitting(true)
 
 						const { data: editResponse } = await editProfileMutation({
@@ -60,6 +68,10 @@ export const Settings = () => {
 							}
 
 							if (editResponse.EditProfile.__typename === 'Profile') {
+								setIsProfileUpdated(true)
+								setTimeout(() => {
+									setIsProfileUpdated(false)
+								}, 3000)
 								console.log(editResponse.EditProfile)
 							}
 						}
@@ -69,7 +81,7 @@ export const Settings = () => {
 					initialValues={{
 						name: profileData?.name,
 						surname: profileData?.surname,
-						rank: profileData?.rank,
+						rank: initialRank,
 						password: '',
 						password2: '',
 						description: profileData?.description,
@@ -82,7 +94,6 @@ export const Settings = () => {
 						isSubmitting,
 						isValid,
 						getFieldProps,
-						setFieldValue,
 					}) => (
 						<Form noValidate onSubmit={handleSubmit}>
 							<Form.Row>
@@ -90,6 +101,20 @@ export const Settings = () => {
 									<Alert variant='danger'>
 										<Alert.Heading>Ooops! Something went wrong</Alert.Heading>
 										<p>{connErrors.message}</p>
+									</Alert>
+								)}
+
+								{isProfileUpdated && (
+									<Alert
+										variant='success'
+										style={{
+											margin: '5px auto',
+											float: 'none',
+										}}
+									>
+										<span>
+											<BsCheckCircle /> Your profile has been updated
+										</span>
 									</Alert>
 								)}
 							</Form.Row>

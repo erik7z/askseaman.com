@@ -8,7 +8,7 @@ import {
 	FieldError,
 	UserRank,
 } from '../../types/generated-frontend'
-import { TComponentWithHistory, TkvPair } from '../../types/frontend'
+import { TComponentWithHistory, TKVPair } from '../../types/frontend'
 
 import { regValidation } from './../../lib/validation'
 import { normalizeErrors } from './../../lib/helpers'
@@ -19,7 +19,7 @@ export const Register: FC<TComponentWithHistory> = ({ history }) => {
 	const [, userDispatch] = useContext(CurrentUserContext)
 
 	const { data: ranksData } = useUserRanksQuery()
-	const ranks: TkvPair = ranksData?.UserRanks
+	const ranks: TKVPair = ranksData?.UserRanks
 
 	return (
 		<>

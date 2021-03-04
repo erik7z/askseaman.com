@@ -1,6 +1,6 @@
 import { Tag as ITag } from 'react-tag-autocomplete'
 
-import { TkvPair } from '../types/frontend'
+import { TKVPair } from '../types/frontend'
 import {
 	FieldError,
 	Tag as TTag,
@@ -8,8 +8,12 @@ import {
 } from '../types/generated-frontend'
 import { PAGINATION_PAGES_VISIBLE, PAGINATION_PAGE_SIZE } from './../env'
 
+export const getKeyByValue = (object: TKVPair, value: string) => {
+	return Object.keys(object).find((key) => object[key] === value)
+}
+
 export const normalizeErrors = (errors: FieldError[]) => {
-	return errors.reduce((acc: TkvPair, val) => {
+	return errors.reduce((acc: TKVPair, val) => {
 		if (val && val.field) acc[val.field] = val.message as string
 		return acc
 	}, {})

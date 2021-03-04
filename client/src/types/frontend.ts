@@ -3,7 +3,7 @@ import Apollo from '@apollo/client'
 
 export type typicSizes = 'md' | 'sm' | 'lg'
 
-export type TkvPair = {
+export type TKVPair = {
 	[key: string]: string
 }
 
