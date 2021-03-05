@@ -27,11 +27,11 @@ export const MainSorting = ({ orderBy, setOrderBy }: IProps) => {
 				<Button
 					type='button'
 					variant={
-						orderBy === _QuestionOrdering.CreatedAtDesc
+						orderBy === _QuestionOrdering.TimestampDesc
 							? 'outline-primary'
 							: 'outline-secondary'
 					}
-					onClick={() => setOrderBy(_QuestionOrdering.CreatedAtDesc)}
+					onClick={() => setOrderBy(_QuestionOrdering.TimestampDesc)}
 				>
 					Newest
 				</Button>

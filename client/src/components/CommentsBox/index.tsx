@@ -29,12 +29,22 @@ interface IProps {
 export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 	const [currentUserState] = useContext(CurrentUserContext)
 
-	let subscribersCount, canSubscribe, viewsCount, showSubscribers, showViews
+	let subscribersCount,
+		canSubscribe,
+		isSubscribed,
+		viewsCount,
+		showSubscribers,
+		showViews
 
 	const isQuestionComments = topic.__typename === 'Question'
 
 	if (isQuestionComments) {
-		;({ subscribersCount, viewsCount, canSubscribe } = topic as TQuestion)
+		;({
+			subscribersCount,
+			viewsCount,
+			canSubscribe,
+			isSubscribed,
+		} = topic as TQuestion)
 		showSubscribers = true
 		showViews = false
 	}
@@ -70,6 +80,7 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 			<MetaActions
 				topicId={topic.nodeId}
 				canSubscribe={canSubscribe}
+				isSubscribed={isSubscribed}
 				subscribersCount={subscribersCount}
 				showSubscribers={showSubscribers}
 				viewsCount={viewsCount}

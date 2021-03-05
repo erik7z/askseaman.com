@@ -69,11 +69,11 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 		)
 	isSubscribed: Boolean
 		@cypher(
-			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as isSubscribed"
+			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isSubscribed"
 		)
 
 	tags: [Tag] @relation(name: "TAGGED", direction: IN)
-	totalCount: Int
+	totalCount: Int # Used for totalCount query
 }
 
 type Query {

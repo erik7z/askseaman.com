@@ -42,6 +42,8 @@ type User {
 	liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
 	subscriptions: [CanBeSubscribed] @relation(name: "SUBSCRIBED", direction: OUT)
 	moderatingTags: [Tag] @relation(name: "MODERATED_BY", direction: IN)
+
+	totalCount: Int # Used for totalCount query
 }
 
 type Profile {
@@ -61,6 +63,8 @@ type LocalAccount {
 }
 
 type Query {
+	UserCount: User
+
 	CurrentUser: User!
 		@isAuthenticated
 		@cypher(

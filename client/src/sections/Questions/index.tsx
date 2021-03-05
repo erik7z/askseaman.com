@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Row, Col } from 'react-bootstrap'
+import Skeleton from 'react-loading-skeleton'
 
 import {
 	QuestionSearch,
@@ -19,7 +20,7 @@ import { PAGINATION_PAGE_SIZE } from './../../env'
 export const Questions = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
 	const [currentPage, setCurrentPage] = useState(0)
-	const [orderBy, setOrderBy] = useState(_QuestionOrdering.CreatedAtDesc)
+	const [orderBy, setOrderBy] = useState(_QuestionOrdering.TimestampDesc)
 
 	const { questionsList, questionsCount, loading, error } = useGetQuestions(
 		currentPage,
@@ -27,18 +28,9 @@ export const Questions = () => {
 		orderBy
 	)
 
-	const questionsListComponent = questionsList ? (
-		<>
-			{questionsList.map((question) => {
-				return question ? (
-					<QuestionListItem key={question.nodeId} question={question} />
-				) : null
-			})}
-		</>
-	) : null
-
-	const loadingMessage = loading ? <h4>Loading in progress</h4> : null
+	const loadingMessage = loading ? <Skeleton count={25} /> : null
 	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null
+
 	return (
 		<>
 			<Col xl={8} className='main-content'>
@@ -49,7 +41,18 @@ export const Questions = () => {
 						<hr className='hr-header hr-bold' />
 						<MainSorting orderBy={orderBy} setOrderBy={setOrderBy} />
 						<section className='section-questions-list'>
-							{questionsListComponent}
+							{questionsList && (
+								<>
+									{questionsList.map((question) => {
+										return question ? (
+											<QuestionListItem
+												key={question.nodeId}
+												question={question}
+											/>
+										) : null
+									})}
+								</>
+							)}
 							{errorMessage}
 							{loadingMessage}
 						</section>

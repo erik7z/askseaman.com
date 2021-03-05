@@ -59,6 +59,9 @@ export const App = () => {
 									<AskQuestion />
 								</QuestionsProvider>
 							</Route>
+							<Route exact path='/users'>
+								<Users />
+							</Route>
 							<Route exact path='/user'>
 								<User />
 							</Route>
@@ -76,9 +79,6 @@ export const App = () => {
 							</Route>
 							<Route exact path='/tag'>
 								<Tag />
-							</Route>
-							<Route exact path='/users'>
-								<Users />
 							</Route>
 
 							<Route>

@@ -1,4 +1,4 @@
-import { neo4jgraphql, cypherMutation } from 'neo4j-graphql-js'
+import { neo4jgraphql, cypherMutation, cypherQuery } from 'neo4j-graphql-js'
 import bcrypt from 'bcryptjs'
 
 import { cloudinary } from '../../utils/api/cloudinary'
@@ -29,6 +29,25 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 	Query: {
 		UserRanks() {
 			return ranks
+		},
+
+		UserCount: async (_parent, params, ctx, resolveInfo) => {
+			const [queryString, queryParams] = cypherQuery(params, ctx, resolveInfo)
+
+			const resultsCount = await ctx.driver
+				.session()
+				.run(queryString, queryParams)
+				.then((res) => res.records.length)
+
+			const requiredFieldsMessage =
+				'### Only `totalCount` field can be resolved with this query'
+
+			return {
+				nodeId: requiredFieldsMessage,
+				name: requiredFieldsMessage,
+				surname: requiredFieldsMessage,
+				totalCount: resultsCount,
+			}
 		},
 	},
 	Mutation: {

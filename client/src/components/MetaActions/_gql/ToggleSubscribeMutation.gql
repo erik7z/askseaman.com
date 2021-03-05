@@ -4,10 +4,12 @@ mutation ToggleSubscribe($data: nodeIdInput!) {
 		... on Question {
 			nodeId
 			subscribersCount
+			isSubscribed
 		}
 		... on Tag {
 			nodeId
 			subscribersCount
+			isSubscribed
 		}
 	}
 }

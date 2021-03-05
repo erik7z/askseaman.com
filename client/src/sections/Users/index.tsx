@@ -1,16 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Row, Col } from 'react-bootstrap'
+import Skeleton from 'react-loading-skeleton'
 
 import {
 	QuestionSearch,
 	UserCardItem,
 	SideAdvertBox,
 	SideNewsBox,
-	// Pagination,
+	Pagination,
 	MainSorting,
 } from '../../components'
 
+import { _UserOrdering } from '../../types/generated-frontend'
+import { PAGINATION_PAGE_SIZE } from './../../env'
+import { useGetUsers } from '../../lib/hooks'
+
 export const Users = () => {
+	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
+	const [currentPage, setCurrentPage] = useState(0)
+	const [orderBy, setOrderBy] = useState(_UserOrdering.TimestampDesc)
+
+	const { usersList, usersCount, loading, error } = useGetUsers(
+		currentPage,
+		resultsLimit,
+		orderBy
+	)
+
+	const loadingMessage = loading ? <Skeleton count={25} /> : null
+	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null
+
 	return (
 		<>
 			<Col xl={8} className='main-content'>
@@ -22,14 +40,29 @@ export const Users = () => {
 						{/* <MainSorting /> */}
 						<section className='section-users-list'>
 							<Row className='users-list text-center'>
-								<Col md={4} xs={6} className='card-item'>
-									<UserCardItem />
-								</Col>
+								{usersList && (
+									<>
+										{usersList.map((user) => {
+											return user ? (
+												<UserCardItem key={user.nodeId} user={user} />
+											) : null
+										})}
+									</>
+								)}
 							</Row>
+							{errorMessage}
+							{loadingMessage}
 						</section>
 					</Col>
 				</Row>
-				{/* <Pagination /> */}
+				<Pagination
+					currentPage={currentPage}
+					resultsLimit={resultsLimit}
+					totalItems={usersCount}
+					baseUrl='/users'
+					setCurrentPage={setCurrentPage}
+					setResultsLimit={setResultsLimit}
+				/>
 			</Col>
 			<Col xl={4} className='sidebar bg-blue'>
 				<SideAdvertBox />

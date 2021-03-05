@@ -66,7 +66,7 @@ export const Tag = () => {
 						<hr className='hr-header hr-bold' />
 						<Row className='users-list text-center'>
 							<Col md={4} xs={6} className='card-item'>
-								<UserCardItem />
+								{/* <UserCardItem /> */}
 							</Col>
 						</Row>
 						<h5 className='module-header text-right'>Top questions &lt;</h5>

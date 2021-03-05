@@ -4,11 +4,13 @@ import { useToggleSubscribeMutation } from '../../types/generated-frontend'
 
 export const useToggleSubscribe = (
 	topicId: string,
-	subscribersCountInitial: number | null | undefined
+	subscribersCountInitial: number | null | undefined,
+	isSubscribedInitial: boolean | null | undefined
 ) => {
-	const [subscribersCount, setSubscribersCount] = useState(
-		subscribersCountInitial
-	)
+	const [subscribeStatus, setSubscribeStatus] = useState({
+		isSubscribed: isSubscribedInitial,
+		subscribersCount: subscribersCountInitial,
+	})
 
 	const [
 		toggleSubscribeMutation,
@@ -34,15 +36,18 @@ export const useToggleSubscribe = (
 
 	useEffect(() => {
 		if (toggleSubscribeResponse) {
-			setSubscribersCount(
-				toggleSubscribeResponse.ToggleSubscribe.subscribersCount as number
-			)
+			setSubscribeStatus({
+				isSubscribed: toggleSubscribeResponse.ToggleSubscribe
+					.isSubscribed as boolean,
+				subscribersCount: toggleSubscribeResponse.ToggleSubscribe
+					.subscribersCount as number,
+			})
 		}
 	}, [toggleSubscribeResponse])
 
 	return {
 		handleSubscribe,
-		subscribersCount,
+		subscribeStatus,
 		toggleSubscribeLoading,
 		toggleSubscribeConnErrors,
 	}

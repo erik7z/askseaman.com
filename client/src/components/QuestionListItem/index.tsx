@@ -27,6 +27,7 @@ export const QuestionListItem = ({ question }: { question: Question }) => {
 							{
 								<MetaActions
 									topicId={question.nodeId}
+									isSubscribed={question.isSubscribed}
 									canSubscribe={question.canSubscribe}
 									showSubscribers={true}
 									subscribersCount={question.subscribersCount}

@@ -16,6 +16,7 @@ interface IProps {
 	viewsCount?: number | null | undefined
 
 	canSubscribe?: boolean | null | undefined
+	isSubscribed?: boolean | null | undefined
 	subscribersCount?: number | null | undefined
 	showSubscribers?: boolean
 
@@ -40,6 +41,7 @@ export const MetaActions = ({
 	createdAt,
 
 	canSubscribe = false,
+	isSubscribed: isSubscribedInitial = false,
 	showSubscribers = false,
 	subscribersCount: subscribersCountInitial = 0,
 
@@ -60,26 +62,31 @@ export const MetaActions = ({
 
 	const {
 		handleSubscribe,
-		subscribersCount,
+		subscribeStatus,
 		toggleSubscribeLoading,
 		toggleSubscribeConnErrors,
-	} = useToggleSubscribe(topicId, subscribersCountInitial)
+	} = useToggleSubscribe(topicId, subscribersCountInitial, isSubscribedInitial)
 	if (toggleSubscribeConnErrors) console.log(toggleSubscribeConnErrors)
+
+	const subscribeStatusClass = subscribeStatus.isSubscribed
+		? ' btn-primary'
+		: ' btn-outline-primary'
 
 	const subscribersButton =
 		currentUserState.isLoggedIn && canSubscribe ? (
 			<span>
 				<Link
 					to='#subscribe'
-					className='btn btn-sm btn-outline-primary mr-1'
+					className={'btn btn-sm mr-1' + subscribeStatusClass}
 					onClick={handleSubscribe}
 				>
-					Subscribe | <b>{subscribersCount} </b>
+					Subscribe | <b>{subscribeStatus.subscribersCount} </b>
 				</Link>
 			</span>
 		) : (
 			<span>
-				<BsFillPeopleFill /> <b>{subscribersCount}</b> Subscribers
+				<BsFillPeopleFill /> <b>{subscribeStatus.subscribersCount}</b>{' '}
+				Subscribers
 			</span>
 		)
 
