@@ -1,21 +1,30 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card } from 'react-bootstrap'
+import { Col, Card } from 'react-bootstrap'
+import { Tag } from '../../types/generated-frontend'
+import { MetaActions } from '../MetaActions'
 
-export const TagCardItem = () => {
+export const TagCardItem = ({ tag }: { tag: Tag }) => {
 	return (
-		<Card>
-			<Card.Body>
-				<Card.Title>
-					<Link to='tag-page.html'>LPG</Link>
-				</Card.Title>
-				<Card.Text>234 Questions</Card.Text>
-			</Card.Body>
-			<Card.Footer>
-				<Link to='#' className='btn btn-outline-primary btn-sm mr-1'>
-					Subscribe | <b>305</b>
-				</Link>
-			</Card.Footer>
-		</Card>
+		<Col md={4} xs={6} className='card-item'>
+			<Card>
+				<Card.Body>
+					<Card.Title>
+						<Link to={`/tag/${tag.name}`}>{tag.name}</Link>
+					</Card.Title>
+					<Card.Text>{tag.questionsCount} Questions</Card.Text>
+				</Card.Body>
+				<Card.Footer className='text-center'>
+					<MetaActions
+						topicId={tag.nodeId}
+						isSubscribed={tag.isSubscribed}
+						canSubscribe={tag.canSubscribe}
+						subscribersCount={tag.subscribersCount}
+						showSubscribers={true}
+						showViews={false}
+					/>
+				</Card.Footer>
+			</Card>
+		</Col>
 	)
 }

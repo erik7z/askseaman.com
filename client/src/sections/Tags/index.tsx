@@ -23,7 +23,7 @@ export const Tags = () => {
 						<section className='section-tags-list'>
 							<Row className='tags-list text-center'>
 								<Col md={4} xs={6} className='card-item'>
-									<TagCardItem />
+									{/* <TagCardItem /> */}
 								</Col>
 							</Row>
 						</section>

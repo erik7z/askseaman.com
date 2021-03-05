@@ -66,7 +66,11 @@ export const QuestionPage = ({ setSectionTitle }: IProps) => {
 		<>
 			<div className='question-item-full '>
 				<div className='author d-flex align-items-center'>
-					<AvatarLink size='lg' avatarUrl={question.author?.avatar as string} />
+					<AvatarLink
+						size='lg'
+						avatarUrl={question.author?.avatar as string}
+						userId={question.author?.nodeId}
+					/>
 					<div className='post-item-info'>
 						<span>Asked by</span>
 						<h5 className='author-name'>

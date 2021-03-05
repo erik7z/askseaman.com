@@ -24,7 +24,11 @@ export const CommentItem = ({ comment }: IProps) => {
 				</div>
 			</Col>
 			<Col md={1} xs={2} className='pl-0'>
-				<AvatarLink size='md' avatarUrl={comment.author?.avatar} />
+				<AvatarLink
+					size='md'
+					avatarUrl={comment.author?.avatar}
+					userId={comment.author?.nodeId}
+				/>
 			</Col>
 			<div className='col-12'>
 				<p className='post-item-text'>{comment.text}</p>

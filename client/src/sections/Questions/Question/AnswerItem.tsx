@@ -77,7 +77,11 @@ export const AnswerItem = ({ answer }: IProps) => {
 						</div>
 					</Col>
 					<Col md={1} xs={5} className='pl-0'>
-						<AvatarLink size='md' avatarUrl={answer.author?.avatar} />
+						<AvatarLink
+							size='md'
+							avatarUrl={answer.author?.avatar}
+							userId={answer.author.nodeId}
+						/>
 					</Col>
 				</Row>
 			</Col>

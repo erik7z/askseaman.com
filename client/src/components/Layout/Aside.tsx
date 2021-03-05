@@ -17,10 +17,14 @@ const Aside = () => {
 			<>
 				<Row className='auth-module'>
 					<Col md={3} className='text-right pr-0 pt-1'>
-						<AvatarLink size='md' avatarUrl={currentUser.avatar} />
+						<AvatarLink
+							size='md'
+							avatarUrl={currentUser.avatar}
+							userId={currentUser.nodeId}
+						/>
 					</Col>
 					<Col md={7}>
-						<Link to='#' className='text-secondary'>
+						<Link to='/me' className='text-secondary'>
 							<b>
 								{ucFirstLetter(currentUser.name)}{' '}
 								{ucFirstLetter(currentUser.surname)}

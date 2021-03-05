@@ -73,9 +73,13 @@ export const User = () => {
 				<h5 className='module-header text-right'>Favorite tags &lt;</h5>
 				<hr className='hr-header hr-bold' />
 				<Row className='tags-list text-center'>
-					<Col md={4} xs={6} className='card-item'>
-						<TagCardItem />
-					</Col>
+					{user?.favoriteTags && (
+						<>
+							{user.favoriteTags.map((tag) => {
+								return tag ? <TagCardItem key={tag.nodeId} tag={tag} /> : null
+							})}
+						</>
+					)}
 				</Row>
 			</Section>
 

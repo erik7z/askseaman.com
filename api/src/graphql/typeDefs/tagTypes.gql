@@ -28,7 +28,7 @@ type Tag implements CanBeSubscribed {
 		)
 	isSubscribed: Boolean
 		@cypher(
-			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 0 as isSubscribed"
+			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isSubscribed"
 		)
 
 	topUsers: [User]  #TODO:complete logic to select top users
