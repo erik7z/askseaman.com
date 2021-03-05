@@ -2,8 +2,9 @@ import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
-import { Row, Col, Jumbotron, ListGroup } from 'react-bootstrap'
+import { Row, Jumbotron, ListGroup } from 'react-bootstrap'
 import {
+	SideAskBox,
 	SideAdvertBox,
 	SideNewsBox,
 	TagCardItem,
@@ -26,7 +27,7 @@ export const User = () => {
 		<>
 			<Section
 				sectionName='Users'
-				sectionTitle='Vasya Batareykin'
+				sectionTitle={`${user?.name} ${user?.surname}`}
 				sectionClass='section-user-page'
 			>
 				{errorMessage}
@@ -46,7 +47,7 @@ export const User = () => {
 							</Link>
 						</ListGroup.Item>
 						<ListGroup.Item className='text-success'>
-							<b>{user?.solvedQuestionsCount}</b> <br />
+							<b>{user?.questionsSolvedCount}</b> <br />
 							Solved Problems
 						</ListGroup.Item>
 						<ListGroup.Item>
@@ -84,6 +85,7 @@ export const User = () => {
 			</Section>
 
 			<SideBar>
+				<SideAskBox />
 				<SideAdvertBox />
 				<SideNewsBox />
 			</SideBar>

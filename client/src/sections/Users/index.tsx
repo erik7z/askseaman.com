@@ -7,6 +7,7 @@ import SideBar from '../../components/Layout/SideBar'
 
 import {
 	UserCardItem,
+	SideAskBox,
 	SideAdvertBox,
 	SideNewsBox,
 	Pagination,
@@ -64,6 +65,7 @@ export const Users = () => {
 			</Section>
 
 			<SideBar>
+				<SideAskBox />
 				<SideAdvertBox />
 				<SideNewsBox />
 			</SideBar>

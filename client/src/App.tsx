@@ -77,7 +77,7 @@ export const App = () => {
 							<Route exact path='/tags'>
 								<Tags />
 							</Route>
-							<Route exact path='/tag'>
+							<Route exact path='/tag/:tagName'>
 								<Tag />
 							</Route>
 

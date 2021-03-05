@@ -8,6 +8,7 @@ import SideBar from '../../components/Layout/SideBar'
 
 import {
 	TagCardItem,
+	SideAskBox,
 	SideAdvertBox,
 	SideNewsBox,
 	Pagination,
@@ -63,6 +64,7 @@ export const Tags = () => {
 			</Section>
 
 			<SideBar>
+				<SideAskBox />
 				<SideAdvertBox />
 				<SideNewsBox />
 			</SideBar>

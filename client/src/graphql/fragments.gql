@@ -16,6 +16,29 @@ fragment tagFields on Tag {
 	isSubscribed
 }
 
+fragment questionListItemFields on Question {
+	nodeId
+	title
+	text
+	author {
+		...userFields
+	}
+	createdAt {
+		...dateTimeFields
+	}
+	tags(first: 5) {
+		nodeId
+		name
+	}
+	viewsCount
+	answersCount
+	commentsCount
+
+	canSubscribe
+	isSubscribed
+	subscribersCount
+}
+
 fragment commentFields on Comment {
 	nodeId
 	text

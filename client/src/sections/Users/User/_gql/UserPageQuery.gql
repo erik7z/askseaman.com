@@ -5,31 +5,12 @@ query UserPage($nodeId: ID!) {
 		location
 		questionsCount
 		answersCount
-		solvedQuestionsCount
+		questionsSolvedCount
 		favoriteTags {
 			...tagFields
 		}
 		questions {
-			nodeId
-			title
-			text
-			author {
-				...userFields
-			}
-			createdAt {
-				...dateTimeFields
-			}
-			tags(first: 5) {
-				nodeId
-				name
-			}
-			viewsCount
-			answersCount
-			commentsCount
-
-			canSubscribe
-			isSubscribed
-			subscribersCount
+			...questionListItemFields
 		}
 	}
 }

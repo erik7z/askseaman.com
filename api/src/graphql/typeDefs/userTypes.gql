@@ -18,9 +18,9 @@ type User {
 		@cypher(
 			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)) as answersCount"
 		)
-	solvedQuestionsCount: Int
+	questionsSolvedCount: Int
 		@cypher(
-			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)<-[:ACCEPTED]-(:User)) as solvedQuestionsCount"
+			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
 		)
 	#TODO: logic to select favorite tags
 	favoriteTags: [Tag]
