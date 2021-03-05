@@ -45,6 +45,12 @@ type Tag implements CanBeSubscribed {
 			MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN q as topQuestions
 			"""
 		)
+
+	totalCount: Int # Used for totalCount query
+}
+
+type Query {
+	TagCount: Tag
 }
 
 type Mutation {

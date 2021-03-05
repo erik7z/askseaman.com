@@ -1,0 +1,13 @@
+query TagsList(
+	$orderBy: [_TagOrdering]
+	$first: Int
+	$offset: Int
+	$filter: _TagFilter
+) {
+	Tag(orderBy: $orderBy, first: $first, offset: $offset, filter: $filter) {
+		...tagFields
+	}
+	TagCount(filter: $filter) {
+		totalCount
+	}
+}

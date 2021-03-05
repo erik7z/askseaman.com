@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Row, Col } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 
+import Section from '../../components/Layout/Section'
+import SideBar from '../../components/Layout/SideBar'
+
 import {
-	QuestionSearch,
 	QuestionListItem,
 	SideAdvertBox,
 	SideNewsBox,
@@ -33,31 +34,23 @@ export const Questions = () => {
 
 	return (
 		<>
-			<Col xl={8} className='main-content'>
-				<QuestionSearch />
-				<Row>
-					<Col md={12}>
-						<h5 className='module-header'>&gt; All Questions</h5>
-						<hr className='hr-header hr-bold' />
-						<MainSorting orderBy={orderBy} setOrderBy={setOrderBy} />
-						<section className='section-questions-list'>
-							{questionsList && (
-								<>
-									{questionsList.map((question) => {
-										return question ? (
-											<QuestionListItem
-												key={question.nodeId}
-												question={question}
-											/>
-										) : null
-									})}
-								</>
-							)}
-							{errorMessage}
-							{loadingMessage}
-						</section>
-					</Col>
-				</Row>
+			<Section
+				sectionName='Questions'
+				sectionTitle='All'
+				sectionClass='section-questions-list'
+			>
+				<MainSorting orderBy={orderBy} setOrderBy={setOrderBy} />
+				{errorMessage}
+				{loadingMessage}
+				{questionsList && (
+					<>
+						{questionsList.map((question) => {
+							return question ? (
+								<QuestionListItem key={question.nodeId} question={question} />
+							) : null
+						})}
+					</>
+				)}
 
 				<Pagination
 					currentPage={currentPage}
@@ -67,14 +60,15 @@ export const Questions = () => {
 					setCurrentPage={setCurrentPage}
 					setResultsLimit={setResultsLimit}
 				/>
-			</Col>
-			<Col xl={4} className='sidebar bg-blue'>
+			</Section>
+
+			<SideBar>
 				<SideAskBox />
 				<SideAdvertBox />
 				<SideTagCloudBox />
 				<SideTopUsersBox />
 				<SideNewsBox />
-			</Col>
+			</SideBar>
 		</>
 	)
 }

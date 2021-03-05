@@ -1,5 +1,5 @@
 query Tag {
-	Tag {
+	Tag(first: 10) {
 		name
 		description
 	}

@@ -556,6 +556,8 @@ export enum _TagOrdering {
   CanSubscribeDesc = 'canSubscribe_desc',
   IsSubscribedAsc = 'isSubscribed_asc',
   IsSubscribedDesc = 'isSubscribed_desc',
+  TotalCountAsc = 'totalCount_asc',
+  TotalCountDesc = 'totalCount_desc',
   IdAsc = '_id_asc',
   IdDesc = '_id_desc'
 }
@@ -643,6 +645,14 @@ export type _TagFilter = {
   subscribers_none?: Maybe<_UserFilter>;
   subscribers_single?: Maybe<_UserFilter>;
   subscribers_every?: Maybe<_UserFilter>;
+  totalCount?: Maybe<Scalars['Int']>;
+  totalCount_not?: Maybe<Scalars['Int']>;
+  totalCount_in?: Maybe<Array<Scalars['Int']>>;
+  totalCount_not_in?: Maybe<Array<Scalars['Int']>>;
+  totalCount_lt?: Maybe<Scalars['Int']>;
+  totalCount_lte?: Maybe<Scalars['Int']>;
+  totalCount_gt?: Maybe<Scalars['Int']>;
+  totalCount_gte?: Maybe<Scalars['Int']>;
 };
 
 export type Tag = CanBeSubscribed & {
@@ -663,6 +673,7 @@ export type Tag = CanBeSubscribed & {
   isSubscribed?: Maybe<Scalars['Boolean']>;
   topUsers?: Maybe<Array<Maybe<User>>>;
   topQuestions?: Maybe<Array<Maybe<Question>>>;
+  totalCount?: Maybe<Scalars['Int']>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
 };
@@ -1838,6 +1849,7 @@ export type MutationEditProfileArgs = {
 export type Query = {
   __typename?: 'Query';
   QuestionCount?: Maybe<Question>;
+  TagCount?: Maybe<Tag>;
   UserCount?: Maybe<User>;
   CurrentUser: User;
   UserRanks?: Maybe<Scalars['JSONObject']>;
@@ -1856,6 +1868,11 @@ export type Query = {
 
 export type QueryQuestionCountArgs = {
   filter?: Maybe<_QuestionFilter>;
+};
+
+
+export type QueryTagCountArgs = {
+  filter?: Maybe<_TagFilter>;
 };
 
 
@@ -1914,6 +1931,7 @@ export type QueryTagArgs = {
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
   timestamp?: Maybe<Scalars['String']>;
+  totalCount?: Maybe<Scalars['Int']>;
   _id?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
   offset?: Maybe<Scalars['Int']>;
@@ -2302,6 +2320,25 @@ export type TagQuery = (
     { __typename?: 'Tag' }
     & Pick<Tag, 'name' | 'description'>
   )>>> }
+);
+
+export type TagsListQueryVariables = Exact<{
+  orderBy?: Maybe<Array<Maybe<_TagOrdering>> | Maybe<_TagOrdering>>;
+  first?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  filter?: Maybe<_TagFilter>;
+}>;
+
+
+export type TagsListQuery = (
+  { __typename?: 'Query' }
+  & { Tag?: Maybe<Array<Maybe<(
+    { __typename?: 'Tag' }
+    & TagFieldsFragment
+  )>>>, TagCount?: Maybe<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'totalCount'>
+  )> }
 );
 
 export type UserPageQueryVariables = Exact<{
@@ -3120,7 +3157,7 @@ export type QuestionsListLazyQueryHookResult = ReturnType<typeof useQuestionsLis
 export type QuestionsListQueryResult = Apollo.QueryResult<QuestionsListQuery, QuestionsListQueryVariables>;
 export const TagDocument = gql`
     query Tag {
-  Tag {
+  Tag(first: 10) {
     name
     description
   }
@@ -3151,6 +3188,45 @@ export function useTagLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagQue
 export type TagQueryHookResult = ReturnType<typeof useTagQuery>;
 export type TagLazyQueryHookResult = ReturnType<typeof useTagLazyQuery>;
 export type TagQueryResult = Apollo.QueryResult<TagQuery, TagQueryVariables>;
+export const TagsListDocument = gql`
+    query TagsList($orderBy: [_TagOrdering], $first: Int, $offset: Int, $filter: _TagFilter) {
+  Tag(orderBy: $orderBy, first: $first, offset: $offset, filter: $filter) {
+    ...tagFields
+  }
+  TagCount(filter: $filter) {
+    totalCount
+  }
+}
+    ${TagFieldsFragmentDoc}`;
+
+/**
+ * __useTagsListQuery__
+ *
+ * To run a query within a React component, call `useTagsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagsListQuery({
+ *   variables: {
+ *      orderBy: // value for 'orderBy'
+ *      first: // value for 'first'
+ *      offset: // value for 'offset'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useTagsListQuery(baseOptions?: Apollo.QueryHookOptions<TagsListQuery, TagsListQueryVariables>) {
+        return Apollo.useQuery<TagsListQuery, TagsListQueryVariables>(TagsListDocument, baseOptions);
+      }
+export function useTagsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagsListQuery, TagsListQueryVariables>) {
+          return Apollo.useLazyQuery<TagsListQuery, TagsListQueryVariables>(TagsListDocument, baseOptions);
+        }
+export type TagsListQueryHookResult = ReturnType<typeof useTagsListQuery>;
+export type TagsListLazyQueryHookResult = ReturnType<typeof useTagsListLazyQuery>;
+export type TagsListQueryResult = Apollo.QueryResult<TagsListQuery, TagsListQueryVariables>;
 export const UserPageDocument = gql`
     query UserPage($nodeId: ID!) {
   User(nodeId: $nodeId) {

@@ -14,7 +14,7 @@ export const useGetUsers = (
 	const [usersList, setUsersList] = useState<TUser[]>()
 	const [usersCount, setUsersCount] = useState<number>(0)
 
-	const [getQuestions, { data, loading, error }] = useUsersListLazyQuery({
+	const [getUsers, { data, loading, error }] = useUsersListLazyQuery({
 		variables: {
 			orderBy: [orderBy],
 			first: resultsLimit,
@@ -25,12 +25,12 @@ export const useGetUsers = (
 
 	useEffect(() => {
 		console.log('getUsers useffect')
-		getQuestions()
+		getUsers()
 		if (data?.User) {
 			setUsersList(data?.User as TUser[])
 			setUsersCount(data?.UserCount?.totalCount as number)
 		}
-	}, [getQuestions, data?.User, data?.UserCount?.totalCount])
+	}, [getUsers, data?.User, data?.UserCount?.totalCount])
 
 	return { usersList, usersCount, loading, error }
 }

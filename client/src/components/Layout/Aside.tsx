@@ -90,11 +90,11 @@ const Aside = () => {
 								<span className='icon-question'></span> Questions
 							</NavLink>
 						</li>
-						{/* <li>
+						<li>
 							<NavLink exact={true} to='/tags' activeClassName='as-active'>
 								<span className='icon-tag'></span> Tags
 							</NavLink>
-						</li> */}
+						</li>
 						<li>
 							<NavLink exact={true} to='/users' activeClassName='as-active'>
 								<span className='icon-user'></span> Users

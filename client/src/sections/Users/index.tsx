@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { Row, Col } from 'react-bootstrap'
+import { Row } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 
+import Section from '../../components/Layout/Section'
+import SideBar from '../../components/Layout/SideBar'
+
 import {
-	QuestionSearch,
 	UserCardItem,
 	SideAdvertBox,
 	SideNewsBox,
@@ -31,30 +33,26 @@ export const Users = () => {
 
 	return (
 		<>
-			<Col xl={8} className='main-content'>
-				<QuestionSearch />
-				<Row>
-					<Col md={12}>
-						<h5 className='module-header'>&gt; Users</h5>
-						<hr className='hr-header hr-bold' />
-						{/* <MainSorting /> */}
-						<section className='section-users-list'>
-							<Row className='users-list text-center'>
-								{usersList && (
-									<>
-										{usersList.map((user) => {
-											return user ? (
-												<UserCardItem key={user.nodeId} user={user} />
-											) : null
-										})}
-									</>
-								)}
-							</Row>
-							{errorMessage}
-							{loadingMessage}
-						</section>
-					</Col>
+			<Section
+				sectionName='Users'
+				sectionTitle='All'
+				sectionClass='section-users-list'
+			>
+				{/* <MainSorting /> */}
+				{errorMessage}
+				{loadingMessage}
+				<Row className='users-list text-center'>
+					{usersList && (
+						<>
+							{usersList.map((user) => {
+								return user ? (
+									<UserCardItem key={user.nodeId} user={user} />
+								) : null
+							})}
+						</>
+					)}
 				</Row>
+
 				<Pagination
 					currentPage={currentPage}
 					resultsLimit={resultsLimit}
@@ -63,11 +61,12 @@ export const Users = () => {
 					setCurrentPage={setCurrentPage}
 					setResultsLimit={setResultsLimit}
 				/>
-			</Col>
-			<Col xl={4} className='sidebar bg-blue'>
+			</Section>
+
+			<SideBar>
 				<SideAdvertBox />
 				<SideNewsBox />
-			</Col>
+			</SideBar>
 		</>
 	)
 }

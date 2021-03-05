@@ -1,40 +1,71 @@
-import React from 'react'
-import { Row, Col } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Row } from 'react-bootstrap'
+
+import Skeleton from 'react-loading-skeleton'
+
+import Section from '../../components/Layout/Section'
+import SideBar from '../../components/Layout/SideBar'
 
 import {
-	QuestionSearch,
 	TagCardItem,
 	SideAdvertBox,
 	SideNewsBox,
-	// Pagination,
+	Pagination,
 	MainSorting,
 } from '../../components'
 
+import { _TagOrdering } from '../../types/generated-frontend'
+import { PAGINATION_PAGE_SIZE } from './../../env'
+import { useGetTags } from '../../lib/hooks'
+
 export const Tags = () => {
+	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
+	const [currentPage, setCurrentPage] = useState(0)
+	const [orderBy, setOrderBy] = useState(_TagOrdering.QuestionsCountDesc)
+
+	const { tagsList, tagsCount, loading, error } = useGetTags(
+		currentPage,
+		resultsLimit,
+		orderBy
+	)
+
+	const loadingMessage = loading ? <Skeleton count={25} /> : null
+	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null
+
 	return (
 		<>
-			<Col xl={8} className='main-content'>
-				<QuestionSearch />
-				<Row>
-					<Col md={12}>
-						<h5 className='module-header'>&gt; Tags</h5>
-						<hr className='hr-header hr-bold' />
-						{/* <MainSorting /> */}
-						<section className='section-tags-list'>
-							<Row className='tags-list text-center'>
-								<Col md={4} xs={6} className='card-item'>
-									{/* <TagCardItem /> */}
-								</Col>
-							</Row>
-						</section>
-					</Col>
+			<Section
+				sectionName='Tags'
+				sectionTitle='All'
+				sectionClass='section-tags-list'
+			>
+				{/* <MainSorting /> */}
+				{errorMessage}
+				{loadingMessage}
+				<Row className='tags-list text-center'>
+					{tagsList && (
+						<>
+							{tagsList.map((tag) => {
+								return tag ? <TagCardItem key={tag.nodeId} tag={tag} /> : null
+							})}
+						</>
+					)}
 				</Row>
-				{/* <Pagination /> */}
-			</Col>
-			<Col xl={4} className='sidebar bg-blue'>
+
+				<Pagination
+					currentPage={currentPage}
+					resultsLimit={resultsLimit}
+					totalItems={tagsCount}
+					baseUrl='/tags'
+					setCurrentPage={setCurrentPage}
+					setResultsLimit={setResultsLimit}
+				/>
+			</Section>
+
+			<SideBar>
 				<SideAdvertBox />
 				<SideNewsBox />
-			</Col>
+			</SideBar>
 		</>
 	)
 }
