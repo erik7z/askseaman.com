@@ -24,6 +24,17 @@ export const Tags = () => {
 	const [currentPage, setCurrentPage] = useState(0)
 	const [orderBy, setOrderBy] = useState(_TagOrdering.QuestionsCountDesc)
 
+	const sortsList = [
+		{
+			title: 'By Questions',
+			orderBy: _TagOrdering.QuestionsCountDesc,
+		},
+		{
+			title: 'By Subscribers',
+			orderBy: _TagOrdering.SubscribersCountDesc,
+		},
+	]
+
 	const { tagsList, tagsCount, loading, error } = useGetTags(
 		currentPage,
 		resultsLimit,
@@ -40,7 +51,11 @@ export const Tags = () => {
 				sectionTitle='All'
 				sectionClass='section-tags-list'
 			>
-				{/* <MainSorting /> */}
+				<MainSorting<_TagOrdering>
+					orderBy={orderBy}
+					sortsList={sortsList}
+					sortHandler={setOrderBy}
+				/>
 				{errorMessage}
 				{loadingMessage}
 				<Row className='tags-list text-center'>

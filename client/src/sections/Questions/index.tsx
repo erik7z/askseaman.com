@@ -29,6 +29,21 @@ export const Questions = () => {
 		orderBy
 	)
 
+	const sortsList = [
+		{
+			title: 'Newest',
+			orderBy: _QuestionOrdering.TimestampDesc,
+		},
+		{
+			title: 'Most Answered',
+			orderBy: _QuestionOrdering.AnswersCountDesc,
+		},
+		{
+			title: 'Most Commented',
+			orderBy: _QuestionOrdering.CommentsCountDesc,
+		},
+	]
+
 	const loadingMessage = loading ? <Skeleton count={25} /> : null
 	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null
 
@@ -39,7 +54,11 @@ export const Questions = () => {
 				sectionTitle='All'
 				sectionClass='section-questions-list'
 			>
-				<MainSorting orderBy={orderBy} setOrderBy={setOrderBy} />
+				<MainSorting<_QuestionOrdering>
+					orderBy={orderBy}
+					sortsList={sortsList}
+					sortHandler={setOrderBy}
+				/>
 				{errorMessage}
 				{loadingMessage}
 				{questionsList && (

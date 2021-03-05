@@ -21,7 +21,18 @@ import { useGetUsers } from '../../lib/hooks'
 export const Users = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
 	const [currentPage, setCurrentPage] = useState(0)
-	const [orderBy, setOrderBy] = useState(_UserOrdering.TimestampDesc)
+	const [orderBy, setOrderBy] = useState(_UserOrdering.AnswersCountDesc)
+
+	const sortsList = [
+		{
+			title: 'By Answers',
+			orderBy: _UserOrdering.AnswersCountDesc,
+		},
+		{
+			title: 'By Questions',
+			orderBy: _UserOrdering.QuestionsCountDesc,
+		},
+	]
 
 	const { usersList, usersCount, loading, error } = useGetUsers(
 		currentPage,
@@ -39,7 +50,11 @@ export const Users = () => {
 				sectionTitle='All'
 				sectionClass='section-users-list'
 			>
-				{/* <MainSorting /> */}
+				<MainSorting<_UserOrdering>
+					orderBy={orderBy}
+					sortsList={sortsList}
+					sortHandler={setOrderBy}
+				/>
 				{errorMessage}
 				{loadingMessage}
 				<Row className='users-list text-center'>

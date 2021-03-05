@@ -1,62 +1,34 @@
 import React from 'react'
 import { Button, ButtonGroup } from 'react-bootstrap'
-// import { BsArrowUp } from 'react-icons/bs'
 
-import { _QuestionOrdering } from '../../types/generated-frontend'
-
-interface IProps {
-	orderBy: _QuestionOrdering
-	setOrderBy: React.Dispatch<React.SetStateAction<_QuestionOrdering>>
+interface IProps<SortingType> {
+	orderBy: SortingType
+	sortHandler: React.Dispatch<React.SetStateAction<SortingType>>
+	sortsList: {
+		title: string
+		orderBy: SortingType
+	}[]
 }
 
-export const MainSorting = ({ orderBy, setOrderBy }: IProps) => {
+export function MainSorting<SortingType>({
+	orderBy,
+	sortsList,
+	sortHandler,
+}: IProps<SortingType>) {
 	return (
 		<div className='main-sorting'>
-			{/* <ButtonGroup size='sm' aria-label='Sorting'>
-				<Button id='sort-direction' variant='outline-secondary'>
-					Sort
-					<BsArrowUp />
-				</Button>
-			</ButtonGroup> */}
-			<ButtonGroup
-				size='sm'
-				role='group'
-				className='sorting-group '
-				aria-label='Sorting & filtering'
-			>
-				<Button
-					type='button'
-					variant={
-						orderBy === _QuestionOrdering.TimestampDesc
-							? 'outline-primary'
-							: 'outline-secondary'
-					}
-					onClick={() => setOrderBy(_QuestionOrdering.TimestampDesc)}
-				>
-					Newest
-				</Button>
-				<Button
-					type='button'
-					variant={
-						orderBy === _QuestionOrdering.AnswersCountDesc
-							? 'outline-primary'
-							: 'outline-secondary'
-					}
-					onClick={() => setOrderBy(_QuestionOrdering.AnswersCountDesc)}
-				>
-					Most Answered
-				</Button>
-				<Button
-					type='button'
-					variant={
-						orderBy === _QuestionOrdering.CommentsCountDesc
-							? 'outline-primary'
-							: 'outline-secondary'
-					}
-					onClick={() => setOrderBy(_QuestionOrdering.CommentsCountDesc)}
-				>
-					Most Commented
-				</Button>
+			<ButtonGroup size='sm' role='group' aria-label='Sorting & filtering'>
+				{sortsList.map((sort) => (
+					<Button
+						type='button'
+						variant={
+							orderBy === sort.orderBy ? 'outline-primary' : 'outline-secondary'
+						}
+						onClick={() => sortHandler(sort.orderBy)}
+					>
+						{sort.title}
+					</Button>
+				))}
 			</ButtonGroup>
 		</div>
 	)
