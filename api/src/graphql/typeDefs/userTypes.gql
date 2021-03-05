@@ -32,9 +32,13 @@ type User {
 			"""
 		)
 
-	email: LocalAccount  #TODO: hide email from outer world
+	email: String  #TODO: hide email  from outer world
 		@isAuthenticated
-		@relation(name: "AUTHENTICATED_WITH", direction: OUT)
+		@cypher(
+			statement: """
+			MATCH (this)-[:AUTHENTICATED_WITH]->(l:LocalAccount) RETURN l.email as email
+			"""
+		)
 	questions: [Question] @relation(name: "ASKED", direction: OUT)
 	answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
 	tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
@@ -56,7 +60,7 @@ type Profile {
 }
 
 type LocalAccount {
-	user: User! @relation(name: "AUTHENTICATED_WITH", direction: IN)
+	user: User!
 	email: String! @unique
 	password: String
 	code: Int

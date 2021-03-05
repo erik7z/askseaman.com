@@ -6,26 +6,7 @@ query QuestionsList(
 	$tagsCount: Int = 5
 ) {
 	Question(orderBy: $orderBy, first: $first, offset: $offset, filter: $filter) {
-		nodeId
-		title
-		text
-		author {
-			...userFields
-		}
-		createdAt {
-			...dateTimeFields
-		}
-		tags(first: $tagsCount) {
-			nodeId
-			name
-		}
-		viewsCount
-		answersCount
-		commentsCount
-
-		canSubscribe
-		isSubscribed
-		subscribersCount
+		...questionFields
 	}
 	QuestionCount(filter: $filter) {
 		totalCount

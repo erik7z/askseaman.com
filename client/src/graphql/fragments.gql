@@ -7,6 +7,38 @@ fragment userFields on User {
 	description
 }
 
+fragment questionFields on Question {
+	nodeId
+	title
+	text
+	author {
+		...userFields
+	}
+	createdAt {
+		...dateTimeFields
+	}
+	tags(first: 5) {
+		nodeId
+		name
+	}
+	viewsCount
+	answersCount
+	commentsCount
+
+	canSubscribe
+	isSubscribed
+	subscribersCount
+}
+
+fragment tagFields on Tag {
+	nodeId
+	name
+	questionsCount
+	subscribersCount
+	canSubscribe
+	isSubscribed
+}
+
 fragment commentFields on Comment {
 	nodeId
 	text

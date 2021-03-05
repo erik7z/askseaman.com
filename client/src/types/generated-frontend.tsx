@@ -714,6 +714,8 @@ export enum _UserOrdering {
 	AnswersCountDesc = 'answersCount_desc',
 	SolvedQuestionsCountAsc = 'solvedQuestionsCount_asc',
 	SolvedQuestionsCountDesc = 'solvedQuestionsCount_desc',
+	EmailAsc = 'email_asc',
+	EmailDesc = 'email_desc',
 	TotalCountAsc = 'totalCount_asc',
 	TotalCountDesc = 'totalCount_desc',
 	IdAsc = '_id_asc',
@@ -894,7 +896,7 @@ export type User = {
 	answersCount?: Maybe<Scalars['Int']>
 	solvedQuestionsCount?: Maybe<Scalars['Int']>
 	favoriteTags?: Maybe<Array<Maybe<Tag>>>
-	email?: Maybe<LocalAccount>
+	email?: Maybe<Scalars['String']>
 	questions?: Maybe<Array<Maybe<Question>>>
 	answers?: Maybe<Array<Maybe<Answer>>>
 	tags?: Maybe<Array<Maybe<Tag>>>
@@ -1915,6 +1917,37 @@ export type UserFieldsFragment = { __typename?: 'User' } & Pick<
 	'nodeId' | 'name' | 'surname' | 'avatar' | 'rank' | 'description'
 >
 
+export type QuestionFieldsFragment = { __typename?: 'Question' } & Pick<
+	Question,
+	| 'nodeId'
+	| 'title'
+	| 'text'
+	| 'viewsCount'
+	| 'answersCount'
+	| 'commentsCount'
+	| 'canSubscribe'
+	| 'isSubscribed'
+	| 'subscribersCount'
+> & {
+		author?: Maybe<{ __typename?: 'User' } & UserFieldsFragment>
+		createdAt?: Maybe<
+			{ __typename?: '_Neo4jDateTime' } & DateTimeFieldsFragment
+		>
+		tags?: Maybe<
+			Array<Maybe<{ __typename?: 'Tag' } & Pick<Tag, 'nodeId' | 'name'>>>
+		>
+	}
+
+export type TagFieldsFragment = { __typename?: 'Tag' } & Pick<
+	Tag,
+	| 'nodeId'
+	| 'name'
+	| 'questionsCount'
+	| 'subscribersCount'
+	| 'canSubscribe'
+	| 'isSubscribed'
+>
+
 export type CommentFieldsFragment = { __typename?: 'Comment' } & Pick<
 	Comment,
 	'nodeId' | 'text' | 'likesCount' | 'isLiked' | 'canLike'
@@ -2216,32 +2249,7 @@ export type QuestionsListQueryVariables = Exact<{
 
 export type QuestionsListQuery = { __typename?: 'Query' } & {
 	Question?: Maybe<
-		Array<
-			Maybe<
-				{ __typename?: 'Question' } & Pick<
-					Question,
-					| 'nodeId'
-					| 'title'
-					| 'text'
-					| 'viewsCount'
-					| 'answersCount'
-					| 'commentsCount'
-					| 'canSubscribe'
-					| 'isSubscribed'
-					| 'subscribersCount'
-				> & {
-						author?: Maybe<{ __typename?: 'User' } & UserFieldsFragment>
-						createdAt?: Maybe<
-							{ __typename?: '_Neo4jDateTime' } & DateTimeFieldsFragment
-						>
-						tags?: Maybe<
-							Array<
-								Maybe<{ __typename?: 'Tag' } & Pick<Tag, 'nodeId' | 'name'>>
-							>
-						>
-					}
-			>
-		>
+		Array<Maybe<{ __typename?: 'Question' } & QuestionFieldsFragment>>
 	>
 	QuestionCount?: Maybe<
 		{ __typename?: 'Question' } & Pick<Question, 'totalCount'>
@@ -2253,6 +2261,34 @@ export type TagQueryVariables = Exact<{ [key: string]: never }>
 export type TagQuery = { __typename?: 'Query' } & {
 	Tag?: Maybe<
 		Array<Maybe<{ __typename?: 'Tag' } & Pick<Tag, 'name' | 'description'>>>
+	>
+}
+
+export type UserPageQueryVariables = Exact<{
+	nodeId: Scalars['ID']
+}>
+
+export type UserPageQuery = { __typename?: 'Query' } & {
+	User?: Maybe<
+		Array<
+			Maybe<
+				{ __typename?: 'User' } & Pick<
+					User,
+					| 'email'
+					| 'location'
+					| 'questionsCount'
+					| 'answersCount'
+					| 'solvedQuestionsCount'
+				> & {
+						favoriteTags?: Maybe<
+							Array<Maybe<{ __typename?: 'Tag' } & TagFieldsFragment>>
+						>
+						questions?: Maybe<
+							Array<Maybe<{ __typename?: 'Question' } & QuestionFieldsFragment>>
+						>
+					} & UserFieldsFragment
+			>
+		>
 	>
 }
 
@@ -2295,6 +2331,41 @@ export const DateTimeFieldsFragmentDoc = gql`
 		day
 		hour
 		minute
+	}
+`
+export const QuestionFieldsFragmentDoc = gql`
+	fragment questionFields on Question {
+		nodeId
+		title
+		text
+		author {
+			...userFields
+		}
+		createdAt {
+			...dateTimeFields
+		}
+		tags(first: 5) {
+			nodeId
+			name
+		}
+		viewsCount
+		answersCount
+		commentsCount
+		canSubscribe
+		isSubscribed
+		subscribersCount
+	}
+	${UserFieldsFragmentDoc}
+	${DateTimeFieldsFragmentDoc}
+`
+export const TagFieldsFragmentDoc = gql`
+	fragment tagFields on Tag {
+		nodeId
+		name
+		questionsCount
+		subscribersCount
+		canSubscribe
+		isSubscribed
 	}
 `
 export const CommentFieldsFragmentDoc = gql`
@@ -3263,32 +3334,13 @@ export const QuestionsListDocument = gql`
 			offset: $offset
 			filter: $filter
 		) {
-			nodeId
-			title
-			text
-			author {
-				...userFields
-			}
-			createdAt {
-				...dateTimeFields
-			}
-			tags(first: $tagsCount) {
-				nodeId
-				name
-			}
-			viewsCount
-			answersCount
-			commentsCount
-			canSubscribe
-			isSubscribed
-			subscribersCount
+			...questionFields
 		}
 		QuestionCount(filter: $filter) {
 			totalCount
 		}
 	}
-	${UserFieldsFragmentDoc}
-	${DateTimeFieldsFragmentDoc}
+	${QuestionFieldsFragmentDoc}
 `
 
 /**
@@ -3383,6 +3435,71 @@ export function useTagLazyQuery(
 export type TagQueryHookResult = ReturnType<typeof useTagQuery>
 export type TagLazyQueryHookResult = ReturnType<typeof useTagLazyQuery>
 export type TagQueryResult = Apollo.QueryResult<TagQuery, TagQueryVariables>
+export const UserPageDocument = gql`
+	query UserPage($nodeId: ID!) {
+		User(nodeId: $nodeId) {
+			...userFields
+			email
+			location
+			questionsCount
+			answersCount
+			solvedQuestionsCount
+			favoriteTags {
+				...tagFields
+			}
+			questions {
+				...questionFields
+			}
+		}
+	}
+	${UserFieldsFragmentDoc}
+	${TagFieldsFragmentDoc}
+	${QuestionFieldsFragmentDoc}
+`
+
+/**
+ * __useUserPageQuery__
+ *
+ * To run a query within a React component, call `useUserPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserPageQuery({
+ *   variables: {
+ *      nodeId: // value for 'nodeId'
+ *   },
+ * });
+ */
+export function useUserPageQuery(
+	baseOptions: Apollo.QueryHookOptions<UserPageQuery, UserPageQueryVariables>
+) {
+	return Apollo.useQuery<UserPageQuery, UserPageQueryVariables>(
+		UserPageDocument,
+		baseOptions
+	)
+}
+export function useUserPageLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<
+		UserPageQuery,
+		UserPageQueryVariables
+	>
+) {
+	return Apollo.useLazyQuery<UserPageQuery, UserPageQueryVariables>(
+		UserPageDocument,
+		baseOptions
+	)
+}
+export type UserPageQueryHookResult = ReturnType<typeof useUserPageQuery>
+export type UserPageLazyQueryHookResult = ReturnType<
+	typeof useUserPageLazyQuery
+>
+export type UserPageQueryResult = Apollo.QueryResult<
+	UserPageQuery,
+	UserPageQueryVariables
+>
 export const UsersListDocument = gql`
 	query UsersList(
 		$orderBy: [_UserOrdering]

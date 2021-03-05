@@ -9,9 +9,9 @@ export const UserCardItem = ({ user }: { user: User }) => {
 		<Col md={4} xs={6} className='card-item'>
 			<Card>
 				<Card.Body className='text-center'>
-					<AvatarLink size='lg' avatarUrl={user.avatar} />
+					<AvatarLink size='lg' avatarUrl={user.avatar} userId={user.nodeId} />
 					<h5 className='author-name'>
-						<Link to='#'>
+						<Link to={`/user/${user.nodeId}`}>
 							{user.name} {user.surname}
 						</Link>
 						<br />

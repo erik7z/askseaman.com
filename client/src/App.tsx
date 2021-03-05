@@ -62,7 +62,7 @@ export const App = () => {
 							<Route exact path='/users'>
 								<Users />
 							</Route>
-							<Route exact path='/user'>
+							<Route exact path='/user/:userId'>
 								<User />
 							</Route>
 							<Route exact path='/me'>

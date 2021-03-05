@@ -1,0 +1,16 @@
+query UserPage($nodeId: ID!) {
+	User(nodeId: $nodeId) {
+		...userFields
+		email
+		location
+		questionsCount
+		answersCount
+		solvedQuestionsCount
+		favoriteTags {
+			...tagFields
+		}
+		questions {
+			...questionFields
+		}
+	}
+}
