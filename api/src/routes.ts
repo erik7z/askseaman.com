@@ -1,11 +1,13 @@
 import { driver } from './database'
+import { app } from './'
+
 import {
-	app,
 	HOST_URI,
 	AUTH_VERIFY_CODE_URI,
 	AUTH_NEW_PASS_UI_URI,
 	AUTH_LOGIN_UI_URI,
-} from './index'
+} from './env'
+
 import { ResponseStatus } from './types/generated-backend'
 
 app.get(AUTH_VERIFY_CODE_URI + '/:code', async (req, res) => {

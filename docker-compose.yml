@@ -62,6 +62,7 @@ services:
       - CLOUD_NAME=${CLOUD_NAME}
       - CLOUD_API_KEY=${CLOUD_API_KEY}
       - CLOUD_API_SECRET=${CLOUD_API_SECRET}
+      - CLOUD_IMG_FOLDER=${CLOUD_IMG_FOLDER}
     links:
       - as-neo4j
     depends_on:

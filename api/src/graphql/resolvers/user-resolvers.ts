@@ -19,7 +19,7 @@ import {
 	AUTH_CONFIRM_CODE_UI_URI,
 	AUTH_CHANGE_PASS_UI_URI,
 	AUTH_LOGIN_UI_URI,
-} from '../../index'
+} from '../../env'
 
 enum errorCodes {
 	NODE_EXISTS = 'Neo.ClientError.Schema.ConstraintValidationFailed',

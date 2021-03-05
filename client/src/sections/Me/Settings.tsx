@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 
 import { Formik } from 'formik'
-import { Col, Form, Button, Alert, Image } from 'react-bootstrap'
+import { Col, Form, Button, Alert, Image, Spinner } from 'react-bootstrap'
 import { BsCheckCircle } from 'react-icons/bs'
 
 import { SideAskBox } from '../../components'
@@ -51,8 +51,9 @@ export const Settings = () => {
 	const [avatarImage, setAvatarImage] = useState(currentUser.avatar as string)
 
 	const [isProfileUpdated, setIsProfileUpdated] = useState(false)
+	const [isPasswordChanged, setIsPasswordChanged] = useState(false)
 
-	const handleFileUpload = (
+	const handleImageUpload = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		setFieldValue: FormikSetFieldValue,
 		setFieldError: FormikSetFieldError
@@ -124,10 +125,21 @@ export const Settings = () => {
 									} as User,
 								})
 
+								setAvatarImage(updatedData.avatar as string)
+
 								setIsProfileUpdated(true)
 								setTimeout(() => {
 									setIsProfileUpdated(false)
 								}, 3000)
+
+								if (updatedData.isPasswordChanged) {
+									setTimeout(() => {
+										setIsPasswordChanged(true)
+										setTimeout(() => {
+											setIsPasswordChanged(false)
+										}, 4000)
+									}, 1000)
+								}
 							}
 						}
 
@@ -163,14 +175,27 @@ export const Settings = () => {
 								)}
 							</Form.Row>
 							<Form.Row className='justify-content-md-center'>
-								<Col xs={6} md={4}>
-									<Image
-										src={avatarImage ? avatarImage : BLANK_AVATAR_URL}
-										alt='Profile Avatar'
-										height='128px'
-										roundedCircle
-										className='mb-3 mt-1'
-									/>
+								<Col md={12} className='text-center'>
+									{isSubmitting ? (
+										<Spinner
+											animation='border'
+											className='m-5 p-4'
+											role='status'
+										>
+											<span className='sr-only'>Loading...</span>
+										</Spinner>
+									) : (
+										<Image
+											src={avatarImage ? avatarImage : BLANK_AVATAR_URL}
+											alt='Profile Avatar'
+											style={{
+												maxWidth: '256px',
+												maxHeight: '256px',
+											}}
+											thumbnail
+											className='p-1 mb-3'
+										/>
+									)}
 								</Col>
 								<Col md={12}>
 									<Form.File
@@ -182,7 +207,7 @@ export const Settings = () => {
 										accept='image/*'
 										isInvalid={!!errors.avatar}
 										onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-											handleFileUpload(event, setFieldValue, setFieldError)
+											handleImageUpload(event, setFieldValue, setFieldError)
 										}}
 									/>
 									<div className='text-danger'>
@@ -304,6 +329,13 @@ export const Settings = () => {
 										<Alert variant='success'>
 											<span>
 												<BsCheckCircle /> Your profile has been updated
+											</span>
+										</Alert>
+									)}
+									{isPasswordChanged && (
+										<Alert variant='success'>
+											<span>
+												<BsCheckCircle /> Password has been updated
 											</span>
 										</Alert>
 									)}
