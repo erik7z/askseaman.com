@@ -12,27 +12,18 @@ import {
 	SideTagCloudBox,
 	SideTopUsersBox,
 } from '../../components'
+import { useGetQuestions } from '../../lib/hooks'
 
 import { PAGINATION_PAGE_SIZE } from './../../env'
-import {
-	useQuestionsListQuery,
-	_QuestionOrdering,
-} from '../../types/generated-frontend'
 
 export const Questions = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
 	const [currentPage, setCurrentPage] = useState(0)
 
-	const { data, loading, error } = useQuestionsListQuery({
-		variables: {
-			orderBy: [_QuestionOrdering.CreatedAtDesc],
-			first: resultsLimit,
-			offset: resultsLimit * currentPage,
-		},
-	})
-
-	const questionsList = data?.Question
-	const totalItems = data?.QuestionCount?.totalCount
+	const { questionsList, questionsCount, loading, error } = useGetQuestions(
+		resultsLimit,
+		currentPage
+	)
 
 	const questionsListComponent = questionsList ? (
 		<>
@@ -66,7 +57,7 @@ export const Questions = () => {
 				<Pagination
 					currentPage={currentPage}
 					resultsLimit={resultsLimit}
-					totalItems={totalItems}
+					totalItems={questionsCount}
 					baseUrl='/questions'
 					setCurrentPage={setCurrentPage}
 					setResultsLimit={setResultsLimit}

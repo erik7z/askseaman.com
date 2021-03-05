@@ -14,6 +14,7 @@ import { Notifications } from './sections/Me/Notifications'
 import { Settings } from './sections/Me/Settings'
 import { Register } from './sections/Auth/Register'
 import { useAuthCurrentUser } from './lib/hooks/'
+import { QuestionsProvider } from './lib/contexts'
 
 export const App = () => {
 	useAuthCurrentUser()
@@ -46,12 +47,18 @@ export const App = () => {
 					<MainLayout>
 						<Switch>
 							<Route exact path='/'>
-								<Questions />
+								<QuestionsProvider>
+									<Questions />
+								</QuestionsProvider>
 							</Route>
 							<Route path='/question/:questionId'>
 								<Question />
 							</Route>
-							<Route exact path='/ask' component={AskQuestion} />
+							<Route exact path='/ask'>
+								<QuestionsProvider>
+									<AskQuestion />
+								</QuestionsProvider>
+							</Route>
 							<Route exact path='/user'>
 								<User />
 							</Route>

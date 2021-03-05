@@ -17,12 +17,13 @@ import {
 } from '../../../types/generated-frontend'
 
 import { askQuestionValidation } from '../../../lib/validation'
-import { CurrentUserContext } from '../../../lib/contexts'
+import { CurrentUserContext, QuestionsContext } from '../../../lib/contexts'
 
 import { normalizeErrors, normalizeTags } from '../../../lib/helpers'
 
 export const AskQuestionPage = () => {
 	const [currentUserState] = useContext(CurrentUserContext)
+	const questionsContext = useContext(QuestionsContext)
 
 	const history = useHistory()
 	let tagsSuggestions: ITag[] = []
@@ -67,8 +68,7 @@ export const AskQuestionPage = () => {
 							}
 
 							if (askResponse.AskQuestion.__typename === 'Question') {
-								// const title = askResponse.AskQuestion.title
-
+								questionsContext.shouldUpdateToggle = !questionsContext.shouldUpdateToggle
 								history.push('/')
 							}
 						}
