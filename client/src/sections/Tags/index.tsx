@@ -19,7 +19,7 @@ export const Tags = () => {
 					<Col md={12}>
 						<h5 className='module-header'>&gt; Tags</h5>
 						<hr className='hr-header hr-bold' />
-						<MainSorting />
+						{/* <MainSorting /> */}
 						<section className='section-tags-list'>
 							<Row className='tags-list text-center'>
 								<Col md={4} xs={6} className='card-item'>

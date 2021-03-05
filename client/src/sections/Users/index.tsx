@@ -19,7 +19,7 @@ export const Users = () => {
 					<Col md={12}>
 						<h5 className='module-header'>&gt; Users</h5>
 						<hr className='hr-header hr-bold' />
-						<MainSorting />
+						{/* <MainSorting /> */}
 						<section className='section-users-list'>
 							<Row className='users-list text-center'>
 								<Col md={4} xs={6} className='card-item'>

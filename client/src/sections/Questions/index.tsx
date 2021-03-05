@@ -13,16 +13,18 @@ import {
 	SideTopUsersBox,
 } from '../../components'
 import { useGetQuestions } from '../../lib/hooks'
-
+import { _QuestionOrdering } from '../../types/generated-frontend'
 import { PAGINATION_PAGE_SIZE } from './../../env'
 
 export const Questions = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)
 	const [currentPage, setCurrentPage] = useState(0)
+	const [orderBy, setOrderBy] = useState(_QuestionOrdering.CreatedAtDesc)
 
 	const { questionsList, questionsCount, loading, error } = useGetQuestions(
+		currentPage,
 		resultsLimit,
-		currentPage
+		orderBy
 	)
 
 	const questionsListComponent = questionsList ? (
@@ -45,7 +47,7 @@ export const Questions = () => {
 					<Col md={12}>
 						<h5 className='module-header'>&gt; All Questions</h5>
 						<hr className='hr-header hr-bold' />
-						<MainSorting />
+						<MainSorting orderBy={orderBy} setOrderBy={setOrderBy} />
 						<section className='section-questions-list'>
 							{questionsListComponent}
 							{errorMessage}

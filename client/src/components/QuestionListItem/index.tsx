@@ -31,7 +31,7 @@ export const QuestionListItem = ({ question }: { question: Question }) => {
 									showSubscribers={true}
 									subscribersCount={question.subscribersCount}
 									viewsCount={question.viewsCount}
-									showViews={true}
+									showViews={false}
 									commentsCount={question.commentsCount}
 									showComments={true}
 									createdAt={question.createdAt}

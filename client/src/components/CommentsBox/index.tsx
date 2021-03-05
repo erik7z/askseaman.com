@@ -36,7 +36,7 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 	if (isQuestionComments) {
 		;({ subscribersCount, viewsCount, canSubscribe } = topic as TQuestion)
 		showSubscribers = true
-		showViews = true
+		showViews = false
 	}
 
 	const {

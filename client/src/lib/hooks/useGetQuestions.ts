@@ -8,7 +8,11 @@ import {
 
 import { QuestionsContext } from '../../lib/contexts'
 
-export const useGetQuestions = (resultsLimit: number, currentPage: number) => {
+export const useGetQuestions = (
+	currentPage: number,
+	resultsLimit: number,
+	orderBy: _QuestionOrdering
+) => {
 	const questionsContext = useContext(QuestionsContext)
 
 	const [questionsList, setQuestionsList] = useState<TQuestion[]>()
@@ -16,7 +20,7 @@ export const useGetQuestions = (resultsLimit: number, currentPage: number) => {
 
 	const [getQuestions, { data, loading, error }] = useQuestionsListLazyQuery({
 		variables: {
-			orderBy: [_QuestionOrdering.CreatedAtDesc],
+			orderBy: [orderBy],
 			first: resultsLimit,
 			offset: resultsLimit * currentPage,
 		},
