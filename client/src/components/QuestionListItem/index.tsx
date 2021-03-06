@@ -1,11 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
+
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
 import { TagsInlineList } from './../TagsInlineList'
 import { Question, Tag } from '../../types/generated-frontend'
 import { MetaActions } from './../MetaActions'
 
+import { CurrentUserContext } from '../../lib/contexts'
+
 export const QuestionListItem = ({ question }: { question: Question }) => {
+	const [{ currentUser }] = useContext(CurrentUserContext)
+
+	let canSubscribe = question.canSubscribe
+	if (currentUser && currentUser.nodeId === question.author?.nodeId)
+		canSubscribe = false
+
 	return (
 		<>
 			<Row className='question-item'>
@@ -28,7 +37,7 @@ export const QuestionListItem = ({ question }: { question: Question }) => {
 								<MetaActions
 									topicId={question.nodeId}
 									isSubscribed={question.isSubscribed}
-									canSubscribe={question.canSubscribe}
+									canSubscribe={canSubscribe}
 									showSubscribers={true}
 									subscribersCount={question.subscribersCount}
 									viewsCount={question.viewsCount}

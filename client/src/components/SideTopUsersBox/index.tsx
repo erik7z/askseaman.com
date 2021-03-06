@@ -20,15 +20,15 @@ export const SideTopUsersBox = () => {
 
 	return (
 		<div className='sidebar-box'>
-			<h3 className='sidebar-heading'>Active Users</h3>
+			<h3 className='sidebar-heading'>Most Active Users</h3>
 
 			{loading ? (
 				<Skeleton count={25} />
 			) : (
-				<ul className='tagcloud'>
+				<>
 					{usersList &&
 						usersList.map((user) => (
-							<div className='sidebar-item d-flex'>
+							<div key={user.nodeId} className='sidebar-item d-flex'>
 								<AvatarLink
 									size='md'
 									avatarUrl={user.avatar}
@@ -51,7 +51,7 @@ export const SideTopUsersBox = () => {
 								</div>
 							</div>
 						))}
-				</ul>
+				</>
 			)}
 		</div>
 	)

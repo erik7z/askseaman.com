@@ -81,6 +81,7 @@ export const Settings = () => {
 				sectionName='Settings'
 				sectionTitle='Profile'
 				sectionClass='section-settings-profile'
+				showSearch={false}
 			>
 				<Formik
 					validationSchema={userSettingsValidation}

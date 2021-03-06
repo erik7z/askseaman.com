@@ -4,6 +4,7 @@ import {
 	useQuestionsListLazyQuery,
 	Question as TQuestion,
 	_QuestionOrdering,
+	_QuestionFilter,
 } from '../../types/generated-frontend'
 
 import { QuestionsContext } from '../../lib/contexts'
@@ -11,7 +12,8 @@ import { QuestionsContext } from '../../lib/contexts'
 export const useGetQuestions = (
 	currentPage: number,
 	resultsLimit: number,
-	orderBy: _QuestionOrdering
+	orderBy: _QuestionOrdering,
+	filter?: _QuestionFilter
 ) => {
 	const questionsContext = useContext(QuestionsContext)
 
@@ -23,6 +25,7 @@ export const useGetQuestions = (
 			orderBy: [orderBy],
 			first: resultsLimit,
 			offset: resultsLimit * currentPage,
+			filter: filter,
 		},
 		fetchPolicy: 'cache-and-network',
 	})

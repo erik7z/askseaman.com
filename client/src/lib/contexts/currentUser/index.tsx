@@ -20,7 +20,7 @@ type IUserState = {
 
 type ICurrentUserContext = [IUserState, React.Dispatch<ActionType>]
 
-type ActionType =
+export type ActionType =
 	| { type: 'LOADING' }
 	| { type: 'SET_TOKEN'; payload: string | null | undefined }
 	| { type: 'SIGN_IN'; payload: CurrentUserQueryType }

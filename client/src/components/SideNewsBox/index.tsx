@@ -22,12 +22,12 @@ export const SideNewsBox = () => {
 			{loading ? (
 				<Skeleton count={25} />
 			) : (
-				<ul className='tagcloud'>
+				<>
 					{questionsList &&
 						questionsList.map((question) => (
-							<SideNewsItem question={question} />
+							<SideNewsItem key={question.nodeId} question={question} />
 						))}
-				</ul>
+				</>
 			)}
 		</div>
 	)
