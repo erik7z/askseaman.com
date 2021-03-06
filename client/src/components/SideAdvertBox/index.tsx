@@ -5,11 +5,11 @@ export const SideAdvertBox = () => {
 	return (
 		<div
 			className='sidebar-box subs-wrap img'
-			style={{ backgroundImage: 'url(images/author.jpg)' }}
+			style={{ backgroundImage: 'url(images/advert_bg.jpg)' }}
 		>
 			<div className='overlay'></div>
 			<h3 className='sidebar-heading'>Advertisement</h3>
-			<p>Send your CV to our cool crewing 2!</p>
+			<p>Send your CV to our cool crewing !</p>
 			<Form className='subscribe-form'>
 				<Form.Group>
 					<Form.Control type='text' placeholder='Email Address' />

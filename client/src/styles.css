@@ -1918,7 +1918,7 @@ div.meta {
 .sidebar .author-name {
 	font-size: 14px !important;
 	line-height: normal;
-	margin-bottom: 3px !important;
+	margin-bottom: 0px !important;
 }
 
 .sidebar .author-name a {
