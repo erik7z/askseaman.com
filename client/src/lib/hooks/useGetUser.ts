@@ -1,11 +1,27 @@
 import { useEffect } from 'react'
+import { PAGINATION_PAGE_SIZE } from '../../env'
 
 import { useUserPageLazyQuery } from '../../types/generated-frontend'
 
-export const useGetUser = (userId: string) => {
+interface IProps {
+	userId: string
+	tagsResultsLimit?: number
+	questionsResultsLimit?: number
+	questionsCurrentPage?: number
+}
+
+export const useGetUser = ({
+	userId,
+	tagsResultsLimit = PAGINATION_PAGE_SIZE,
+	questionsResultsLimit = PAGINATION_PAGE_SIZE,
+	questionsCurrentPage = 0,
+}: IProps) => {
 	const [getUser, { data, loading, error }] = useUserPageLazyQuery({
 		variables: {
 			nodeId: userId,
+			tagsFirst: tagsResultsLimit,
+			questionsFirst: questionsResultsLimit,
+			questionsOffset: questionsResultsLimit * questionsCurrentPage,
 		},
 		fetchPolicy: 'cache-and-network',
 	})

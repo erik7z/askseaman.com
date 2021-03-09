@@ -22,13 +22,12 @@ type User {
 		@cypher(
 			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
 		)
-	#TODO: logic to select favorite tags
 	favoriteTags: [Tag]
 		@cypher(
 			statement: """
 			MATCH (this)-[:ASKED]->(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
-			UNION
-			MATCH (this)-[:ANSWERED]->(:Answer)<-[:HAS_ANSWER]-(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+				UNION
+				MATCH (this)-[:ANSWERED]->(:Answer)<-[:HAS_ANSWER]-(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
 			"""
 		)
 

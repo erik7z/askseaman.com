@@ -1,4 +1,9 @@
-query UserPage($nodeId: ID!) {
+query UserPage(
+	$nodeId: ID!
+	$tagsFirst: Int = 5
+	$questionsFirst: Int = 5
+	$questionsOffset: Int = 0
+) {
 	User(nodeId: $nodeId) {
 		...userFields
 		email
@@ -6,10 +11,10 @@ query UserPage($nodeId: ID!) {
 		questionsCount
 		answersCount
 		questionsSolvedCount
-		favoriteTags {
+		favoriteTags(first: $tagsFirst) {
 			...tagFields
 		}
-		questions {
+		questions(first: $questionsFirst, offset: $questionsOffset) {
 			...questionListItemFields
 		}
 	}

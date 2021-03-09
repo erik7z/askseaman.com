@@ -8,10 +8,11 @@ import {
 } from '../../types/generated-frontend'
 
 import { QuestionsContext } from '../../lib/contexts'
+import { PAGINATION_PAGE_SIZE } from './../../env'
 
 export const useGetQuestions = (
-	currentPage: number,
-	resultsLimit: number,
+	currentPage: number = 0,
+	resultsLimit: number = PAGINATION_PAGE_SIZE,
 	orderBy: _QuestionOrdering,
 	filter?: _QuestionFilter
 ) => {

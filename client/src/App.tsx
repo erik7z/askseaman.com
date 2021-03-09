@@ -47,7 +47,7 @@ export const App = () => {
 				>
 					<MainLayout>
 						<Switch>
-							<Route exact path='/'>
+							<Route exact path={['/', '/questions']}>
 								<QuestionsProvider>
 									<Questions />
 								</QuestionsProvider>

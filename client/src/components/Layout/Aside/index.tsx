@@ -78,14 +78,14 @@ const Aside = () => {
 							Get answers on any seamanship related topic from experienced
 							professionals.
 						</p>
-						<p className='text-right'>
+						<div className='text-right mb-2'>
 							<Link
 								to='/about'
 								className='btn btn-outline-primary btn-sm text-secondary'
 							>
 								Read More
 							</Link>
-						</p>
+						</div>
 					</div>
 				</div>
 			</aside>

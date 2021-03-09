@@ -1,14 +1,16 @@
-import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 
-import { Row, Jumbotron, ListGroup } from 'react-bootstrap'
+import { Row, Col, Jumbotron, ListGroup } from 'react-bootstrap'
 import {
 	SideAskBox,
 	SideAdvertBox,
 	SideNewsBox,
 	TagCardItem,
 	AvatarLink,
+	Pagination,
+	QuestionListItem,
 } from '../../../components'
 
 import Section from '../../../components/Layout/Section'
@@ -18,7 +20,12 @@ import { useGetUser } from '../../../lib/hooks'
 export const User = () => {
 	const { userId } = useParams<{ userId: string }>()
 
-	const { user, loading, error } = useGetUser(userId)
+	const [questionsCurrentPage, setQuestionsCurrentPage] = useState(0)
+
+	const { user, loading, error } = useGetUser({
+		userId,
+		questionsCurrentPage,
+	})
 
 	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null
 
@@ -43,49 +50,73 @@ export const User = () => {
 
 							<ListGroup horizontal className='justify-content-center'>
 								<ListGroup.Item>
-									<Link to='/questions'>
-										<b>{user?.answersCount}</b> <br />
-										Answers
-									</Link>
+									<b>{user?.questionsCount}</b> <br />
+									Questions
 								</ListGroup.Item>
 								<ListGroup.Item className='text-success'>
 									<b>{user?.questionsSolvedCount}</b> <br />
 									Solved Problems
 								</ListGroup.Item>
 								<ListGroup.Item>
-									<Link to='/users'>
-										<b>{user?.questionsCount}</b> <br />
-										Questions
-									</Link>
+									<b>{user?.answersCount}</b> <br />
+									Answers
 								</ListGroup.Item>
 							</ListGroup>
 							<hr />
 							<p>{user?.description}</p>
+							<hr />
 
 							<h5>Contacts:</h5>
 							<dl className='row text-left'>
 								<dt className='col-sm-3'>E-mail:</dt>
 								<dd className='col-sm-9'>
-									<Link to={`mailto:${user?.email}`}>{user?.email}</Link>
+									<a href={`mailto:${user?.email}`}>{user?.email}</a>
 								</dd>
-								<dt className='col-sm-3'>Location:</dt>
-								<dd className='col-sm-9'>{user?.location}</dd>
 							</dl>
 						</Jumbotron>
 
-						<h5 className='module-header text-right'>Favorite tags &lt;</h5>
-						<hr className='hr-header hr-bold' />
-						<Row className='tags-list text-center'>
-							{user?.favoriteTags && (
-								<>
+						{user?.favoriteTags && (
+							<>
+								<h5 className='module-header text-right'>
+									{user.name}'s Favorite tags &lt;
+								</h5>
+								<hr className='hr-header hr-bold' />
+								<Row className='tags-list text-center'>
 									{user.favoriteTags.map((tag) => {
 										return tag ? (
 											<TagCardItem key={tag.nodeId} tag={tag} />
 										) : null
 									})}
-								</>
-							)}
-						</Row>
+								</Row>
+							</>
+						)}
+
+						{user?.questions && (
+							<>
+								<Row>
+									<Col md={12}>
+										<h5 className='module-header text-right'>
+											{user.name}'s Questions &lt;
+										</h5>
+										<hr className='hr-header hr-bold' />
+									</Col>
+								</Row>
+								{user?.questions.map((question) => {
+									return question ? (
+										<QuestionListItem
+											key={question.nodeId}
+											question={question}
+										/>
+									) : null
+								})}
+								<Pagination
+									currentPage={questionsCurrentPage}
+									totalItems={user.questionsCount}
+									baseUrl={`/user/${user.nodeId}`}
+									setCurrentPage={setQuestionsCurrentPage}
+								/>
+							</>
+						)}
 					</>
 				)}
 			</Section>

@@ -27,7 +27,7 @@ import { PAGINATION_PAGE_SIZE } from '../../env'
 export const MySubscriptions = () => {
 	const [{ currentUser }] = useContext(CurrentUserContext)
 
-	const [currentPageQuestions, setCurrentPageQuestion] = useState(0)
+	const [questionsCurrentPage, setQuestionsCurrentPage] = useState(0)
 
 	const {
 		questionsList,
@@ -35,7 +35,7 @@ export const MySubscriptions = () => {
 		loading: questionsLoading,
 		error: questionsError,
 	} = useGetQuestions(
-		currentPageQuestions,
+		questionsCurrentPage,
 		PAGINATION_PAGE_SIZE,
 		_QuestionOrdering.TimestampDesc,
 		{
@@ -140,11 +140,11 @@ export const MySubscriptions = () => {
 							) : null
 						})}
 						<Pagination
-							currentPage={currentPageQuestions}
+							currentPage={questionsCurrentPage}
 							resultsLimit={PAGINATION_PAGE_SIZE}
 							totalItems={questionsCount}
 							baseUrl='/my/subscriptions'
-							setCurrentPage={setCurrentPageQuestion}
+							setCurrentPage={setQuestionsCurrentPage}
 						/>
 					</>
 				) : (
