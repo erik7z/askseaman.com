@@ -10,11 +10,12 @@ import { Tag } from './sections/Tags/Tag'
 import { User } from './sections/Users/User'
 import { Question } from './sections/Questions/Question'
 import { AskQuestion } from './sections/Questions/AskQuestion'
-import { Notifications } from './sections/My/Notifications'
-import { Settings } from './sections/My/Settings'
 import { Register } from './sections/Auth/Register'
 import { useAuthCurrentUser } from './lib/hooks/'
 import { QuestionsProvider } from './lib/contexts'
+import { Settings } from './sections/My/Settings'
+import { Notifications } from './sections/My/Notifications'
+import { MySubscriptions } from './sections/My/MySubscriptions'
 
 export const App = () => {
 	useAuthCurrentUser()
@@ -67,6 +68,9 @@ export const App = () => {
 							</Route>
 							<Route exact path='/my/feed'>
 								<MyFeed />
+							</Route>
+							<Route exact path='/my/subscriptions'>
+								<MySubscriptions />
 							</Route>
 							<Route exact path='/my/notifications'>
 								<Notifications />

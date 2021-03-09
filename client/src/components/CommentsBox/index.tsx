@@ -28,6 +28,7 @@ interface IProps {
 
 export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 	const [currentUserState] = useContext(CurrentUserContext)
+	const { currentUser } = currentUserState
 
 	let subscribersCount,
 		canSubscribe,
@@ -45,6 +46,10 @@ export const CommentsBox = ({ topic, getCommentsHook }: IProps) => {
 			canSubscribe,
 			isSubscribed,
 		} = topic as TQuestion)
+		if (currentUser && currentUser.nodeId === topic.author?.nodeId) {
+			canSubscribe = false
+		}
+
 		showSubscribers = true
 		showViews = false
 	}

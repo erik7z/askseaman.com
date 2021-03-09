@@ -20,6 +20,7 @@ export function MainSorting<SortingType>({
 			<ButtonGroup size='sm' role='group' aria-label='Sorting & filtering'>
 				{sortsList.map((sort) => (
 					<Button
+						key={sort.title}
 						type='button'
 						variant={
 							orderBy === sort.orderBy ? 'outline-primary' : 'outline-secondary'

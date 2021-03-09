@@ -10,7 +10,7 @@ interface IProps {
 	resultsLimit?: number
 	baseUrl?: string
 	setCurrentPage: React.Dispatch<React.SetStateAction<number>>
-	setResultsLimit: React.Dispatch<React.SetStateAction<number>>
+	setResultsLimit?: React.Dispatch<React.SetStateAction<number>>
 	pagesVisible?: number
 }
 
@@ -21,7 +21,7 @@ export const Pagination = ({
 	pagesVisible = PAGINATION_PAGES_VISIBLE,
 	baseUrl = '/',
 	setCurrentPage,
-	setResultsLimit,
+	setResultsLimit = () => {},
 }: IProps) => {
 	const finalPageNumber = Math.ceil((totalItems as number) / resultsLimit)
 

@@ -4,12 +4,14 @@ import {
 	useTagsListLazyQuery,
 	Tag as TTag,
 	_TagOrdering,
+	_TagFilter,
 } from '../../types/generated-frontend'
 
 export const useGetTags = (
 	currentPage: number,
 	resultsLimit: number,
-	orderBy: _TagOrdering
+	orderBy: _TagOrdering,
+	filter?: _TagFilter
 ) => {
 	const [tagsList, setTagsList] = useState<TTag[]>()
 	const [tagsCount, setTagsCount] = useState<number>(0)
@@ -19,6 +21,7 @@ export const useGetTags = (
 			orderBy: [orderBy],
 			first: resultsLimit,
 			offset: resultsLimit * currentPage,
+			filter: filter,
 		},
 		fetchPolicy: 'cache-and-network',
 	})
