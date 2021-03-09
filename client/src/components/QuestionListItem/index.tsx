@@ -51,7 +51,7 @@ export const QuestionListItem = ({ question }: { question: Question }) => {
 					</div>
 				</Col>
 				<Col md={3} className='text-center pt-1'>
-					<Link to='question-page.html'>
+					<Link to={`/question/${question.nodeId}`}>
 						<span className='answers-count'> {question.answersCount} </span>
 						<br />
 						<span className='answers-count-text'>answers</span>

@@ -8,6 +8,8 @@ interface IProps {
 	tagsResultsLimit?: number
 	questionsResultsLimit?: number
 	questionsCurrentPage?: number
+	answersResultsLimit?: number
+	answersCurrentPage?: number
 }
 
 export const useGetUser = ({
@@ -15,6 +17,8 @@ export const useGetUser = ({
 	tagsResultsLimit = PAGINATION_PAGE_SIZE,
 	questionsResultsLimit = PAGINATION_PAGE_SIZE,
 	questionsCurrentPage = 0,
+	answersResultsLimit = PAGINATION_PAGE_SIZE,
+	answersCurrentPage = 0,
 }: IProps) => {
 	const [getUser, { data, loading, error }] = useUserPageLazyQuery({
 		variables: {
@@ -22,6 +26,8 @@ export const useGetUser = ({
 			tagsFirst: tagsResultsLimit,
 			questionsFirst: questionsResultsLimit,
 			questionsOffset: questionsResultsLimit * questionsCurrentPage,
+			answersFirst: answersResultsLimit,
+			answersOffset: questionsResultsLimit * answersCurrentPage,
 		},
 		fetchPolicy: 'cache-and-network',
 	})

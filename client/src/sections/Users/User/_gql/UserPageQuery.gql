@@ -3,6 +3,8 @@ query UserPage(
 	$tagsFirst: Int = 5
 	$questionsFirst: Int = 5
 	$questionsOffset: Int = 0
+	$answersFirst: Int = 5
+	$answersOffset: Int = 0
 ) {
 	User(nodeId: $nodeId) {
 		...userFields
@@ -16,6 +18,9 @@ query UserPage(
 		}
 		questions(first: $questionsFirst, offset: $questionsOffset) {
 			...questionListItemFields
+		}
+		answers(first: $answersFirst, offset: $answersOffset) {
+			...answerFields
 		}
 	}
 }

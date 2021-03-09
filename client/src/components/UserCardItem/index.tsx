@@ -20,14 +20,14 @@ export const UserCardItem = ({ user }: { user: User }) => {
 				</Card.Body>
 				<Card.Footer>
 					<small>
-						<Link to='#'>
+						<Link to={`/user/${user.nodeId}#answers`}>
 							{' '}
 							<b>{user.answersCount}</b> Answers{' '}
 						</Link>
 					</small>
 					<br />
 					<small>
-						<Link to='#'>
+						<Link to={`/user/${user.nodeId}#questions`}>
 							{' '}
 							<b>{user.questionsCount}</b> Questions{' '}
 						</Link>

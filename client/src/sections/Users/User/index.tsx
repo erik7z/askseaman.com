@@ -12,19 +12,26 @@ import {
 	Pagination,
 	QuestionListItem,
 } from '../../../components'
+import { AnswerItem } from './../../Questions/Question/AnswerItem'
 
 import Section from '../../../components/Layout/Section'
 import SideBar from '../../../components/Layout/SideBar'
 import { useGetUser } from '../../../lib/hooks'
+import { Answer as TAnswer } from '../../../types/generated-frontend'
 
 export const User = () => {
 	const { userId } = useParams<{ userId: string }>()
 
 	const [questionsCurrentPage, setQuestionsCurrentPage] = useState(0)
+	const [answersCurrentPage, setAnswersCurrentPage] = useState(0)
+	const resultsLimit = 3
 
 	const { user, loading, error } = useGetUser({
 		userId,
 		questionsCurrentPage,
+		questionsResultsLimit: resultsLimit,
+		answersCurrentPage,
+		answersResultsLimit: resultsLimit,
 	})
 
 	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null
@@ -91,11 +98,11 @@ export const User = () => {
 							</>
 						)}
 
-						{user?.questions && (
+						{user?.questions && user?.questions.length ? (
 							<>
 								<Row>
 									<Col md={12}>
-										<h5 className='module-header text-right'>
+										<h5 className='module-header text-right' id='questions'>
 											{user.name}'s Questions &lt;
 										</h5>
 										<hr className='hr-header hr-bold' />
@@ -112,11 +119,40 @@ export const User = () => {
 								<Pagination
 									currentPage={questionsCurrentPage}
 									totalItems={user.questionsCount}
+									resultsLimit={resultsLimit}
 									baseUrl={`/user/${user.nodeId}`}
 									setCurrentPage={setQuestionsCurrentPage}
 								/>
 							</>
-						)}
+						) : null}
+
+						{user?.answers && user?.answers.length ? (
+							<>
+								<Row>
+									<Col md={12}>
+										<h5 className='module-header text-right' id='answers'>
+											{user.name}'s Answers &lt;
+										</h5>
+										<hr className='hr-header hr-bold' />
+									</Col>
+								</Row>
+								{user?.answers.map((answer) => {
+									return answer ? (
+										<AnswerItem
+											key={answer.nodeId}
+											answer={answer as TAnswer}
+										/>
+									) : null
+								})}
+								<Pagination
+									currentPage={answersCurrentPage}
+									totalItems={user.answersCount}
+									resultsLimit={resultsLimit}
+									baseUrl={`/user/${user.nodeId}`}
+									setCurrentPage={setAnswersCurrentPage}
+								/>
+							</>
+						) : null}
 					</>
 				)}
 			</Section>

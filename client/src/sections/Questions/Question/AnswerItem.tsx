@@ -15,9 +15,10 @@ import {
 
 interface IProps {
 	answer: TAnswer
+	showQuestion?: boolean
 }
 
-export const AnswerItem = ({ answer }: IProps) => {
+export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 	const [currentUserState] = useContext(CurrentUserContext)
 
 	const { rateData, handleRateChange } = useAnswerVote(answer)
@@ -66,10 +67,16 @@ export const AnswerItem = ({ answer }: IProps) => {
 		<Row className='answer-item media'>
 			<Col md={12}>
 				<Row>
-					<Col md={11} xs={7}>
+					<Col md={7} xs={12}>
+						<Link to={`/question/${answer.question.nodeId}`}>
+							{' '}
+							<h5>{answer.question.title}</h5>
+						</Link>
+					</Col>
+					<Col md={4} xs={7}>
 						<div className='text-right author'>
 							<h5 className='author-name'>
-								<Link to='#'>
+								<Link to={`/user/${answer.author.nodeId}`}>
 									{answer.author?.name} {answer.author?.surname}
 								</Link>
 							</h5>
