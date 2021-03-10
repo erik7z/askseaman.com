@@ -45,11 +45,14 @@ const Aside = () => {
 
 				<nav id='as-main-menu' role='navigation'>
 					<ul>
-						<li>
-							<NavLink exact={true} to='/my/feed' activeClassName='as-active'>
-								<IoPlanetOutline /> My Feed
-							</NavLink>
-						</li>
+						{currentUserState.isLoggedIn && (
+							<li>
+								<NavLink exact={true} to='/my/feed' activeClassName='as-active'>
+									<IoPlanetOutline /> My Feed
+								</NavLink>
+							</li>
+						)}
+
 						<li>
 							<NavLink exact={true} to='/' activeClassName='as-active'>
 								<IoIosHelpCircleOutline /> Questions

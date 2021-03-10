@@ -96,7 +96,11 @@ const QuestionSearch = () => {
 									type='text'
 									placeholder='Search for question or #tag'
 									onChange={handleSearch}
-									onBlur={() => setIsFocused(false)}
+									onBlur={() =>
+										setTimeout(() => {
+											setIsFocused(false)
+										}, 200)
+									}
 									onFocus={() => setIsFocused(true)}
 								/>
 							</InputGroup>

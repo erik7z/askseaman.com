@@ -42,7 +42,7 @@ type Tag implements CanBeSubscribed {
 	topQuestions: [Question]  #TODO:complete logic to select top questions
 		@cypher(
 			statement: """
-			MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN q as topQuestions
+			MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN DISTINCT q as topQuestions
 			"""
 		)
 

@@ -32,7 +32,7 @@ type User {
 		)
 
 	email: String  #TODO: hide email  from outer world
-		@isAuthenticated
+		# @isAuthenticated
 		@cypher(
 			statement: """
 			MATCH (this)-[:AUTHENTICATED_WITH]->(l:LocalAccount) RETURN l.email as email

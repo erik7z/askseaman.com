@@ -67,7 +67,7 @@ export const Tag = () => {
 											return (
 												user && (
 													<AvatarLink
-														key={user.nodeId}
+														key={`avatar-${user.nodeId}`}
 														avatarUrl={user.avatar}
 														userId={user.nodeId}
 														size='sm'
@@ -97,7 +97,12 @@ export const Tag = () => {
 								<>
 									{tag.topUsers.map((user) => {
 										return (
-											user && <UserCardItem key={user.nodeId} user={user} />
+											user && (
+												<UserCardItem
+													key={`user-card-${user.nodeId}`}
+													user={user}
+												/>
+											)
 										)
 									})}
 								</>
@@ -112,7 +117,7 @@ export const Tag = () => {
 									return (
 										question && (
 											<QuestionListItem
-												key={question.nodeId}
+												key={`question-${question.nodeId}`}
 												question={question}
 											/>
 										)
