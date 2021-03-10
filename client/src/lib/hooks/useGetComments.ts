@@ -32,7 +32,7 @@ export const useGetComments = (
 	const commentsData = data as TCommentsQueryResponse
 
 	useEffect(() => {
-		console.log('getComments useffect', topicType)
+		// console.log('getComments useffect', topicType)
 		if (commentsData) {
 			setCommentsList(commentsData[topicType]?.[0].comments as TComment[])
 		}

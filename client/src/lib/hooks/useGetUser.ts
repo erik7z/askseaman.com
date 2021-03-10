@@ -34,7 +34,7 @@ export const useGetUser = ({
 	const [user] = data?.User || [null]
 
 	useEffect(() => {
-		console.log('getUser useffect')
+		// console.log('getUser useffect')
 		getUser()
 	}, [getUser])
 

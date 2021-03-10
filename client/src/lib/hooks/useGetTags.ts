@@ -26,7 +26,7 @@ export const useGetTags = (
 	})
 
 	useEffect(() => {
-		console.log('getTags useffect')
+		// console.log('getTags useffect')
 		getTags()
 		if (data?.Tag) {
 			setTagsList(data?.Tag as TTag[])

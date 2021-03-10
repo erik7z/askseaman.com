@@ -12,7 +12,7 @@ export const useGetQuestion = (questionId: string) => {
 	const [question] = data?.Question || [null]
 
 	useEffect(() => {
-		console.log('getQuestion useffect')
+		// console.log('getQuestion useffect')
 		getQuestion()
 	}, [getQuestion])
 

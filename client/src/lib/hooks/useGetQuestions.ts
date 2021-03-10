@@ -31,7 +31,7 @@ export const useGetQuestions = (
 	})
 
 	useEffect(() => {
-		console.log('getQuestions useffect')
+		// console.log('getQuestions useffect')
 		getQuestions()
 		if (data?.Question) {
 			setQuestionsList(data?.Question as TQuestion[])

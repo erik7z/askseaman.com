@@ -67,10 +67,12 @@ export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 		<Row className='answer-item media'>
 			<Col md={12}>
 				<Row>
-					<Col md={7} xs={12}>
+					<Col md={7} xs={12} className='align-self-end'>
 						<Link to={`/question/${answer.question.nodeId}`}>
 							{' '}
-							<h5>{answer.question.title}</h5>
+							<h6>
+								<i>{answer.question.title}</i>
+							</h6>
 						</Link>
 					</Col>
 					<Col md={4} xs={7}>

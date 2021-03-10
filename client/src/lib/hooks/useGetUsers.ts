@@ -23,7 +23,7 @@ export const useGetUsers = (
 	})
 
 	useEffect(() => {
-		console.log('getUsers useffect')
+		// console.log('getUsers useffect')
 		getUsers()
 		if (data?.User) {
 			setUsersList(data?.User as TUser[])

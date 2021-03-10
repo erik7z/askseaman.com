@@ -12,7 +12,7 @@ export const useGetTag = (tagName: string) => {
 	const [tag] = data?.Tag || [null]
 
 	useEffect(() => {
-		console.log('getTag useffect')
+		// console.log('getTag useffect')
 		getTag()
 	}, [getTag])
 

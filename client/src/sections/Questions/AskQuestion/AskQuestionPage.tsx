@@ -36,7 +36,7 @@ export const AskQuestionPage = () => {
 	})
 
 	useEffect(() => {
-		console.log('get tags useffect')
+		// console.log('get tags useffect')
 		getTags()
 		if (tagsData && tagsData.Tag) {
 			setSuggestions(normalizeTags(tagsData.Tag as TTag[]))

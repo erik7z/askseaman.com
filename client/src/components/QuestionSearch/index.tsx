@@ -36,7 +36,7 @@ const QuestionSearch = () => {
 	})
 
 	useEffect(() => {
-		console.log('searchQuestions useffect')
+		// console.log('searchQuestions useffect')
 		const notEmpty = search && search.length > 2
 		const haveResults = data?.Question && data?.Question.length
 

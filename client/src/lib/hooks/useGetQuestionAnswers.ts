@@ -22,7 +22,7 @@ export const useGetQuestionAnswers = (questionId: string) => {
 	})
 
 	useEffect(() => {
-		console.log('getQuestionAnswers useffect')
+		// console.log('getQuestionAnswers useffect')
 
 		getQuestionAnswers()
 		if (answersData) setAnswersList(answersData.Answer as TAnswer[])
