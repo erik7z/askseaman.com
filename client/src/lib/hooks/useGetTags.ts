@@ -23,7 +23,6 @@ export const useGetTags = (
 			offset: resultsLimit * currentPage,
 			filter: filter,
 		},
-		fetchPolicy: 'cache-and-network',
 	})
 
 	useEffect(() => {

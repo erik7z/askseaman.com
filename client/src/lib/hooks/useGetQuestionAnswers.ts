@@ -19,7 +19,6 @@ export const useGetQuestionAnswers = (questionId: string) => {
 				},
 			},
 		},
-		fetchPolicy: 'cache-and-network',
 	})
 
 	useEffect(() => {

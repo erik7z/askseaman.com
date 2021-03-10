@@ -7,7 +7,6 @@ export const useGetTag = (tagName: string) => {
 		variables: {
 			name: tagName,
 		},
-		fetchPolicy: 'cache-and-network',
 	})
 
 	const [tag] = data?.Tag || [null]

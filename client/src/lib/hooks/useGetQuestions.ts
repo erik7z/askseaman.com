@@ -28,7 +28,6 @@ export const useGetQuestions = (
 			offset: resultsLimit * currentPage,
 			filter: filter,
 		},
-		fetchPolicy: 'cache-and-network',
 	})
 
 	useEffect(() => {

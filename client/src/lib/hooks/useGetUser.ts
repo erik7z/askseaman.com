@@ -29,7 +29,6 @@ export const useGetUser = ({
 			answersFirst: answersResultsLimit,
 			answersOffset: questionsResultsLimit * answersCurrentPage,
 		},
-		fetchPolicy: 'cache-and-network',
 	})
 
 	const [user] = data?.User || [null]

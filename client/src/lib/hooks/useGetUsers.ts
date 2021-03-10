@@ -20,7 +20,6 @@ export const useGetUsers = (
 			first: resultsLimit,
 			offset: resultsLimit * currentPage,
 		},
-		fetchPolicy: 'cache-and-network',
 	})
 
 	useEffect(() => {

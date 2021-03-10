@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import AuthLayout from './components/Layout/Auth'
 import MainLayout from './components/Layout'
-import { Auth, MyFeed, NotFound, Questions, Tags, Users } from './sections'
+import { Auth, MyFeed, NotFound, Tags, Users, Questions } from './sections'
 
 import { Tag } from './sections/Tags/Tag'
 import { User } from './sections/Users/User'
