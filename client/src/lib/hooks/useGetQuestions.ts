@@ -13,7 +13,7 @@ import { PAGINATION_PAGE_SIZE } from './../../env'
 export const useGetQuestions = (
 	currentPage: number = 0,
 	resultsLimit: number = PAGINATION_PAGE_SIZE,
-	orderBy: _QuestionOrdering,
+	orderBy: _QuestionOrdering = _QuestionOrdering.TimestampDesc,
 	filter?: _QuestionFilter
 ) => {
 	const questionsContext = useContext(QuestionsContext)

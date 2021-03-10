@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Col, Row } from 'react-bootstrap'
 
-import { QuestionSearch } from '../QuestionSearch'
+import QuestionSearch from '../QuestionSearch'
 
 interface IProps {
 	children: ReactNode
