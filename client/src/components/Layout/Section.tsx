@@ -6,6 +6,7 @@ import QuestionSearch from '../QuestionSearch'
 interface IProps {
 	children: ReactNode
 	showSearch?: boolean
+	showHeader?: boolean
 	sectionName?: string
 	sectionTitle?: string
 	sectionClass?: string
@@ -14,6 +15,7 @@ interface IProps {
 const Section = ({
 	children,
 	showSearch = true,
+	showHeader = true,
 	sectionName = '',
 	sectionTitle = '',
 	sectionClass = '',
@@ -24,11 +26,16 @@ const Section = ({
 				{showSearch && <QuestionSearch />}
 				<Row>
 					<Col md={12}>
-						<h5 className='module-header'>
-							&gt; {sectionName}:
-							<span className='text-dark'>&nbsp; {sectionTitle}</span>
-						</h5>
-						<hr className='hr-header hr-bold' />
+						{showHeader && (
+							<>
+								{' '}
+								<h5 className='module-header'>
+									&gt; {sectionName}:
+									<span className='text-dark'>&nbsp; {sectionTitle}</span>
+								</h5>
+								<hr className='hr-header hr-bold' />
+							</>
+						)}
 						<section className={sectionClass}>{children}</section>
 					</Col>
 				</Row>

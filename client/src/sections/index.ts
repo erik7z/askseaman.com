@@ -1,5 +1,6 @@
 export * from './Auth'
 export * from './My'
+export * from './About'
 export * from './NotFound'
 export * from './Questions'
 export * from './Tags'

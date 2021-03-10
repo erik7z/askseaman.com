@@ -17,7 +17,7 @@ const Layout = ({ children }: IProps) => {
 							<div
 								className='img'
 								style={{
-									backgroundImage: 'url(images/about.jpg)',
+									backgroundImage: 'url(images/auth.jpg)',
 									height: 'calc(100vh)',
 								}}
 							></div>

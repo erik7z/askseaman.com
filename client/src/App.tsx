@@ -16,6 +16,7 @@ import { QuestionsProvider } from './lib/contexts'
 import { Settings } from './sections/My/Settings'
 import { Notifications } from './sections/My/Notifications'
 import { MySubscriptions } from './sections/My/MySubscriptions'
+import { About } from './sections/About'
 
 export const App = () => {
 	useAuthCurrentUser()
@@ -84,7 +85,9 @@ export const App = () => {
 							<Route exact path='/tag/:tagName'>
 								<Tag />
 							</Route>
-
+							<Route exact path='/about'>
+								<About />
+							</Route>
 							<Route>
 								<NotFound />
 							</Route>
