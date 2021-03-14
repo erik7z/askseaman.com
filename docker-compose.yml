@@ -67,3 +67,13 @@ services:
       - as-neo4j
     depends_on:
       - as-neo4j
+
+  client:
+    image: 'nginx'
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./client/build:/usr/share/nginx/html
+    depends_on:
+      - api
