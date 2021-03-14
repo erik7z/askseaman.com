@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  as-neo4j:
+  db:
     image: 'neo4j:4.2.2-enterprise'
     # deploy:
     #   resources:
@@ -64,11 +64,17 @@ services:
       - CLOUD_API_SECRET=${CLOUD_API_SECRET}
       - CLOUD_IMG_FOLDER=${CLOUD_IMG_FOLDER}
     links:
-      - as-neo4j
+      - db
     depends_on:
-      - as-neo4j
+      - db
 
-  client:
+  client-build:
+    build: ./client
+    command: sh -c "cd /client/ && npm install && npm run build" # dev option
+    volumes:
+      - ./client:/client
+
+  client-serve:
     image: 'nginx'
     restart: unless-stopped
     ports:
@@ -76,4 +82,4 @@ services:
     volumes:
       - ./client/build:/usr/share/nginx/html
     depends_on:
-      - api
+      - client-build
