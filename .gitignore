@@ -3,7 +3,7 @@
 /neo4j/data
 /neo4j/import
 /neo4j/logs
-/neo4j/plugins
 /client/node_modules
 /_html
 /client/.eslintcache
+/server.env
