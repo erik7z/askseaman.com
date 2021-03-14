@@ -15,7 +15,7 @@ import { createToken } from '../../utils/auth'
 import { ranks } from './../../data/ranks'
 
 import {
-	HOST_URI,
+	GRAPHQL_URI,
 	AUTH_CONFIRM_CODE_UI_URI,
 	AUTH_CHANGE_PASS_UI_URI,
 	AUTH_LOGIN_UI_URI,
@@ -171,7 +171,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			//TODO: send code to the user email with http link to confirm code
 
 			return {
-				redirect: HOST_URI + AUTH_CONFIRM_CODE_UI_URI,
+				redirect: GRAPHQL_URI + AUTH_CONFIRM_CODE_UI_URI,
 				status: ResponseStatus.Success,
 				message: 'Confirmation code has been sent. Please check your E-mail',
 			}
@@ -182,7 +182,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			if (!user) throw new Error('Confirmation code is not correct, try again')
 
 			return {
-				redirect: HOST_URI + AUTH_CHANGE_PASS_UI_URI + data.code,
+				redirect: GRAPHQL_URI + AUTH_CHANGE_PASS_UI_URI + data.code,
 				status: ResponseStatus.Success,
 				message: 'Please enter your new password',
 			}
@@ -196,7 +196,7 @@ const userResolvers: Resolvers<ApolloServerContext> = {
 			if (!user) throw new Error('Something went wrong, please try again')
 
 			return {
-				redirect: HOST_URI + AUTH_LOGIN_UI_URI,
+				redirect: GRAPHQL_URI + AUTH_LOGIN_UI_URI,
 				status: ResponseStatus.Success,
 				message: 'Password has been changed, please log in using new password',
 			}

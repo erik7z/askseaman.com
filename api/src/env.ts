@@ -1,7 +1,7 @@
 export const PORT = process.env.GRAPHQL_SERVER_PORT
 export const PATH = process.env.GRAPHQL_SERVER_PATH || '/'
 export const HOST = process.env.GRAPHQL_SERVER_HOST
-export const HOST_URI = process.env.HOST_URI || `http://${HOST}:${PORT}`
+export const GRAPHQL_URI = `http://${HOST}:${PORT}`
 export const AUTH_LOGIN_UI_URI = process.env.AUTH_LOGIN_UI_URI || '/auth'
 export const AUTH_NEW_PASS_UI_URI =
 	process.env.AUTH_NEW_PASS_UI_URI || '/auth/new_pass'

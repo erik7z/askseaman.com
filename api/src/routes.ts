@@ -2,7 +2,7 @@ import { driver } from './database'
 import { app } from './'
 
 import {
-	HOST_URI,
+	GRAPHQL_URI,
 	AUTH_VERIFY_CODE_URI,
 	AUTH_NEW_PASS_UI_URI,
 	AUTH_LOGIN_UI_URI,
@@ -41,7 +41,7 @@ app.get(AUTH_VERIFY_CODE_URI + '/:code', async (req, res) => {
 		await session.close()
 	}
 
-	const redirect_uri = `${HOST_URI}${uri}?status=${status}&message=${message}`
+	const redirect_uri = `${GRAPHQL_URI}${uri}?status=${status}&message=${message}`
 
 	res.redirect(redirect_uri)
 	// res.send({
