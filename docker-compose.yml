@@ -30,7 +30,7 @@ services:
       # - NEO4J_dbms_memory_pagecache_size=2G
       - NEO4J_apoc_import_file_enabled=true
       - NEO4J_apoc_export_file_enabled=true
-      - NEO4JLABS_PLUGINS=["apoc"]
+      # - NEO4JLABS_PLUGINS=["apoc"]
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*
 
   api:
@@ -69,8 +69,10 @@ services:
       - db
 
   client-build:
-    build: ./client
-    command: sh -c "cd /client/ && npm install && npm run build" # dev option
+    build:
+      context: ./client
+      args:
+        - REACT_APP_HOST_IP_ADDRESS=${NGINX_HOST}
     volumes:
       - ./client:/client
 
