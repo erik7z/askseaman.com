@@ -84,5 +84,3 @@ services:
       - NGINX_PORT=${NGINX_PORT}
     volumes:
       - ./client/build:/usr/share/nginx/html
-    depends_on:
-      - client-build
