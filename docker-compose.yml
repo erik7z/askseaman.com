@@ -75,10 +75,13 @@ services:
       - ./client:/client
 
   client-serve:
-    image: 'nginx'
+    build: ./nginx
     restart: unless-stopped
     ports:
       - 80:80
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+      - NGINX_PORT=${NGINX_PORT}
     volumes:
       - ./client/build:/usr/share/nginx/html
     depends_on:

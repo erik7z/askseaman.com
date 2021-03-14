@@ -1,0 +1,7 @@
+FROM nginx
+
+COPY nginx.conf.template /etc/nginx/nginx.conf.template
+
+COPY nginx-entrypoint.sh /
+ENTRYPOINT ["/nginx-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
