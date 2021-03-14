@@ -15,7 +15,7 @@ import './styles.css'
 import { App } from './App'
 
 import { CurrentUserProvider } from './lib/contexts'
-import { HOST_URI } from './env'
+import { HOST_URI, GRAPHQL_PORT } from './env'
 
 import reportWebVitals from './reportWebVitals'
 
@@ -33,6 +33,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 })
 
 const client = new ApolloClient({
+	uri: HOST_URI + ':' + GRAPHQL_PORT,
 	cache: new InMemoryCache({
 		typePolicies: {
 			TokenResponse: {
