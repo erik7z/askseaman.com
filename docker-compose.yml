@@ -3,16 +3,6 @@ version: '3'
 services:
   db:
     image: 'neo4j:4.2.2-enterprise'
-    # deploy:
-    #   resources:
-    #     limits:
-    #       memory: 2G
-    #     reservations:
-    #       memory: 1G
-    ## in docker-compose v2:
-    ## mem_limit: 2G
-    ## memswap_limit: 3G
-    ## mem_reservation: 1G
     restart: unless-stopped
     ports:
       - 7474:7474
@@ -27,7 +17,6 @@ services:
       - NEO4J_AUTH=${NEO4J_AUTH}
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_apoc_import_file_use__neo4j__config=true
-      # - NEO4J_dbms_memory_pagecache_size=2G
       - NEO4J_apoc_import_file_enabled=true
       - NEO4J_apoc_export_file_enabled=true
       # - NEO4JLABS_PLUGINS=["apoc"]
@@ -43,7 +32,7 @@ services:
       - ./api:/api
       # - /api/node_modules # prod option (hide node modules folder)
     environment:
-      - NEO4J_HOST=${NGINX_HOST}
+      - NEO4J_HOST=${NEO4J_HOST}
       - NEO4J_BOLT_PORT=${NEO4J_BOLT_PORT}
       - NEO4J_USER=${NEO4J_USER}
       - NEO4J_PASSWORD=${NEO4J_PASSWORD}
@@ -71,9 +60,10 @@ services:
   client-build:
     build:
       context: ./client
-      args:
-        - REACT_APP_HOST_IP_ADDRESS=${NGINX_HOST}
-        - REACT_APP_GRAPHQL_PORT=${GRAPHQL_SERVER_PORT}
+    environment:
+      - REACT_APP_GRAPHQL_HOST=${REACT_APP_GRAPHQL_HOST}
+      - REACT_APP_GRAPHQL_PORT=${GRAPHQL_SERVER_PORT}
+    entrypoint: /client/docker-entrypoint.sh
     volumes:
       - ./client:/client
 

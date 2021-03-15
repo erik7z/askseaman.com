@@ -15,11 +15,11 @@ import './styles.css'
 import { App } from './App'
 
 import { CurrentUserProvider } from './lib/contexts'
-import { HOST_URI, GRAPHQL_PORT } from './env'
+import { GRAPHQL_HOST, GRAPHQL_PORT } from './env'
 
 import reportWebVitals from './reportWebVitals'
 
-const httpLink = new HttpLink({ uri: HOST_URI })
+const httpLink = new HttpLink({ uri: `${GRAPHQL_HOST}:${GRAPHQL_PORT}` })
 
 const authMiddleware = new ApolloLink((operation, forward) => {
 	const token = localStorage.getItem('token')
@@ -33,7 +33,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 })
 
 const client = new ApolloClient({
-	uri: HOST_URI + ':' + GRAPHQL_PORT,
+	uri: `${GRAPHQL_HOST}:${GRAPHQL_PORT}`,
 	cache: new InMemoryCache({
 		typePolicies: {
 			TokenResponse: {
