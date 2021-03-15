@@ -1,5 +1,7 @@
-export const HOST_URI = process.env.REACT_APP_HOST_IP_ADDRESS
-export const GRAPHQL_PORT = process.env.REACT_APP_GRAPHQL_PORT
+// export const HOST_URI = process.env.REACT_APP_HOST_IP_ADDRESS
+export const HOST_URI = 'http://18.198.1.218/'
+// export const GRAPHQL_PORT = process.env.REACT_APP_GRAPHQL_PORT
+export const GRAPHQL_PORT = '4000'
 export const TOKEN_FIELD = 'token'
 export const PAGINATION_PAGE_SIZE = 5
 export const PAGINATION_PAGES_VISIBLE = 5
