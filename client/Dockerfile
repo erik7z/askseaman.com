@@ -3,6 +3,9 @@ FROM node:14
 RUN mkdir -p /client
 WORKDIR /client
 
+COPY docker-entrypoint.sh .
+RUN ["chmod", "+x", "./docker-entrypoint.sh"]
+
 # COPY package*.json ./
 # RUN npm install
 # COPY . .
