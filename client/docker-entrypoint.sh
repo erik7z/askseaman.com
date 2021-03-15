@@ -4,3 +4,5 @@ npm install
 echo "#### docker-entrypoint.sh >>> preparing client build"
 npm run build
 echo "#### docker-entrypoint.sh >>> client build done"
+
+exec "$@"

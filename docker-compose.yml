@@ -63,7 +63,7 @@ services:
     environment:
       - REACT_APP_GRAPHQL_HOST=${REACT_APP_GRAPHQL_HOST}
       - REACT_APP_GRAPHQL_PORT=${GRAPHQL_SERVER_PORT}
-    entrypoint: /client/docker-entrypoint.sh
+    # entrypoint: /client/docker-entrypoint.sh
     volumes:
       - ./client:/client
 
