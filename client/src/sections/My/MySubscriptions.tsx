@@ -22,7 +22,7 @@ import { useGetQuestions, useGetTags } from '../../lib/hooks'
 import { CurrentUserContext } from '../../lib/contexts'
 
 import { _QuestionOrdering, _TagOrdering } from '../../types/generated-frontend'
-import { PAGINATION_PAGE_SIZE } from '../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 
 export const MySubscriptions = () => {
 	const [{ currentUser }] = useContext(CurrentUserContext)

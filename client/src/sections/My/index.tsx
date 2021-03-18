@@ -21,7 +21,7 @@ import { useGetQuestions } from '../../lib/hooks'
 import { CurrentUserContext } from '../../lib/contexts'
 
 import { _QuestionOrdering } from '../../types/generated-frontend'
-import { PAGINATION_PAGE_SIZE } from '../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 
 export const MyFeed = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)

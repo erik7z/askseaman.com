@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { PAGINATION_PAGE_SIZE } from '../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 
 import { useUserPageLazyQuery } from '../../types/generated-frontend'
 

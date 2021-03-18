@@ -5,6 +5,7 @@ import { AvatarLink } from '../'
 
 import { MetaActions } from './../MetaActions'
 import { Comment as TComment } from '../../types/generated-frontend'
+import { renderTextFromDb } from '../../lib/helpers'
 
 interface IProps {
 	comment: TComment
@@ -31,7 +32,7 @@ export const CommentItem = ({ comment }: IProps) => {
 				/>
 			</Col>
 			<div className='col-12'>
-				<p className='post-item-text'>{comment.text}</p>
+				<p className='post-item-text'>{renderTextFromDb(comment.text)}</p>
 
 				<MetaActions
 					topicId={comment.nodeId}

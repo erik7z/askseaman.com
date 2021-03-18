@@ -6,7 +6,7 @@ import { BiChat, BiHelpCircle } from 'react-icons/bi'
 import { useGetUsers } from '../../lib/hooks'
 import { _UserOrdering } from '../../types/generated-frontend'
 
-import { SIDE_USERS_LIMIT } from './../../env'
+import { SIDE_USERS_LIMIT } from '../../globals'
 import { AvatarLink } from './../AvatarLink/index'
 
 export const SideTopUsersBox = () => {

@@ -8,7 +8,7 @@ import {
 } from '../../types/generated-frontend'
 
 import { QuestionsContext } from '../../lib/contexts'
-import { PAGINATION_PAGE_SIZE } from './../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 
 export const useGetQuestions = (
 	currentPage: number = 0,

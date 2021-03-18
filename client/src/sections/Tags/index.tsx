@@ -16,7 +16,7 @@ import {
 } from '../../components'
 
 import { _TagOrdering } from '../../types/generated-frontend'
-import { PAGINATION_PAGE_SIZE } from './../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 import { useGetTags } from '../../lib/hooks'
 
 export const Tags = () => {

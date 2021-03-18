@@ -11,7 +11,7 @@ import {
 import { BsQuestionCircle } from 'react-icons/bs'
 import { BiSearchAlt } from 'react-icons/bi'
 
-import { PAGINATION_PAGE_SIZE } from '../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 import {
 	_QuestionOrdering,
 	useQuestionsListLazyQuery,

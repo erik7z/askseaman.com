@@ -7,6 +7,7 @@ import { CommentsBox, AvatarLink } from '../../../components'
 import { useAnswerVote } from './../../../lib/hooks'
 import { CurrentUserContext } from './../../../lib/contexts'
 
+import { renderTextFromDb } from './../../../lib/helpers'
 import {
 	Answer as TAnswer,
 	useAnswerCommentsLazyQuery,
@@ -68,12 +69,14 @@ export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 			<Col md={12}>
 				<Row>
 					<Col md={7} xs={12} className='align-self-end'>
-						<Link to={`/question/${answer.question.nodeId}`}>
-							{' '}
-							<h6>
-								<i>{answer.question.title}</i>
-							</h6>
-						</Link>
+						{showQuestion && (
+							<Link to={`/question/${answer.question.nodeId}`}>
+								{' '}
+								<h6>
+									<i>{answer.question.title}</i>
+								</h6>
+							</Link>
+						)}
 					</Col>
 					<Col md={4} xs={7}>
 						<div className='text-right author'>
@@ -111,7 +114,7 @@ export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 				</ul>
 			</Col>
 			<Col md={11} xs={10}>
-				<p className='post-item-text'>{answer.text}</p>
+				<p className='post-item-text'>{renderTextFromDb(answer.text)}</p>
 				<CommentsBox
 					topic={answer as TAnswer}
 					getCommentsHook={getAnswerCommentsHook}

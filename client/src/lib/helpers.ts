@@ -1,3 +1,6 @@
+import React from 'react'
+import he from 'he'
+
 import { Tag as ITag } from 'react-tag-autocomplete'
 
 import { TKVPair } from '../types/frontend'
@@ -6,11 +9,16 @@ import {
 	Tag as TTag,
 	_Neo4jDateTime,
 } from '../types/generated-frontend'
-import { PAGINATION_PAGES_VISIBLE, PAGINATION_PAGE_SIZE } from './../env'
+import { PAGINATION_PAGES_VISIBLE, PAGINATION_PAGE_SIZE } from '../globals'
 
 export const getKeyByValue = (object: TKVPair, value: string) => {
 	return Object.keys(object).find((key) => object[key] === value)
 }
+
+export const renderHTML = (rawHTML: string) =>
+	React.createElement('div', { dangerouslySetInnerHTML: { __html: rawHTML } })
+
+export const renderTextFromDb = (str: string) => renderHTML(he.decode(str))
 
 export const normalizeErrors = (errors: FieldError[]) => {
 	return errors.reduce((acc: TKVPair, val) => {

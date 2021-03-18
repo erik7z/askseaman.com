@@ -26,6 +26,7 @@ import {
 	Answer as TAnswer,
 	useQuestionCommentsLazyQuery,
 } from '../../../types/generated-frontend'
+import { renderTextFromDb } from '../../../lib/helpers'
 
 export const Question = () => {
 	const [currentUserState] = useContext(CurrentUserContext)
@@ -93,7 +94,9 @@ export const Question = () => {
 								</div>
 							</div>
 
-							<p className='post-item-text'>{question.text}</p>
+							<p className='post-item-text'>
+								{renderTextFromDb(question.text)}
+							</p>
 							<CommentsBox
 								topic={question as TQuestion}
 								getCommentsHook={getQuestionCommentsHook}

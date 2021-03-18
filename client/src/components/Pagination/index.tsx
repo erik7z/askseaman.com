@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'react-bootstrap'
-import { PAGINATION_PAGE_SIZE, PAGINATION_PAGES_VISIBLE } from './../../env'
+import { PAGINATION_PAGE_SIZE, PAGINATION_PAGES_VISIBLE } from '../../globals'
 import { paginate } from '../../lib/helpers'
 
 interface IProps {

@@ -15,7 +15,7 @@ import {
 } from '../../components'
 
 import { _UserOrdering } from '../../types/generated-frontend'
-import { PAGINATION_PAGE_SIZE } from './../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 import { useGetUsers } from '../../lib/hooks'
 
 export const Users = () => {

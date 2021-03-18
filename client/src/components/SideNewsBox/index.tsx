@@ -4,7 +4,7 @@ import Skeleton from 'react-loading-skeleton'
 import { SideNewsItem } from './SideNewsItem'
 import { useGetQuestions } from '../../lib/hooks'
 import { _QuestionOrdering } from '../../types/generated-frontend'
-import { SIDE_QUESTIONS_LIMIT } from '../../env'
+import { SIDE_QUESTIONS_LIMIT } from '../../globals'
 
 export const SideNewsBox = () => {
 	const { questionsList, loading, error } = useGetQuestions(

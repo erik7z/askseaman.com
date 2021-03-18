@@ -4,7 +4,7 @@ import {
 	CurrentUserQuery as CurrentUserQueryType,
 } from '../../../types/generated-frontend'
 
-import { BLANK_AVATAR_URL, TOKEN_FIELD } from '../../../env'
+import { BLANK_AVATAR_URL, TOKEN_FIELD } from '../../../globals'
 
 interface IProps {
 	children: ReactNode

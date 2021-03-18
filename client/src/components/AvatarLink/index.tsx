@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { BLANK_AVATAR_URL } from '../../env'
+import { BLANK_AVATAR_URL } from '../../globals'
 
 import { typicSizes } from '../../types/frontend'
 

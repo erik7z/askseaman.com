@@ -25,7 +25,7 @@ import {
 } from '../../lib/validation'
 import { normalizeErrors, getKeyByValue } from '../../lib/helpers'
 import { CurrentUserContext } from '../../lib/contexts'
-import { BLANK_AVATAR_URL } from '../../env'
+import { BLANK_AVATAR_URL } from '../../globals'
 
 type FormikSetFieldValue = (
 	field: string,

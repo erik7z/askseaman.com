@@ -16,7 +16,7 @@ import {
 } from '../../components'
 import { useGetQuestions } from '../../lib/hooks'
 import { _QuestionOrdering } from '../../types/generated-frontend'
-import { PAGINATION_PAGE_SIZE } from './../../env'
+import { PAGINATION_PAGE_SIZE } from '../../globals'
 
 export const Questions = () => {
 	const [resultsLimit, setResultsLimit] = useState(PAGINATION_PAGE_SIZE)

@@ -3,7 +3,7 @@ import { useEffect, useContext } from 'react'
 import { useCurrentUserLazyQuery } from '../../types/generated-frontend'
 
 import { CurrentUserContext } from '../contexts'
-import { TOKEN_FIELD } from '../../env'
+import { TOKEN_FIELD } from '../../globals'
 
 export const useAuthCurrentUser = () => {
 	const [userContext, userDispatch] = useContext(CurrentUserContext)

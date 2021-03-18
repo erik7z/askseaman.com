@@ -15,7 +15,7 @@ import './styles.css'
 import { App } from './App'
 
 import { CurrentUserProvider } from './lib/contexts'
-import { GRAPHQL_HOST, GRAPHQL_PORT } from './env'
+import { GRAPHQL_HOST, GRAPHQL_PORT } from './globals'
 
 import reportWebVitals from './reportWebVitals'
 

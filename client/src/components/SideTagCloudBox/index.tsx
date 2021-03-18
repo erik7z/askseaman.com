@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { TAGCLOUD_LIMIT } from '../../env'
+import { TAGCLOUD_LIMIT } from '../../globals'
 import Skeleton from 'react-loading-skeleton'
 import { useGetTags } from '../../lib/hooks'
 
