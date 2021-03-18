@@ -73,6 +73,7 @@ export const TagsAutoSuggest = ({
 			delimiters={['Enter', 'Tab']}
 			onInput={(query: string) => setSuggSearch(query)}
 			maxSuggestionsLength={5}
+			allowNew={true}
 		/>
 	)
 }

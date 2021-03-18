@@ -6,7 +6,7 @@ import {
 	CLOUD_API_KEY,
 	CLOUD_API_SECRET,
 	CLOUD_IMG_FOLDER,
-} from './../../env'
+} from '../../globals'
 
 cloudinaryClient.v2.config({
 	cloud_name: CLOUD_NAME,

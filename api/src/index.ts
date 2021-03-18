@@ -1,13 +1,15 @@
-import { iCypherParams } from './types/backend'
 import express from 'express'
 import { Request, Response, NextFunction } from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
+import { iCypherParams } from './types/backend'
 import { schema, driver } from './database'
 import { getUserFromToken } from './utils/auth'
 
-import { PATH, HOST, PORT, BODYPARSER_JSON_LIMIT } from './env'
+import { PATH, HOST, PORT, BODYPARSER_JSON_LIMIT } from './globals'
 
 export const app = express()
 app.use(bodyParser.json({ limit: BODYPARSER_JSON_LIMIT }))

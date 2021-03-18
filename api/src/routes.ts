@@ -6,7 +6,7 @@ import {
 	AUTH_VERIFY_CODE_URI,
 	AUTH_NEW_PASS_UI_URI,
 	AUTH_LOGIN_UI_URI,
-} from './env'
+} from './globals'
 
 import { ResponseStatus } from './types/generated-backend'
 
@@ -36,7 +36,7 @@ app.get(AUTH_VERIFY_CODE_URI + '/:code', async (req, res) => {
 	} catch (e) {
 		status = ResponseStatus.Fail
 		message = e.message
-		uri = AUTH_LOGIN_UI_URI
+		uri = AUTH_LOGIN_UI_URI as string
 	} finally {
 		await session.close()
 	}

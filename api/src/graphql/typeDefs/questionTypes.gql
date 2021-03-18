@@ -95,13 +95,20 @@ type Mutation {
 				createdAt: DateTime(),
 				timestamp: timestamp()
 			}
+
 			WITH q
-			CALL {
-				WITH q
-				MATCH (t:Tag) where t.name IN $data.tags
+			UNWIND $data.tags AS newTag
+				MERGE (t:Tag:CanBeSubscribed {name: newTag})
+					ON CREATE
+						SET t += {
+							nodeId: apoc.create.uuid(),
+							name: newTag,
+							description: '',
+							updatedAt: DateTime()
+						}
+					ON MATCH
+						SET t.updatedAt = timestamp()
 				MERGE (t)-[r:TAGGED]->(q)
-				RETURN count(t) as added_tags
-			}
 			RETURN q
 			"""
 		)
@@ -120,12 +127,19 @@ type Mutation {
 				RETURN count(t) as deleted_tags
 			}
 			WITH q
-			CALL {
-				WITH q
-				MATCH (t:Tag) where t.name IN $data.tags
+			UNWIND $data.tags AS newTag
+				MERGE (t:Tag:CanBeSubscribed {name: newTag})
+					ON CREATE
+						SET t += {
+							nodeId: apoc.create.uuid(),
+							name: newTag,
+							description: '',
+							updatedAt: DateTime()
+						}
+					ON MATCH
+						SET t.updatedAt = timestamp()
 				MERGE (t)-[r:TAGGED]->(q)
-				RETURN count(t) as added_tags
-			}
+
 			RETURN q
 			"""
 		)

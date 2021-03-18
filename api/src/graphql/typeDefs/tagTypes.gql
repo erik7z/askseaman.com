@@ -3,6 +3,7 @@ type Tag implements CanBeSubscribed {
 	name: String! @unique @upper
 	description: String
 	createdAt: DateTime
+	updatedAt: DateTime
 	timestamp: String
 	addedBy: User @relation(name: "ADDED_BY", direction: OUT)
 	moderators: [User] @relation(name: "MODERATED_BY", direction: OUT)
@@ -35,8 +36,6 @@ type Tag implements CanBeSubscribed {
 		@cypher(
 			statement: """
 			MATCH (this)-[:TAGGED]->(:Question)<-[:ASKED]-(u:User) RETURN u as topUsers
-			UNION
-			MATCH (this)-[:TAGGED]->(:Question)-[:HAS_ANSWER]->(:Answer)<-[:ANSWERED]-(u:User) RETURN u as topUsers
 			"""
 		)
 	topQuestions: [Question]  #TODO:complete logic to select top questions
