@@ -1,4 +1,10 @@
-query TagPage($name: String) {
+query TagPage(
+	$name: String
+	$usersFirst: Int = 5
+	$usersOffset: Int = 0
+	$questionsFirst: Int = 5
+	$questionsOffset: Int = 0
+) {
 	Tag(name: $name) {
 		...tagFields
 		description
@@ -6,11 +12,16 @@ query TagPage($name: String) {
 		moderators {
 			...userFields
 		}
-		topUsers {
-			...userFields
-		}
-		topQuestions {
+		questions(first: $questionsFirst, offset: $questionsOffset) {
 			...questionListItemFields
+		}
+		topQuestions(first: 10, offset: 0) {
+			...questionListItemFields
+		}
+		topUsers(first: $usersFirst, offset: $usersOffset) {
+			...userFields
+			questionsCount
+			answersCount
 		}
 	}
 }

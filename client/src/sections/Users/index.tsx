@@ -57,17 +57,19 @@ export const Users = () => {
 				/>
 				{errorMessage}
 				{loadingMessage}
-				<Row className='users-list text-center'>
-					{usersList && (
-						<>
-							{usersList.map((user) => {
-								return user ? (
-									<UserCardItem key={user.nodeId} user={user} />
-								) : null
-							})}
-						</>
-					)}
-				</Row>
+				{!loading && (
+					<Row className='users-list text-center'>
+						{usersList && (
+							<>
+								{usersList.map((user) => {
+									return user ? (
+										<UserCardItem key={user.nodeId} user={user} />
+									) : null
+								})}
+							</>
+						)}
+					</Row>
+				)}
 
 				<Pagination
 					currentPage={currentPage}

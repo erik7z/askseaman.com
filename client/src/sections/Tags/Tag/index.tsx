@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Row, Jumbotron, ListGroup } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
@@ -10,6 +10,7 @@ import {
 	SideAskBox,
 	SideAdvertBox,
 	SideNewsBox,
+	Pagination,
 	MetaActions,
 } from '../../../components'
 
@@ -20,7 +21,14 @@ import { useGetTag } from '../../../lib/hooks'
 export const Tag = () => {
 	const { tagName } = useParams<{ tagName: string }>()
 
-	const { tag, loading, error } = useGetTag(tagName)
+	const [questionsCurrentPage, setQuestionsCurrentPage] = useState(0)
+	const resultsLimit = 3
+
+	const { tag, loading, error } = useGetTag({
+		tagName,
+		questionsCurrentPage,
+		questionsResultsLimit: resultsLimit,
+	})
 
 	const sectionTitle = tag ? tag.name.toLocaleUpperCase() : ''
 
@@ -90,29 +98,11 @@ export const Tag = () => {
 								showViews={false}
 							/>
 						</Jumbotron>
-						<h5 className='module-header text-right'>Most Active Users &lt;</h5>
-						<hr className='hr-header hr-bold' />
-						<Row className='users-list text-center'>
-							{tag?.topUsers && (
-								<>
-									{tag.topUsers.map((user) => {
-										return (
-											user && (
-												<UserCardItem
-													key={`user-card-${user.nodeId}`}
-													user={user}
-												/>
-											)
-										)
-									})}
-								</>
-							)}
-						</Row>
 
-						<h5 className='module-header text-right'>Top questions &lt;</h5>
-						<hr className='hr-header hr-bold' />
-						{tag?.topQuestions && (
+						{tag?.topQuestions && tag?.topQuestions.length ? (
 							<>
+								<h5 className='module-header text-right'>Top questions &lt;</h5>
+								<hr className='hr-header hr-bold' />
 								{tag.topQuestions.map((question) => {
 									return (
 										question && (
@@ -124,7 +114,54 @@ export const Tag = () => {
 									)
 								})}
 							</>
-						)}
+						) : null}
+
+						{tag?.topUsers && tag?.topUsers.length ? (
+							<>
+								<h5 className='module-header text-right'>
+									Most Active Users &lt;
+								</h5>
+								<hr className='hr-header hr-bold' />
+								<Row className='users-list text-center'>
+									{tag.topUsers.map((user) => {
+										return (
+											user && (
+												<UserCardItem
+													key={`user-card-${user.nodeId}`}
+													user={user}
+												/>
+											)
+										)
+									})}
+								</Row>
+							</>
+						) : null}
+
+						{tag?.questions && tag?.questions.length ? (
+							<>
+								<h5 className='module-header text-right'>
+									All questions on tag: <b>{tagName}</b>
+								</h5>
+								<hr className='hr-header hr-bold' />
+								{tag.questions.map((question) => {
+									return (
+										question && (
+											<QuestionListItem
+												key={`question-${question.nodeId}`}
+												question={question}
+											/>
+										)
+									)
+								})}
+								<Pagination
+									currentPage={questionsCurrentPage}
+									totalItems={tag.questionsCount}
+									resultsLimit={resultsLimit}
+									baseUrl={`/tag/${tag.nodeId}`}
+									setCurrentPage={setQuestionsCurrentPage}
+								/>
+							</>
+						) : null}
 					</>
 				)}
 			</Section>

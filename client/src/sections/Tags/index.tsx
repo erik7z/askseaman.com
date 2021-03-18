@@ -58,15 +58,17 @@ export const Tags = () => {
 				/>
 				{errorMessage}
 				{loadingMessage}
-				<Row className='tags-list text-center'>
-					{tagsList && (
-						<>
-							{tagsList.map((tag) => {
-								return tag ? <TagCardItem key={tag.nodeId} tag={tag} /> : null
-							})}
-						</>
-					)}
-				</Row>
+				{!loading && (
+					<Row className='tags-list text-center'>
+						{tagsList && (
+							<>
+								{tagsList.map((tag) => {
+									return tag ? <TagCardItem key={tag.nodeId} tag={tag} /> : null
+								})}
+							</>
+						)}
+					</Row>
+				)}
 
 				<Pagination
 					currentPage={currentPage}

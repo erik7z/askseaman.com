@@ -61,7 +61,7 @@ export const Questions = () => {
 				/>
 				{errorMessage}
 				{loadingMessage}
-				{questionsList && (
+				{!loading && questionsList && (
 					<>
 						{questionsList.map((question) => {
 							return question ? (

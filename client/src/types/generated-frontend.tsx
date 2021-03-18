@@ -2331,6 +2331,10 @@ export type QuestionsListQuery = (
 
 export type TagPageQueryVariables = Exact<{
   name?: Maybe<Scalars['String']>;
+  usersFirst?: Maybe<Scalars['Int']>;
+  usersOffset?: Maybe<Scalars['Int']>;
+  questionsFirst?: Maybe<Scalars['Int']>;
+  questionsOffset?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -2342,12 +2346,16 @@ export type TagPageQuery = (
     & { moderators?: Maybe<Array<Maybe<(
       { __typename?: 'User' }
       & UserFieldsFragment
-    )>>>, topUsers?: Maybe<Array<Maybe<(
-      { __typename?: 'User' }
-      & UserFieldsFragment
+    )>>>, questions?: Maybe<Array<Maybe<(
+      { __typename?: 'Question' }
+      & QuestionListItemFieldsFragment
     )>>>, topQuestions?: Maybe<Array<Maybe<(
       { __typename?: 'Question' }
       & QuestionListItemFieldsFragment
+    )>>>, topUsers?: Maybe<Array<Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'questionsCount' | 'answersCount'>
+      & UserFieldsFragment
     )>>> }
     & TagFieldsFragment
   )>>> }
@@ -3224,7 +3232,7 @@ export type QuestionsListQueryHookResult = ReturnType<typeof useQuestionsListQue
 export type QuestionsListLazyQueryHookResult = ReturnType<typeof useQuestionsListLazyQuery>;
 export type QuestionsListQueryResult = Apollo.QueryResult<QuestionsListQuery, QuestionsListQueryVariables>;
 export const TagPageDocument = gql`
-    query TagPage($name: String) {
+    query TagPage($name: String, $usersFirst: Int = 5, $usersOffset: Int = 0, $questionsFirst: Int = 5, $questionsOffset: Int = 0) {
   Tag(name: $name) {
     ...tagFields
     description
@@ -3232,11 +3240,16 @@ export const TagPageDocument = gql`
     moderators {
       ...userFields
     }
-    topUsers {
-      ...userFields
-    }
-    topQuestions {
+    questions(first: $questionsFirst, offset: $questionsOffset) {
       ...questionListItemFields
+    }
+    topQuestions(first: 10, offset: 0) {
+      ...questionListItemFields
+    }
+    topUsers(first: $usersFirst, offset: $usersOffset) {
+      ...userFields
+      questionsCount
+      answersCount
     }
   }
 }
@@ -3257,6 +3270,10 @@ ${QuestionListItemFieldsFragmentDoc}`;
  * const { data, loading, error } = useTagPageQuery({
  *   variables: {
  *      name: // value for 'name'
+ *      usersFirst: // value for 'usersFirst'
+ *      usersOffset: // value for 'usersOffset'
+ *      questionsFirst: // value for 'questionsFirst'
+ *      questionsOffset: // value for 'questionsOffset'
  *   },
  * });
  */

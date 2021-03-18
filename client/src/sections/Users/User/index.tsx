@@ -141,6 +141,7 @@ export const User = () => {
 										<AnswerItem
 											key={answer.nodeId}
 											answer={answer as TAnswer}
+											showQuestion={true}
 										/>
 									) : null
 								})}
