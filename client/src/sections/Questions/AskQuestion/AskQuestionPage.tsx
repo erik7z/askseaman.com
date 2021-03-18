@@ -1,47 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useHistory } from 'react-router-dom'
 
 import { Formik } from 'formik'
-import { Tag as ITag } from 'react-tag-autocomplete'
 import { TagsAutoSuggest } from './TagsAutoSuggest'
 
 import { Col, Form, Button, Alert, Card } from 'react-bootstrap'
 
 import {
-	useAskQuestionMutation,
-	useTagLazyQuery,
 	FieldError,
-	Tag as TTag,
+	useAskQuestionMutation,
 } from '../../../types/generated-frontend'
 
 import { askQuestionValidation } from '../../../lib/validation'
 import { CurrentUserContext, QuestionsContext } from '../../../lib/contexts'
 
-import { normalizeErrors, normalizeTags } from '../../../lib/helpers'
+import { normalizeErrors } from '../../../lib/helpers'
 
 export const AskQuestionPage = () => {
 	const [currentUserState] = useContext(CurrentUserContext)
 	const questionsContext = useContext(QuestionsContext)
 
 	const history = useHistory()
-	let tagsSuggestions: ITag[] = []
-	const [suggestions, setSuggestions] = useState(tagsSuggestions)
 
 	const [askQuestionMutation, { error: connErrors }] = useAskQuestionMutation()
-
-	const [getTags, { data: tagsData }] = useTagLazyQuery({
-		fetchPolicy: 'cache-and-network',
-	})
-
-	useEffect(() => {
-		// console.log('get tags useffect')
-		getTags()
-		if (tagsData && tagsData.Tag) {
-			setSuggestions(normalizeTags(tagsData.Tag as TTag[]))
-		}
-	}, [getTags, tagsData])
 
 	return (
 		<>
@@ -123,11 +106,7 @@ export const AskQuestionPage = () => {
 									<small id='tags' className='form-text'>
 										Add 1 to 5 tags for your question.
 									</small>
-									<TagsAutoSuggest
-										name='tags'
-										suggestions={suggestions}
-										setFieldValue={setFieldValue}
-									/>
+									<TagsAutoSuggest name='tags' setFieldValue={setFieldValue} />
 									<Form.Control.Feedback type='invalid'>
 										{errors.tags}
 									</Form.Control.Feedback>

@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactTags, { Tag as ITag } from 'react-tag-autocomplete'
 
-const defaultTags: ITag[] = []
+import {
+	useTagsListLazyQuery,
+	_TagOrdering,
+	Tag as TTag,
+} from '../../../types/generated-frontend'
+
+import { normalizeTags } from '../../../lib/helpers'
+import { PAGINATION_PAGE_SIZE } from '../../../globals'
 
 export const TagsAutoSuggest = ({
 	name,
 	setFieldValue,
-	suggestions,
 }: {
 	name: string
 	setFieldValue: (
@@ -14,13 +20,32 @@ export const TagsAutoSuggest = ({
 		value: any,
 		shouldValidate?: boolean | undefined
 	) => void
-	suggestions: ITag[]
 }) => {
-	const [tags, setTags] = useState<ITag[]>(defaultTags)
+	const [suggSearch, setSuggSearch] = useState('')
+	const [suggestions, setSuggestions] = useState<ITag[]>([])
+
+	const [getTags, { data: tagsData }] = useTagsListLazyQuery({
+		variables: {
+			orderBy: [_TagOrdering.QuestionsCountDesc],
+			first: PAGINATION_PAGE_SIZE,
+			offset: 0,
+			filter: {
+				name_regexp: '(?i).*' + suggSearch.toLocaleUpperCase() + '.*',
+			},
+		},
+	})
+
+	useEffect(() => {
+		getTags()
+		if (tagsData && tagsData.Tag) {
+			setSuggestions(normalizeTags(tagsData.Tag as TTag[]))
+		}
+	}, [getTags, tagsData, suggSearch])
+
+	const [tags, setTags] = useState<ITag[]>([])
 
 	const onDelete = (i: number) => {
 		const tagsD = tags.slice(0)
-
 		tagsD.splice(i, 1)
 		setTags(tagsD)
 	}
@@ -46,6 +71,8 @@ export const TagsAutoSuggest = ({
 			onDelete={onDelete}
 			onAddition={onAddition}
 			delimiters={['Enter', 'Tab']}
+			onInput={(query: string) => setSuggSearch(query)}
+			maxSuggestionsLength={5}
 		/>
 	)
 }

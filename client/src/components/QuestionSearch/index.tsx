@@ -44,10 +44,10 @@ const QuestionSearch = () => {
 	const [getTags, { data: TagsData }] = useTagsListLazyQuery({
 		variables: {
 			orderBy: [_TagOrdering.QuestionsCountDesc],
-			first: PAGINATION_PAGE_SIZE,
+			first: 3,
 			offset: 0,
 			filter: {
-				name_regexp: '(?i).*' + search + '.*',
+				name_regexp: '(?i).*' + search.toLocaleUpperCase() + '.*',
 			},
 		},
 	})
