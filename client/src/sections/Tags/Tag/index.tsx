@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Row, Jumbotron, ListGroup } from 'react-bootstrap'
 import Skeleton from 'react-loading-skeleton'
 
@@ -50,20 +50,16 @@ export const Tag = () => {
 							<h2 className='display-5 text-center'>{tag?.name}</h2>
 							<ListGroup horizontal className='justify-content-center'>
 								<ListGroup.Item>
-									<Link to='index.html'>
-										<b>{tag?.questionsCount}</b> <br />
-										Questions
-									</Link>
+									<b>{tag?.questionsCount}</b> <br />
+									Questions
 								</ListGroup.Item>
 								<ListGroup.Item className='text-success'>
 									<b>{tag?.questionsSolvedCount}</b> <br />
 									Solved
 								</ListGroup.Item>
 								<ListGroup.Item>
-									<Link to='users.html'>
-										<b>{tag?.subscribersCount}</b> <br />
-										Subscribers
-									</Link>
+									<b>{tag?.subscribersCount}</b> <br />
+									Subscribers
 								</ListGroup.Item>
 							</ListGroup>
 

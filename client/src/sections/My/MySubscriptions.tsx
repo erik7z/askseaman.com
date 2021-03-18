@@ -42,7 +42,8 @@ export const MySubscriptions = () => {
 			subscribers_some: {
 				nodeId: currentUser.nodeId,
 			},
-		}
+		},
+		'cache-and-network'
 	)
 
 	const [currentPageTags, setCurrentPageTags] = useState(0)
@@ -60,7 +61,8 @@ export const MySubscriptions = () => {
 			subscribers_some: {
 				nodeId: currentUser.nodeId,
 			},
-		}
+		},
+		'cache-and-network'
 	)
 
 	const loadingMessage =
@@ -152,9 +154,8 @@ export const MySubscriptions = () => {
 						border='warning'
 						style={{
 							width: '30rem',
-							margin: ' 0 auto',
+							margin: '20px auto',
 							float: 'none',
-							marginBottom: '10px',
 						}}
 					>
 						<Card.Header>No subscriptions yet...</Card.Header>

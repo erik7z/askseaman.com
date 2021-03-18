@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { WatchQueryFetchPolicy } from '@apollo/client'
 
 import {
 	useQuestionsListLazyQuery,
@@ -14,20 +15,25 @@ export const useGetQuestions = (
 	currentPage: number = 0,
 	resultsLimit: number = PAGINATION_PAGE_SIZE,
 	orderBy: _QuestionOrdering = _QuestionOrdering.TimestampDesc,
-	filter?: _QuestionFilter
+	filter?: _QuestionFilter,
+	fetchPolicy?: WatchQueryFetchPolicy
 ) => {
 	const questionsContext = useContext(QuestionsContext)
 
 	const [questionsList, setQuestionsList] = useState<TQuestion[]>()
 	const [questionsCount, setQuestionsCount] = useState<number>(0)
 
-	const [getQuestions, { data, loading, error }] = useQuestionsListLazyQuery({
+	const [
+		getQuestions,
+		{ data, loading, error, refetch },
+	] = useQuestionsListLazyQuery({
 		variables: {
 			orderBy: [orderBy],
 			first: resultsLimit,
 			offset: resultsLimit * currentPage,
 			filter: filter,
 		},
+		fetchPolicy,
 	})
 
 	useEffect(() => {
@@ -44,5 +50,5 @@ export const useGetQuestions = (
 		questionsContext.shouldUpdateToggle,
 	])
 
-	return { questionsList, questionsCount, loading, error }
+	return { questionsList, questionsCount, loading, error, refetch }
 }

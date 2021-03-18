@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { WatchQueryFetchPolicy } from '@apollo/client'
 
 import {
 	useTagsListLazyQuery,
@@ -11,18 +12,20 @@ export const useGetTags = (
 	currentPage: number,
 	resultsLimit: number,
 	orderBy: _TagOrdering,
-	filter?: _TagFilter
+	filter?: _TagFilter,
+	fetchPolicy?: WatchQueryFetchPolicy
 ) => {
 	const [tagsList, setTagsList] = useState<TTag[]>()
 	const [tagsCount, setTagsCount] = useState<number>(0)
 
-	const [getTags, { data, loading, error }] = useTagsListLazyQuery({
+	const [getTags, { data, loading, error, refetch }] = useTagsListLazyQuery({
 		variables: {
 			orderBy: [orderBy],
 			first: resultsLimit,
 			offset: resultsLimit * currentPage,
 			filter: filter,
 		},
+		fetchPolicy,
 	})
 
 	useEffect(() => {
@@ -34,5 +37,5 @@ export const useGetTags = (
 		}
 	}, [getTags, data?.Tag, data?.TagCount?.totalCount])
 
-	return { tagsList, tagsCount, loading, error }
+	return { tagsList, tagsCount, loading, error, refetch }
 }
