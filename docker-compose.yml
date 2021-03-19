@@ -25,7 +25,7 @@ services:
   api:
     build: ./api
     # restart: unless-stopped
-    command: sh -c "cd /api/ && npm install && npm run start" # dev option
+    # command: sh -c "cd /api/ && npm install && npm run start" # dev option
     ports:
       - 4000:4000
     volumes:

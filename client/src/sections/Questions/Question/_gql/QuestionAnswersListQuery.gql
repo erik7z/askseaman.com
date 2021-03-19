@@ -1,5 +1,5 @@
 query QuestionAnswersList($filter: _AnswerFilter) {
-	Answer(filter: $filter) {
+	Answer(filter: $filter, orderBy: timestamp_asc) {
 		...answerFields
 	}
 }
