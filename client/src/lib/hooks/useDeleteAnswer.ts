@@ -1,10 +1,15 @@
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, useRef, useState } from 'react'
 
 import { useDeleteAnswerMutation } from '../../types/generated-frontend'
 import { AnswersContext } from '../../lib/contexts'
 
 export const useDeleteAnswer = (answerId: string) => {
-	const [shouldUpdateAnswer, setShouldUpdateAnswer] = useContext(AnswersContext)
+	const [{ shouldUpdateAnswer }, setShouldUpdateAnswer] = useContext(
+		AnswersContext
+	)
+	const setShouldUpdateAnswerRef = useRef(setShouldUpdateAnswer)
+
+	const [lastDeletedId, setLastDeletedId] = useState('')
 
 	const [
 		deleteAnswerMutation,
@@ -19,13 +24,20 @@ export const useDeleteAnswer = (answerId: string) => {
 				nodeId: answerId,
 			},
 		},
+		fetchPolicy: 'no-cache',
 	})
 
 	useEffect(() => {
-		if (deleteAnswerResponse && deleteAnswerResponse.DeleteAnswer?.nodeId) {
-			setShouldUpdateAnswer({ shouldUpdateAnswer: true })
+		if (
+			deleteAnswerResponse &&
+			deleteAnswerResponse.DeleteAnswer?.nodeId !== lastDeletedId
+		) {
+			setShouldUpdateAnswerRef.current({
+				shouldUpdateAnswer: !shouldUpdateAnswer,
+			})
+			setLastDeletedId(deleteAnswerResponse.DeleteAnswer?.nodeId)
 		}
-	}, [deleteAnswerResponse, shouldUpdateAnswer, setShouldUpdateAnswer])
+	}, [deleteAnswerResponse, shouldUpdateAnswer, lastDeletedId])
 
 	const handleDelete = (e: React.MouseEvent) => {
 		e.preventDefault()

@@ -39,6 +39,13 @@ const client = new ApolloClient({
 			TokenResponse: {
 				keyFields: [],
 			},
+			Query: {
+				fields: {
+					Answer: {
+						merge: false,
+					},
+				},
+			},
 			FormError: {
 				keyFields: [],
 			},

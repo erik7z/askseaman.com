@@ -8,7 +8,7 @@ import {
 import { AnswersContext } from '../../lib/contexts'
 
 export const useGetQuestionAnswers = (questionId: string) => {
-	const [shouldUpdateAnswer] = useContext(AnswersContext)
+	const [{ shouldUpdateAnswer }] = useContext(AnswersContext)
 
 	const [answersList, setAnswersList] = useState<TAnswer[]>([])
 
@@ -23,6 +23,7 @@ export const useGetQuestionAnswers = (questionId: string) => {
 				},
 			},
 		},
+		fetchPolicy: 'cache-and-network',
 	})
 
 	useEffect(() => {

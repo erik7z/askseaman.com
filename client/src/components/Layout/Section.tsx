@@ -44,4 +44,4 @@ const Section = ({
 	)
 }
 
-export default React.memo(Section)
+export default Section
