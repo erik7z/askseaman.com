@@ -40,7 +40,7 @@ export const User = () => {
 		<>
 			<Section
 				sectionName='Users'
-				sectionTitle={`${user?.name} ${user?.surname}`}
+				sectionTitle={user ? `${user?.name} ${user?.surname}` : ''}
 				sectionClass='section-user-page'
 			>
 				{!user || loading ? (

@@ -68,7 +68,7 @@ type Mutation {
 			}
 			WITH a
 			MATCH (q:Question {nodeId: $data.nodeId})
-			CREATE (q)-[r:HAS_ANSWER]->(a)
+			CREATE (q)-[:HAS_ANSWER]->(a)
 			RETURN a
 			"""
 		)

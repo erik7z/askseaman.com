@@ -2012,6 +2012,7 @@ export type AnswerFieldsFragment = { __typename?: 'Answer' } & Pick<
 	Answer,
 	| 'nodeId'
 	| 'text'
+	| 'canDelete'
 	| 'canVote'
 	| 'upVotesCount'
 	| 'downVotesCount'
@@ -2579,6 +2580,7 @@ export const AnswerFieldsFragmentDoc = gql`
 			nodeId
 			title
 		}
+		canDelete
 		canVote
 		upVotesCount
 		downVotesCount

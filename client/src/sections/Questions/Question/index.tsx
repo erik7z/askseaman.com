@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Link, useParams, useHistory } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
-import { Card } from 'react-bootstrap'
+import { Card, Col } from 'react-bootstrap'
 import { BsTrash } from 'react-icons/bs'
 
 import {
@@ -82,7 +82,7 @@ export const Question = () => {
 					<>
 						<div className='question-item-full '>
 							<div className='row'>
-								<div className='col-md-10'>
+								<Col md={10}>
 									<div className='author d-flex align-items-center'>
 										<AvatarLink
 											size='lg'
@@ -108,8 +108,8 @@ export const Question = () => {
 											)}
 										</div>
 									</div>
-								</div>
-								<div className='col-md-2 text-center'>
+								</Col>
+								<Col md={2} className='text-center'>
 									{question.canDelete && (
 										<>
 											{deleteQuestionLoading ? (
@@ -122,7 +122,7 @@ export const Question = () => {
 											{deleteQuestionErrors && <span>Error...</span>}{' '}
 										</>
 									)}
-								</div>
+								</Col>
 							</div>
 
 							<div className='post-item-text'>

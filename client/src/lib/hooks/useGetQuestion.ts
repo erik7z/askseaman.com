@@ -7,6 +7,7 @@ export const useGetQuestion = (questionId: string) => {
 		variables: {
 			nodeId: questionId,
 		},
+		fetchPolicy: 'cache-and-network',
 	})
 
 	const [question] = data?.Question || [null]

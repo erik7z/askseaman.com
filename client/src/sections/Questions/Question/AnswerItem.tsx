@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { BsArrowUpShort, BsArrowDownShort } from 'react-icons/bs'
+import { BsArrowUpShort, BsArrowDownShort, BsTrash } from 'react-icons/bs'
 
 import { CommentsBox, AvatarLink } from '../../../components'
-import { useAnswerVote } from './../../../lib/hooks'
+import { useAnswerVote, useDeleteAnswer } from './../../../lib/hooks'
 import { CurrentUserContext } from './../../../lib/contexts'
 
 import { renderTextFromDb } from './../../../lib/helpers'
@@ -59,6 +59,12 @@ export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 			<BsArrowDownShort className='text-gray' />
 		)
 
+	const {
+		handleDelete,
+		deleteAnswerLoading,
+		deleteAnswerErrors,
+	} = useDeleteAnswer(answer.nodeId)
+
 	if (!answer) {
 		console.error('No answer in answer item')
 		return <h1>Something went wrong...</h1>
@@ -68,7 +74,21 @@ export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 		<Row className='answer-item media'>
 			<Col md={12}>
 				<Row>
-					<Col md={7} xs={12} className='align-self-end'>
+					<Col md={1} className='text-right pt-2'>
+						{answer.canDelete && (
+							<>
+								{deleteAnswerLoading ? (
+									<span>Loading...</span>
+								) : (
+									<Link to='#delete-question' onClick={handleDelete}>
+										<BsTrash />
+									</Link>
+								)}
+								{deleteAnswerErrors && <span>Error...</span>}{' '}
+							</>
+						)}
+					</Col>
+					<Col md={6} xs={12} className='align-self-end'>
 						{showQuestion && (
 							<Link to={`/question/${answer.question.nodeId}`}>
 								{' '}
@@ -114,7 +134,7 @@ export const AnswerItem = ({ answer, showQuestion = false }: IProps) => {
 				</ul>
 			</Col>
 			<Col md={11} xs={10}>
-				<p className='post-item-text'>{renderTextFromDb(answer.text)}</p>
+				<div className='post-item-text'>{renderTextFromDb(answer.text)}</div>
 				<CommentsBox
 					topic={answer as TAnswer}
 					getCommentsHook={getAnswerCommentsHook}

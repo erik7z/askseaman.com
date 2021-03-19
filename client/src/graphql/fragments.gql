@@ -72,6 +72,8 @@ fragment answerFields on Answer {
 		title
 	}
 
+	canDelete
+
 	canVote
 	upVotesCount
 	downVotesCount

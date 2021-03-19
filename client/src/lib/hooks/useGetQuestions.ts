@@ -26,7 +26,7 @@ export const useGetQuestions = ({
 	filter,
 	fetchPolicy,
 }: IProps) => {
-	const questionsContext = useContext(QuestionsContext)
+	const { shouldUpdateToggle } = useContext(QuestionsContext)
 
 	const [questionsList, setQuestionsList] = useState<TQuestion[]>()
 	const [questionsCount, setQuestionsCount] = useState<number>(0)
@@ -55,7 +55,7 @@ export const useGetQuestions = ({
 		getQuestions,
 		data?.Question,
 		data?.QuestionCount?.totalCount,
-		questionsContext.shouldUpdateToggle,
+		shouldUpdateToggle,
 	])
 
 	return { questionsList, questionsCount, loading, error, refetch }

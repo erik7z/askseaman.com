@@ -12,7 +12,7 @@ import { Question } from './sections/Questions/Question'
 import { AskQuestion } from './sections/Questions/AskQuestion'
 import { Register } from './sections/Auth/Register'
 import { useAuthCurrentUser } from './lib/hooks/'
-import { QuestionsProvider } from './lib/contexts'
+import { QuestionsProvider, AnswersProvider } from './lib/contexts'
 import { Settings } from './sections/My/Settings'
 import { Notifications } from './sections/My/Notifications'
 import { MySubscriptions } from './sections/My/MySubscriptions'
@@ -54,7 +54,9 @@ export const App = () => {
 								</QuestionsProvider>
 							</Route>
 							<Route path='/question/:questionId'>
-								<Question />
+								<AnswersProvider>
+									<Question />
+								</AnswersProvider>
 							</Route>
 							<Route exact path='/ask'>
 								<QuestionsProvider>
@@ -65,7 +67,9 @@ export const App = () => {
 								<Users />
 							</Route>
 							<Route exact path='/user/:userId'>
-								<User />
+								<AnswersProvider>
+									<User />
+								</AnswersProvider>
 							</Route>
 							<Route exact path='/my/feed'>
 								<MyFeed />
