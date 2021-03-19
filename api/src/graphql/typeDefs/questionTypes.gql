@@ -45,6 +45,10 @@ type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscri
 		@cypher(
 			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canComment"
 		)
+	canDelete: Boolean
+		@cypher(
+			statement: "RETURN size((this)<-[:ASKED]-(:User {nodeId: $cypherParams.currentUserId})) as canDelete"
+		)
 
 	likes: [User] @relation(name: "LIKED", direction: IN)
 	likesCount: Int
@@ -145,7 +149,7 @@ type Mutation {
 		)
 
 	#TODO: Delete related comments
-	DeleteQuestion(data: nodeIdInput!): DeleteQuestionResponse!
+	DeleteQuestion(data: nodeIdInput!): DeleteQuestionResponse
 		@isAuthenticated
 		@cypher(
 			statement: """

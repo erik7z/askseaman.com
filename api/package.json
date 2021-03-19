@@ -5,8 +5,8 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start-prod": "TS_NODE_FILES=true ts-node src/index.ts -e js,ts,json,gql",
-		"start": "TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true DEBUG=neo4j-graphql-js nodemon src/index.ts -e js,ts,json,gql",
+		"start": "TS_NODE_FILES=true ts-node src/index.ts -e js,ts,json,gql",
+		"start-dev": "TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true DEBUG=neo4j-graphql-js nodemon src/index.ts -e js,ts,json,gql",
 		"build": "tsc -p ./",
 		"typesgen": "graphql-codegen --config typesgen.yml"
 	},
@@ -46,8 +46,8 @@
 		"@typescript-eslint/eslint-plugin": "4.14.0",
 		"@typescript-eslint/parser": "4.14.0",
 		"eslint": "7.18.0",
+		"typescript": "4.1.3",
 		"nodemon": "2.0.7",
-		"ts-node": "9.1.1",
-		"typescript": "4.1.3"
+		"ts-node": "9.1.1"
 	}
 }

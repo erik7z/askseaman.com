@@ -1,0 +1,6 @@
+mutation DeleteQuestion($data: nodeIdInput!) {
+	DeleteQuestion(data: $data) {
+		nodeId
+		title
+	}
+}

@@ -48,6 +48,8 @@ export enum _AnswerOrdering {
   CommentsCountDesc = 'commentsCount_desc',
   CanCommentAsc = 'canComment_asc',
   CanCommentDesc = 'canComment_desc',
+  CanDeleteAsc = 'canDelete_asc',
+  CanDeleteDesc = 'canDelete_desc',
   CanVoteAsc = 'canVote_asc',
   CanVoteDesc = 'canVote_desc',
   IsVotedUpAsc = 'isVotedUp_asc',
@@ -146,6 +148,7 @@ export type Answer = CanBeCommented & CanBeVoted & {
   comments?: Maybe<Array<Maybe<Comment>>>;
   commentsCount?: Maybe<Scalars['Int']>;
   canComment?: Maybe<Scalars['Boolean']>;
+  canDelete?: Maybe<Scalars['Boolean']>;
   canVote?: Maybe<Scalars['Boolean']>;
   isVotedUp?: Maybe<Scalars['Boolean']>;
   isVotedDown?: Maybe<Scalars['Boolean']>;
@@ -188,6 +191,8 @@ export enum _CommentOrdering {
   LikesCountDesc = 'likesCount_desc',
   CanLikeAsc = 'canLike_asc',
   CanLikeDesc = 'canLike_desc',
+  CanDeleteAsc = 'canDelete_asc',
+  CanDeleteDesc = 'canDelete_desc',
   IsLikedAsc = 'isLiked_asc',
   IsLikedDesc = 'isLiked_desc',
   IdAsc = '_id_asc',
@@ -272,6 +277,7 @@ export type Comment = CanBeLiked & {
   likes?: Maybe<Array<Maybe<User>>>;
   likesCount?: Maybe<Scalars['Int']>;
   canLike?: Maybe<Scalars['Boolean']>;
+  canDelete?: Maybe<Scalars['Boolean']>;
   isLiked?: Maybe<Scalars['Boolean']>;
   /** Generated field for querying the Neo4j [system id](https://neo4j.com/docs/cypher-manual/current/functions/scalar/#functions-id) of this node. */
   _id?: Maybe<Scalars['String']>;
@@ -321,6 +327,8 @@ export enum _QuestionOrdering {
   CommentsCountDesc = 'commentsCount_desc',
   CanCommentAsc = 'canComment_asc',
   CanCommentDesc = 'canComment_desc',
+  CanDeleteAsc = 'canDelete_asc',
+  CanDeleteDesc = 'canDelete_desc',
   LikesCountAsc = 'likesCount_asc',
   LikesCountDesc = 'likesCount_desc',
   CanLikeAsc = 'canLike_asc',
@@ -476,6 +484,7 @@ export type Question = CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribe
   comments?: Maybe<Array<Maybe<Comment>>>;
   commentsCount?: Maybe<Scalars['Int']>;
   canComment?: Maybe<Scalars['Boolean']>;
+  canDelete?: Maybe<Scalars['Boolean']>;
   likes?: Maybe<Array<Maybe<User>>>;
   likesCount?: Maybe<Scalars['Int']>;
   canLike?: Maybe<Scalars['Boolean']>;
@@ -544,6 +553,8 @@ export enum _TagOrdering {
   DescriptionDesc = 'description_desc',
   CreatedAtAsc = 'createdAt_asc',
   CreatedAtDesc = 'createdAt_desc',
+  UpdatedAtAsc = 'updatedAt_asc',
+  UpdatedAtDesc = 'updatedAt_desc',
   TimestampAsc = 'timestamp_asc',
   TimestampDesc = 'timestamp_desc',
   QuestionsCountAsc = 'questionsCount_asc',
@@ -606,6 +617,14 @@ export type _TagFilter = {
   createdAt_lte?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gt?: Maybe<_Neo4jDateTimeInput>;
   createdAt_gte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_not?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_not_in?: Maybe<Array<_Neo4jDateTimeInput>>;
+  updatedAt_lt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_lte?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt_gte?: Maybe<_Neo4jDateTimeInput>;
   timestamp?: Maybe<Scalars['String']>;
   timestamp_not?: Maybe<Scalars['String']>;
   timestamp_in?: Maybe<Array<Scalars['String']>>;
@@ -661,6 +680,7 @@ export type Tag = CanBeSubscribed & {
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTime>;
+  updatedAt?: Maybe<_Neo4jDateTime>;
   timestamp?: Maybe<Scalars['String']>;
   addedBy?: Maybe<User>;
   moderators?: Maybe<Array<Maybe<User>>>;
@@ -1930,6 +1950,7 @@ export type QueryTagArgs = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<_Neo4jDateTimeInput>;
+  updatedAt?: Maybe<_Neo4jDateTimeInput>;
   timestamp?: Maybe<Scalars['String']>;
   totalCount?: Maybe<Scalars['Int']>;
   _id?: Maybe<Scalars['String']>;
@@ -2264,6 +2285,7 @@ export type AnswerResolvers<ContextType = any, ParentType extends ResolversParen
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<AnswerCommentsArgs, never>>;
   commentsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   canComment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   canVote?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isVotedUp?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isVotedDown?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -2284,6 +2306,7 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   likes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<CommentLikesArgs, never>>;
   likesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   canLike?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isLiked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2308,6 +2331,7 @@ export type QuestionResolvers<ContextType = any, ParentType extends ResolversPar
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType, RequireFields<QuestionCommentsArgs, never>>;
   commentsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   canComment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  canDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   likes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<QuestionLikesArgs, never>>;
   likesCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   canLike?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -2327,6 +2351,7 @@ export type TagResolvers<ContextType = any, ParentType extends ResolversParentTy
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['_Neo4jDateTime']>, ParentType, ContextType>;
   timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   addedBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<TagAddedByArgs, never>>;
   moderators?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, RequireFields<TagModeratorsArgs, never>>;

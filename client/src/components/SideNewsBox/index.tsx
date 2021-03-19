@@ -7,11 +7,11 @@ import { _QuestionOrdering } from '../../types/generated-frontend'
 import { SIDE_QUESTIONS_LIMIT } from '../../globals'
 
 export const SideNewsBox = () => {
-	const { questionsList, loading, error } = useGetQuestions(
-		0,
-		SIDE_QUESTIONS_LIMIT,
-		_QuestionOrdering.AnswersCountDesc
-	)
+	const { questionsList, loading, error } = useGetQuestions({
+		currentPage: 0,
+		resultsLimit: SIDE_QUESTIONS_LIMIT,
+		orderBy: _QuestionOrdering.AnswersCountDesc,
+	})
 
 	if (error) return <h3>Something went wrong</h3>
 

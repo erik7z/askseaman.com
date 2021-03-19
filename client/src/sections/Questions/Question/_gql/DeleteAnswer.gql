@@ -1,0 +1,6 @@
+mutation DeleteAnswer($data: nodeIdInput!) {
+	DeleteAnswer(data: $data) {
+		nodeId
+		text
+	}
+}

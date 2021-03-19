@@ -11,13 +11,21 @@ import {
 import { QuestionsContext } from '../../lib/contexts'
 import { PAGINATION_PAGE_SIZE } from '../../globals'
 
-export const useGetQuestions = (
-	currentPage: number = 0,
-	resultsLimit: number = PAGINATION_PAGE_SIZE,
-	orderBy: _QuestionOrdering = _QuestionOrdering.TimestampDesc,
-	filter?: _QuestionFilter,
+interface IProps {
+	currentPage: number
+	resultsLimit?: number
+	orderBy: _QuestionOrdering
+	filter?: _QuestionFilter
 	fetchPolicy?: WatchQueryFetchPolicy
-) => {
+}
+
+export const useGetQuestions = ({
+	currentPage = 0,
+	resultsLimit = PAGINATION_PAGE_SIZE,
+	orderBy = _QuestionOrdering.TimestampDesc,
+	filter,
+	fetchPolicy,
+}: IProps) => {
 	const questionsContext = useContext(QuestionsContext)
 
 	const [questionsList, setQuestionsList] = useState<TQuestion[]>()

@@ -34,17 +34,16 @@ export const MySubscriptions = () => {
 		questionsCount,
 		loading: questionsLoading,
 		error: questionsError,
-	} = useGetQuestions(
-		questionsCurrentPage,
-		PAGINATION_PAGE_SIZE,
-		_QuestionOrdering.TimestampDesc,
-		{
+	} = useGetQuestions({
+		currentPage: questionsCurrentPage,
+		orderBy: _QuestionOrdering.TimestampDesc,
+		filter: {
 			subscribers_some: {
 				nodeId: currentUser.nodeId,
 			},
 		},
-		'cache-and-network'
-	)
+		fetchPolicy: 'cache-and-network',
+	})
 
 	const [currentPageTags, setCurrentPageTags] = useState(0)
 

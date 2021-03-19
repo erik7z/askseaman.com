@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useHistory } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import { Card } from 'react-bootstrap'
+import { BsTrash } from 'react-icons/bs'
 
 import {
 	UserTextFormInput,
@@ -16,7 +17,11 @@ import SideBar from '../../../components/Layout/SideBar'
 
 import { answerQuestionHandler } from './../../../components/UserTextFormInput/lib/helpers'
 import { AnswersList } from './AnswersList'
-import { useGetQuestionAnswers, useGetQuestion } from './../../../lib/hooks'
+import {
+	useGetQuestionAnswers,
+	useGetQuestion,
+	useDeleteQuestion,
+} from './../../../lib/hooks'
 import { CurrentUserContext } from './../../../lib/contexts'
 
 import {
@@ -53,6 +58,14 @@ export const Question = () => {
 		fetchPolicy: 'no-cache',
 	})
 
+	const history = useHistory()
+
+	const {
+		handleDelete,
+		deleteQuestionLoading,
+		deleteQuestionErrors,
+	} = useDeleteQuestion(questionId, () => history.push('/'))
+
 	const questionTitle = question ? question.title : ''
 
 	return (
@@ -68,35 +81,53 @@ export const Question = () => {
 				) : (
 					<>
 						<div className='question-item-full '>
-							<div className='author d-flex align-items-center'>
-								<AvatarLink
-									size='lg'
-									avatarUrl={question.author?.avatar as string}
-									userId={question.author?.nodeId}
-								/>
-								<div className='post-item-info'>
-									<span>Asked by</span>
-									<h5 className='author-name'>
-										<Link to={`/user/${question.author?.nodeId}`}>
-											{question.author?.name}
-										</Link>
-										,{' '}
-										<span className='author-position'>
-											{question.author?.rank}
-										</span>
-									</h5>
-									{question.tags && (
-										<TagsInlineList
-											questionId={question.nodeId}
-											tagsList={question.tags as TTag[]}
+							<div className='row'>
+								<div className='col-md-10'>
+									<div className='author d-flex align-items-center'>
+										<AvatarLink
+											size='lg'
+											avatarUrl={question.author?.avatar as string}
+											userId={question.author?.nodeId}
 										/>
+										<div className='post-item-info'>
+											<span>Asked by</span>
+											<h5 className='author-name'>
+												<Link to={`/user/${question.author?.nodeId}`}>
+													{question.author?.name}
+												</Link>
+												,{' '}
+												<span className='author-position'>
+													{question.author?.rank}
+												</span>
+											</h5>
+											{question.tags && (
+												<TagsInlineList
+													questionId={question.nodeId}
+													tagsList={question.tags as TTag[]}
+												/>
+											)}
+										</div>
+									</div>
+								</div>
+								<div className='col-md-2 text-center'>
+									{question.canDelete && (
+										<>
+											{deleteQuestionLoading ? (
+												<span>Loading...</span>
+											) : (
+												<Link to='#delete-question' onClick={handleDelete}>
+													<BsTrash />
+												</Link>
+											)}
+											{deleteQuestionErrors && <span>Error...</span>}{' '}
+										</>
 									)}
 								</div>
 							</div>
 
-							<p className='post-item-text'>
+							<div className='post-item-text'>
 								{renderTextFromDb(question.text)}
-							</p>
+							</div>
 							<CommentsBox
 								topic={question as TQuestion}
 								getCommentsHook={getQuestionCommentsHook}

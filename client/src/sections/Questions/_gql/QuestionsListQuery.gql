@@ -23,6 +23,8 @@ query QuestionsList(
 		answersCount
 		commentsCount
 
+		canDelete
+
 		canSubscribe
 		isSubscribed
 		subscribersCount

@@ -52,7 +52,7 @@ export const AskQuestionPage = () => {
 
 							if (askResponse.AskQuestion.__typename === 'Question') {
 								questionsContext.shouldUpdateToggle = !questionsContext.shouldUpdateToggle
-								history.push('/')
+								history.push(`/question/${askResponse.AskQuestion.nodeId}`)
 							}
 						}
 						setSubmitting(false)

@@ -20,6 +20,8 @@ query QuestionPage($nodeId: ID!) {
 			...answerFields
 		}
 
+		canDelete
+
 		canSubscribe
 		isSubscribed
 		subscribersCount

@@ -14,6 +14,10 @@ type Comment implements CanBeLiked {
 		@cypher(
 			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canLike"
 		)
+	canDelete: Boolean
+		@cypher(
+			statement: "RETURN size((this)<-[:ADDED_COMMENT]-(:User {nodeId: $cypherParams.currentUserId})) as canDelete"
+		)
 	isLiked: Boolean
 		@cypher(
 			statement: "MATCH (this)<-[r:LIKED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isLiked"

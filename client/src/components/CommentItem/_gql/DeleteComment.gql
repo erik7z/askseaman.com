@@ -1,0 +1,6 @@
+mutation DeleteComment($data: nodeIdInput!) {
+	DeleteComment(data: $data) {
+		nodeId
+		text
+	}
+}

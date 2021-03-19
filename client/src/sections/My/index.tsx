@@ -29,16 +29,17 @@ export const MyFeed = () => {
 
 	const [{ currentUser }] = useContext(CurrentUserContext)
 
-	const { questionsList, questionsCount, loading, error } = useGetQuestions(
+	const { questionsList, questionsCount, loading, error } = useGetQuestions({
 		currentPage,
 		resultsLimit,
-		_QuestionOrdering.TimestampDesc,
-		{
+		orderBy: _QuestionOrdering.TimestampDesc,
+		filter: {
 			author: {
 				nodeId: currentUser.nodeId,
 			},
-		}
-	)
+		},
+		fetchPolicy: 'cache-and-network',
+	})
 
 	const loadingMessage = loading ? <Skeleton count={25} /> : null
 	const errorMessage = error ? <h4>Error occured. Try again later :(</h4> : null

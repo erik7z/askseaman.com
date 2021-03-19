@@ -26,6 +26,10 @@ type Answer implements CanBeCommented & CanBeVoted {
 		@cypher(
 			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canComment"
 		)
+	canDelete: Boolean
+		@cypher(
+			statement: "RETURN size((this)<-[:ANSWERED]-(:User {nodeId: $cypherParams.currentUserId})) as canDelete"
+		)
 
 	canVote: Boolean
 		@cypher(

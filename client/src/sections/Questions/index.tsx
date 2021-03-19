@@ -23,11 +23,12 @@ export const Questions = () => {
 	const [currentPage, setCurrentPage] = useState(0)
 	const [orderBy, setOrderBy] = useState(_QuestionOrdering.TimestampDesc)
 
-	const { questionsList, questionsCount, loading, error } = useGetQuestions(
+	const { questionsList, questionsCount, loading, error } = useGetQuestions({
 		currentPage,
 		resultsLimit,
-		orderBy
-	)
+		orderBy,
+		fetchPolicy: 'cache-and-network',
+	})
 
 	const sortsList = [
 		{
