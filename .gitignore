@@ -1,4 +1,3 @@
-/.env
 /_other
 /api/.env
 /api/build
@@ -8,6 +7,3 @@
 /neo4j/data
 /neo4j/import
 /neo4j/logs
-/save-exact.js
-/server.env
-api.env
