@@ -1,3 +1,4 @@
+.env
 /_other
 /api/.env
 /api/build
