@@ -1,0 +1,6 @@
+query Tag {
+	Tag(first: 10) {
+		name
+		description
+	}
+}

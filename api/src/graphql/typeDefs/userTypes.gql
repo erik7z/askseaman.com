@@ -1,0 +1,118 @@
+type User {
+	nodeId: ID! @id
+	name: String!
+	surname: String!
+	avatar: String
+	rank: String
+	description: String
+	createdAt: DateTime
+	timestamp: String
+	roles: [String]
+	location: String
+
+	questionsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:ASKED]->(:Question)) as questionsCount"
+		)
+	answersCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)) as answersCount"
+		)
+	questionsSolvedCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:ANSWERED]->(:Answer)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
+		)
+	favoriteTags: [Tag]
+		@cypher(
+			statement: """
+			MATCH (this)-[:ASKED]->(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+				UNION
+				MATCH (this)-[:ANSWERED]->(:Answer)<-[:HAS_ANSWER]-(:Question)<-[:TAGGED]-(t:Tag) RETURN t as favoriteTags
+			"""
+		)
+
+	email: String  #TODO: hide email  from outer world
+		# @isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (this)-[:AUTHENTICATED_WITH]->(l:LocalAccount) RETURN l.email as email
+			"""
+		)
+	questions: [Question] @relation(name: "ASKED", direction: OUT)
+	answers: [Answer] @relation(name: "ANSWERED", direction: OUT)
+	tags: [Tag] @relation(name: "ADDED_BY", direction: IN)
+	comments: [Comment] @relation(name: "ADDED_COMMENT", direction: OUT)
+	liked: [CanBeLiked] @relation(name: "LIKED", direction: OUT)
+	subscriptions: [CanBeSubscribed] @relation(name: "SUBSCRIBED", direction: OUT)
+	moderatingTags: [Tag] @relation(name: "MODERATED_BY", direction: IN)
+
+	totalCount: Int # Used for totalCount query
+}
+
+type Profile {
+	name: String
+	surname: String
+	avatar: String
+	rank: String
+	description: String
+	isPasswordChanged: String
+}
+
+type LocalAccount {
+	user: User!
+	email: String! @unique
+	password: String
+	code: Int
+}
+
+type Query {
+	UserCount: User
+
+	CurrentUser: User!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			RETURN u
+			"""
+		)
+	UserRanks: JSONObject
+}
+
+type Mutation {
+	Register(data: RegisterUserInput!): AuthResponse!
+	SignIn(data: LoginUserInput!): AuthResponse!
+	ChangePassRequest(data: EmailInput!): RedirectUriResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User {email: $data.email})-[:AUTHENTICATED_WITH]->(l:LocalAccount {email: $data.email})
+			SET l.code = $cypherParams.code
+			RETURN u
+			"""
+		)
+	ChangePassConfirm(data: CodeInput!): RedirectUriResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
+			RETURN u
+			"""
+		)
+
+	ChangePassComplete(data: newPassInput!): RedirectUriResponse!
+		@cypher(
+			statement: """
+			MATCH (u:User)-[:AUTHENTICATED_WITH]->(l:LocalAccount {code: $data.code})
+			SET l.password = $data.new_password, l.code = null
+			RETURN u
+			"""
+		)
+
+	EditProfile(data: UserProfileInput!): EditProfileResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			RETURN u
+			"""
+		)
+}

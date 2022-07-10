@@ -1,0 +1,83 @@
+type Tag implements CanBeSubscribed {
+	nodeId: ID! @id
+	name: String! @unique @upper
+	description: String
+	createdAt: DateTime
+	updatedAt: DateTime
+	timestamp: String
+	addedBy: User @relation(name: "ADDED_BY", direction: OUT)
+	moderators: [User] @relation(name: "MODERATED_BY", direction: OUT)
+
+	questions: [Question] @relation(name: "TAGGED", direction: OUT)
+	questionsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:TAGGED]->(:Question)) as questionsCount"
+		)
+	questionsSolvedCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:TAGGED]->(:Question)<-[:ACCEPTED]-(:User)) as questionsSolvedCount"
+		)
+
+	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
+	subscribersCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
+		)
+	canSubscribe: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canSubscribe"
+		)
+	isSubscribed: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isSubscribed"
+		)
+
+	topUsers: [User]  #TODO:complete logic to select top users
+		@cypher(
+			statement: """
+			MATCH (this)-[:TAGGED]->(:Question)<-[:ASKED]-(u:User) RETURN u as topUsers
+			"""
+		)
+	topQuestions: [Question]  #TODO:complete logic to select top questions
+		@cypher(
+			statement: """
+			MATCH (this)-[:TAGGED]->(q:Question)<-[:SUBSCRIBED]-(u:User) RETURN DISTINCT q as topQuestions
+			"""
+		)
+
+	totalCount: Int # Used for totalCount query
+}
+
+type Query {
+	TagCount: Tag
+}
+
+type Mutation {
+	AddTag(data: AddTagInput!): Tag
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			MERGE (t:Tag:CanBeSubscribed {
+				nodeId: apoc.create.uuid(),
+				name: $data.name,
+				description: $data.description,
+				createdAt: DateTime(),
+				timestamp: timestamp()
+				})-[a:ADDED_BY]->(u)
+			RETURN t
+			"""
+		)
+
+	DeleteTag(data: deleteTagInput!): DeleteTagResponse!
+		@isAuthenticated
+		@hasRole(roles: [admin])
+		@cypher(
+			statement: """
+			MATCH (t:Tag {name: $data.name})
+			WITH t, properties(t) AS m
+			DETACH DELETE t
+			RETURN m
+			"""
+		)
+}

@@ -1,0 +1,90 @@
+input RegisterUserInput {
+	email: String!
+	password: String!
+	name: String!
+	surname: String!
+	rank: UserRank
+}
+
+input UserProfileInput {
+	password: String
+	name: String
+	surname: String
+	avatar: String
+	rank: UserRank
+	description: String
+}
+
+input LoginUserInput {
+	email: String!
+	password: String!
+}
+
+input EmailInput {
+	email: String!
+}
+
+input nodeIdInput {
+	nodeId: ID!
+}
+
+input deleteTagInput {
+	name: String!
+}
+
+input CodeInput {
+	code: Int!
+}
+
+input newPassInput {
+	code: Int!
+	new_password: String!
+}
+
+input AskQuestionInput {
+	title: String!
+	text: String!
+	tags: [String!]!
+}
+
+input EditQuestionInput {
+	nodeId: ID!
+	title: String
+	text: String
+	tags: [String!]
+}
+
+input AnswerQuestionInput {
+	nodeId: ID!
+	text: String!
+}
+
+input AddCommentInput {
+	nodeId: ID!
+	text: String!
+}
+
+input EditAnswerInput {
+	nodeId: ID!
+	text: String!
+}
+
+input EditCommentInput {
+	nodeId: ID!
+	text: String!
+}
+
+input AddTagInput {
+	name: String!
+	description: String
+}
+
+input AddRankInput {
+	rank: String!
+	description: String
+}
+
+input VoteInput {
+	nodeId: ID!
+	action: VoteIntention!
+}

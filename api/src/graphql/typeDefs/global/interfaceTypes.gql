@@ -1,0 +1,31 @@
+interface CanBeCommented {
+	nodeId: ID!
+	comments: [Comment]
+	commentsCount: Int
+	canComment: Boolean
+}
+
+interface CanBeLiked {
+	nodeId: ID!
+	likes: [User]
+	likesCount: Int
+	canLike: Boolean
+	isLiked: Boolean
+}
+
+interface CanBeSubscribed {
+	nodeId: ID!
+	subscribers: [User]
+	subscribersCount: Int
+	canSubscribe: Boolean
+	isSubscribed: Boolean
+}
+
+interface CanBeVoted {
+	nodeId: ID!
+	upVotesCount: Int
+	downVotesCount: Int
+	canVote: Boolean
+	isVotedUp: Boolean
+	isVotedDown: Boolean
+}

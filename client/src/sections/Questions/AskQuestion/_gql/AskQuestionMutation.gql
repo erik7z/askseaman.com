@@ -1,0 +1,17 @@
+mutation AskQuestion($data: AskQuestionInput!) {
+	AskQuestion(data: $data) {
+		__typename
+		... on Question {
+			nodeId
+			title
+			text
+		}
+		... on FormError {
+			message
+			errors {
+				field
+				message
+			}
+		}
+	}
+}

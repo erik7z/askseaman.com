@@ -1,0 +1,58 @@
+union LikeResponse = Question | Comment
+union VoteResponse = Question | Answer
+union SubscribeResponse = Question | Tag
+union AskQuestionResponse = Question | FormError
+union AnswerQuestionResponse = Answer | FormError
+union AddCommentResponse = Comment | FormError
+union AuthResponse = TokenResponse | FormError
+union EditProfileResponse = Profile | FormError
+
+type FieldError {
+	field: String
+	message: String
+}
+
+type FormError {
+	message: String
+	errors: [FieldError] @neo4j_ignore # have to ignore array with subfields in union responses
+}
+
+type LoginResponse {
+	nodeId: ID!
+	email: String!
+	password: String! #TODO: hide password from outside api (which is required in resolver to compare with BCRYPT)
+	name: String!
+	surname: String!
+	token: String
+	roles: [Role]
+}
+
+type TokenResponse {
+	token: String
+}
+
+type RedirectUriResponse {
+	redirect: String!
+	status: ResponseStatus!
+	message: String
+}
+
+type DeleteQuestionResponse {
+	nodeId: ID! @id
+	title: String!
+	text: String!
+}
+
+type DeleteAnswerResponse {
+	nodeId: ID! @id
+	text: String!
+}
+
+type DeleteCommentResponse {
+	nodeId: ID! @id
+	text: String!
+}
+
+type DeleteTagResponse {
+	name: String!
+}

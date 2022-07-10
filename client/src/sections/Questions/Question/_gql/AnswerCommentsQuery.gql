@@ -1,0 +1,8 @@
+query AnswerComments($nodeId: ID!) {
+	Answer(nodeId: $nodeId) {
+		nodeId
+		comments(orderBy: timestamp_asc) {
+			...commentFields
+		}
+	}
+}

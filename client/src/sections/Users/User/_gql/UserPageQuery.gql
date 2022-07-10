@@ -1,0 +1,26 @@
+query UserPage(
+	$nodeId: ID!
+	$tagsFirst: Int = 5
+	$questionsFirst: Int = 5
+	$questionsOffset: Int = 0
+	$answersFirst: Int = 5
+	$answersOffset: Int = 0
+) {
+	User(nodeId: $nodeId) {
+		...userFields
+		email
+		location
+		questionsCount
+		answersCount
+		questionsSolvedCount
+		favoriteTags(first: $tagsFirst) {
+			...tagFields
+		}
+		questions(first: $questionsFirst, offset: $questionsOffset) {
+			...questionListItemFields
+		}
+		answers(first: $answersFirst, offset: $answersOffset) {
+			...answerFields
+		}
+	}
+}

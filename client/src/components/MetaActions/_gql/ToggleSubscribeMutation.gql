@@ -1,0 +1,15 @@
+mutation ToggleSubscribe($data: nodeIdInput!) {
+	ToggleSubscribe(data: $data) {
+		__typename
+		... on Question {
+			nodeId
+			subscribersCount
+			isSubscribed
+		}
+		... on Tag {
+			nodeId
+			subscribersCount
+			isSubscribed
+		}
+	}
+}

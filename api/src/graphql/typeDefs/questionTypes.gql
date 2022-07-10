@@ -1,0 +1,162 @@
+type Question implements CanBeCommented & CanBeLiked & CanBeVoted & CanBeSubscribed {
+	nodeId: ID! @id
+	title: String!
+	text: String!
+	createdAt: DateTime
+	updatedAt: DateTime
+	timestamp: String
+	author: User @relation(name: "ASKED", direction: IN)
+	viewsCount: Int
+		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
+
+	canVote: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canSubscribe"
+		)
+	isVotedUp: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:VOTED_UP]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) > 0 as isVotedUp"
+		)
+	isVotedDown: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:VOTED_DOWN]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) > 0 as isVotedDown"
+		)
+	upVotesCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:VOTED_UP]-(:User)) as upVotesCount"
+		)
+	downVotesCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:VOTED_DOWN]-(:User)) as downVotesCount"
+		)
+
+	answers: [Answer] @relation(name: "HAS_ANSWER", direction: OUT)
+	answersCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:HAS_ANSWER]->(:Answer)) as answersCount"
+		)
+
+	comments: [Comment] @relation(name: "HAS_COMMENT", direction: OUT)
+	commentsCount: Int
+		@cypher(
+			statement: "RETURN size((this)-[:HAS_COMMENT]->(:Comment)) as commentsCount"
+		)
+	canComment: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canComment"
+		)
+	canDelete: Boolean
+		@cypher(
+			statement: "RETURN size((this)<-[:ASKED]-(:User {nodeId: $cypherParams.currentUserId})) as canDelete"
+		)
+
+	likes: [User] @relation(name: "LIKED", direction: IN)
+	likesCount: Int
+		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
+	canLike: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canLike"
+		)
+	isLiked: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:LIKED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isLiked"
+		)
+
+	subscribers: [User] @relation(name: "SUBSCRIBED", direction: IN)
+	subscribersCount: Int
+		@cypher(
+			statement: "RETURN size((this)<-[:SUBSCRIBED]-(:User)) as subscribersCount"
+		)
+	canSubscribe: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canSubscribe"
+		)
+	isSubscribed: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:SUBSCRIBED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isSubscribed"
+		)
+
+	tags: [Tag] @relation(name: "TAGGED", direction: IN)
+	totalCount: Int # Used for totalCount query
+}
+
+type Query {
+	QuestionCount: Question
+}
+
+type Mutation {
+	AskQuestion(data: AskQuestionInput!): AskQuestionResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			CREATE (q:Question:CanBeCommented:CanBeVoted:CanBeSubscribed)<-[:ASKED]-(u)
+			SET q += {
+				title: $data.title,
+				text: $data.text,
+				nodeId: apoc.create.uuid(),
+				viewsCount: 0,
+				createdAt: DateTime(),
+				timestamp: timestamp()
+			}
+
+			WITH q
+			UNWIND $data.tags AS newTag
+				MERGE (t:Tag:CanBeSubscribed {name: newTag})
+					ON CREATE
+						SET t += {
+							nodeId: apoc.create.uuid(),
+							name: newTag,
+							description: '',
+							updatedAt: DateTime()
+						}
+					ON MATCH
+						SET t.updatedAt = timestamp()
+				MERGE (t)-[r:TAGGED]->(q)
+			RETURN q
+			"""
+		)
+
+	EditQuestion(data: EditQuestionInput!): Question!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (q:Question {nodeId:$data.nodeId})<-[:ASKED]-(u:User {nodeId: $cypherParams.currentUserId})
+			SET q += {title: $data.title, text: $data.text, updatedAt: DateTime()}
+			WITH q
+			CALL {
+				WITH q
+				MATCH (t:Tag)-[r:TAGGED]->(q)
+				DELETE r
+				RETURN count(t) as deleted_tags
+			}
+			WITH q
+			UNWIND $data.tags AS newTag
+				MERGE (t:Tag:CanBeSubscribed {name: newTag})
+					ON CREATE
+						SET t += {
+							nodeId: apoc.create.uuid(),
+							name: newTag,
+							description: '',
+							updatedAt: DateTime()
+						}
+					ON MATCH
+						SET t.updatedAt = timestamp()
+				MERGE (t)-[r:TAGGED]->(q)
+
+			RETURN q
+			"""
+		)
+
+	#TODO: Delete related comments
+	DeleteQuestion(data: nodeIdInput!): DeleteQuestionResponse
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (q:Question {nodeId:$data.nodeId})<-[:ASKED]-(u:User {nodeId: $cypherParams.currentUserId})
+			WITH q, properties(q) AS m
+			DETACH DELETE q
+			RETURN m
+			"""
+		)
+}

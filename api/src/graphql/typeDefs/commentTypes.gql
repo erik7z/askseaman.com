@@ -1,0 +1,67 @@
+type Comment implements CanBeLiked {
+	nodeId: ID! @id
+	text: String!
+	createdAt: DateTime
+	updatedAt: DateTime
+	timestamp: String
+	author: User @relation(name: "ADDED_COMMENT", direction: IN)
+	topic: CanBeCommented @relation(name: "HAS_COMMENT", direction: IN)
+
+	likes: [User] @relation(name: "LIKED", direction: IN)
+	likesCount: Int
+		@cypher(statement: "RETURN size((this)<-[:LIKED]-(:User)) as likesCount")
+	canLike: Boolean
+		@cypher(
+			statement: "MATCH (u:User {nodeId: $cypherParams.currentUserId}) RETURN count(u) = 1 as canLike"
+		)
+	canDelete: Boolean
+		@cypher(
+			statement: "RETURN size((this)<-[:ADDED_COMMENT]-(:User {nodeId: $cypherParams.currentUserId})) as canDelete"
+		)
+	isLiked: Boolean
+		@cypher(
+			statement: "MATCH (this)<-[r:LIKED]-(:User {nodeId: $cypherParams.currentUserId}) RETURN count(r) = 1 as isLiked"
+		)
+}
+
+type Mutation {
+	AddComment(data: AddCommentInput!): AddCommentResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (u:User {nodeId: $cypherParams.currentUserId})
+			CREATE (c:Comment:CanBeLiked)<-[:ADDED_COMMENT]-(u)
+			SET c += {
+				text: $data.text,
+				nodeId: apoc.create.uuid(),
+				createdAt: DateTime(),
+				timestamp: timestamp()
+			}
+			WITH c
+			MATCH (t:CanBeCommented {nodeId: $data.nodeId})
+			CREATE (t)-[:HAS_COMMENT]->(c)
+			RETURN c
+			"""
+		)
+
+	EditComment(data: EditCommentInput!): Comment!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (c:Comment {nodeId: $data.nodeId})<-[:ADDED_COMMENT]-(u:User {nodeId: $cypherParams.currentUserId})
+			SET c += {text: $data.text, updatedAt: DateTime()}
+			RETURN c
+			"""
+		)
+
+	DeleteComment(data: nodeIdInput!): DeleteCommentResponse!
+		@isAuthenticated
+		@cypher(
+			statement: """
+			MATCH (c:Comment {nodeId: $data.nodeId})<-[:ADDED_COMMENT]-(u:User {nodeId: $cypherParams.currentUserId})
+			WITH c, properties(c) AS m
+			DETACH DELETE c
+			RETURN m
+			"""
+		)
+}

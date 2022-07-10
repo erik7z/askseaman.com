@@ -1,0 +1,15 @@
+query UsersList(
+	$orderBy: [_UserOrdering]
+	$first: Int
+	$offset: Int
+	$filter: _UserFilter
+) {
+	User(orderBy: $orderBy, first: $first, offset: $offset, filter: $filter) {
+		...userFields
+		questionsCount
+		answersCount
+	}
+	UserCount(filter: $filter) {
+		totalCount
+	}
+}

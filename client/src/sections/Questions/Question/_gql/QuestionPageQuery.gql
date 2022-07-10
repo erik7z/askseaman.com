@@ -1,0 +1,35 @@
+query QuestionPage($nodeId: ID!) {
+	Question(nodeId: $nodeId) {
+		nodeId
+		title
+		text
+		viewsCount
+		author {
+			...userFields
+		}
+		tags {
+			nodeId
+			name
+		}
+		createdAt {
+			...dateTimeFields
+		}
+
+		answersCount
+		answers(orderBy: timestamp_asc) {
+			...answerFields
+		}
+
+		canDelete
+
+		canSubscribe
+		isSubscribed
+		subscribersCount
+
+		canComment
+		commentsCount
+		comments(orderBy: timestamp_asc) {
+			...commentFields
+		}
+	}
+}

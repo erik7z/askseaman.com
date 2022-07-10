@@ -1,0 +1,15 @@
+mutation ToggleLike($data: nodeIdInput!) {
+	ToggleLike(data: $data) {
+		__typename
+		... on Comment {
+			likesCount
+			isLiked
+			canLike
+		}
+		... on Question {
+			likesCount
+			isLiked
+			canLike
+		}
+	}
+}

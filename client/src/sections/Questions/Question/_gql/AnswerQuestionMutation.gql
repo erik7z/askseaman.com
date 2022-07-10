@@ -1,0 +1,21 @@
+mutation AnswerQuestion($data: AnswerQuestionInput!) {
+	AnswerQuestion(data: $data) {
+		__typename
+		... on Answer {
+			nodeId
+			question {
+				nodeId
+				answers(orderBy: timestamp_asc) {
+					...answerFields
+				}
+			}
+		}
+		... on FormError {
+			message
+			errors {
+				field
+				message
+			}
+		}
+	}
+}

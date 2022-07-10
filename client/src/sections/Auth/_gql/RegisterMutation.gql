@@ -1,0 +1,11 @@
+mutation Register($data: RegisterUserInput!) {
+	Register(data: $data) {
+		__typename
+		... on TokenResponse {
+			token
+		}
+		... on FormError {
+			...formErrorFields
+		}
+	}
+}

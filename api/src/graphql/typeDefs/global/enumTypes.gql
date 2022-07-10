@@ -1,0 +1,15 @@
+enum VoteIntention {
+	upVote
+	downVote
+}
+
+enum Role {
+	user
+	admin
+	reader
+}
+
+enum ResponseStatus {
+	success
+	fail
+}

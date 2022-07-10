@@ -1,0 +1,13 @@
+/.env
+/_other
+/api/.env
+/api/build
+/api/node_modules
+/client/.eslintcache
+/client/node_modules
+/neo4j/data
+/neo4j/import
+/neo4j/logs
+/save-exact.js
+/server.env
+api.env

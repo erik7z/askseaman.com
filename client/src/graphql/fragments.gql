@@ -1,0 +1,101 @@
+fragment userFields on User {
+	nodeId
+	name
+	surname
+	avatar
+	rank
+	description
+}
+
+fragment tagFields on Tag {
+	nodeId
+	name
+	questionsCount
+	subscribersCount
+	canSubscribe
+	isSubscribed
+}
+
+fragment questionListItemFields on Question {
+	nodeId
+	title
+	text
+	author {
+		...userFields
+	}
+	createdAt {
+		...dateTimeFields
+	}
+	tags(first: 5) {
+		nodeId
+		name
+	}
+	viewsCount
+	answersCount
+	commentsCount
+
+	canDelete
+
+	canSubscribe
+	isSubscribed
+	subscribersCount
+}
+
+fragment commentFields on Comment {
+	nodeId
+	text
+	likesCount
+	isLiked
+	canLike
+	createdAt {
+		...dateTimeFields
+	}
+	author {
+		...userFields
+	}
+}
+
+fragment answerFields on Answer {
+	nodeId
+	text
+	author {
+		...userFields
+	}
+	createdAt {
+		...dateTimeFields
+	}
+	comments(orderBy: timestamp_asc) {
+		...commentFields
+	}
+	question {
+		nodeId
+		title
+	}
+
+	canDelete
+
+	canVote
+	upVotesCount
+	downVotesCount
+	isVotedUp
+	isVotedDown
+
+	canComment
+	commentsCount
+}
+
+fragment formErrorFields on FormError {
+	message
+	errors {
+		message
+		field
+	}
+}
+
+fragment dateTimeFields on _Neo4jDateTime {
+	year
+	month
+	day
+	hour
+	minute
+}

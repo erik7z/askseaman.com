@@ -1,0 +1,83 @@
+version: '3'
+
+services:
+  db:
+    image: 'neo4j:4.2.2-enterprise'
+    restart: unless-stopped
+    ports:
+      - 7474:7474
+      - 7473:7473
+      - 7687:7687
+    volumes:
+      - ./neo4j/plugins:/plugins
+      - ./neo4j/import:/import
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+    environment:
+      - NEO4J_AUTH=${NEO4J_AUTH}
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+      # - NEO4JLABS_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+
+  api:
+#   build: ./api
+    image: zzzloy777/askseaman-api:latest
+    restart: unless-stopped
+    ports:
+      - 4000:4000
+    environment:
+      - NEO4J_HOST=${NEO4J_HOST}
+      - NEO4J_BOLT_PORT=${NEO4J_BOLT_PORT}
+      - NEO4J_USER=${NEO4J_USER}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - NEO4J_ENCRYPTED=${NEO4J_ENCRYPTED}
+      - GRAPHQL_SERVER_PORT=${GRAPHQL_SERVER_PORT}
+      - GRAPHQL_SERVER_PATH=${GRAPHQL_SERVER_PATH}
+      - GRAPHQL_SERVER_HOST=${GRAPHQL_SERVER_HOST}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRY=${JWT_EXPIRY}
+      - DEFAULT_ROLE=${DEFAULT_ROLE}
+      - AUTH_LOGIN_UI_URI=${AUTH_LOGIN_UI_URI}
+      - AUTH_NEW_PASS_UI_URI=${AUTH_NEW_PASS_UI_URI}
+      - AUTH_VERIFY_CODE_URI=${AUTH_VERIFY_CODE_URI}
+      - AUTH_CONFIRM_CODE_UI_URI=${AUTH_CONFIRM_CODE_UI_URI}
+      - AUTH_CHANGE_PASS_UI_URI=${AUTH_CHANGE_PASS_UI_URI}
+      - CLOUD_NAME=${CLOUD_NAME}
+      - CLOUD_API_KEY=${CLOUD_API_KEY}
+      - CLOUD_API_SECRET=${CLOUD_API_SECRET}
+      - CLOUD_IMG_FOLDER=${CLOUD_IMG_FOLDER}
+    links:
+      - db
+    depends_on:
+      - db
+      - client-build
+      - client-serve
+
+  client-build:
+    image: zzzloy777/askseaman-client:latest
+#    build:
+#      context: ./client
+    environment:
+      - REACT_APP_GRAPHQL_HOST=${REACT_APP_GRAPHQL_HOST}
+      - REACT_APP_GRAPHQL_PORT=${GRAPHQL_SERVER_PORT}
+    volumes:
+      - static_content:/client/build/
+
+  client-serve:
+    build: ./nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+      - NGINX_PORT=${NGINX_PORT}
+    volumes:
+      - static_content:/usr/share/nginx/html
+    depends_on:
+      - client-build
+
+volumes:
+  static_content:
