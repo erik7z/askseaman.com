@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: askseaman-depl-api
+  labels:
+    env: development
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: askseaman-proj-api
+  template:
+    metadata:
+      labels:
+        project: askseaman-proj-api
+    spec:
+      containers:
+        - name: askseaman-api
+          image: zzzloy777/askseaman-api:latest
+          ports:
+            - containerPort: 4000
+              name: askseaman-api
+          env:
+            - name: NEO4J_HOST
+              value: askseaman-serv-neo4j
+            - name: NEO4J_BOLT_PORT
+              value: "7687"
+            - name: NEO4J_USER
+              value: "neo4j"
+            - name: NEO4J_PASSWORD
+              value: "cr3wsilent"
+            - name: NEO4J_ENCRYPTED
+              value: "ENCRYPTION_ON"
+            - name: GRAPHQL_SERVER_PORT
+              value: "4000"
+            - name: GRAPHQL_SERVER_PATH
+              value: "/"
+            - name: GRAPHQL_SERVER_HOST
+              value: "0.0.0.0"
+            - name: JWT_SECRET
+              value: "askseamansecret"
+            - name: JWT_EXPIRY
+              value: "7d"
+            - name: DEFAULT_ROLE
+              value: "reader"
+            - name: AUTH_LOGIN_UI_URI
+              value: "/auth"
+            - name: AUTH_NEW_PASS_UI_URI
+              value: "/auth/new_pass"
+            - name: AUTH_VERIFY_CODE_URI
+              value: "/auth/verify"
+            - name: AUTH_CONFIRM_CODE_UI_URI
+              value: "/auth/confirm-code"
+            - name: AUTH_CHANGE_PASS_UI_URI
+              value: "/auth/change-pass?code="
+            - name: CLOUD_NAME
+              value: "zzzloy777"
+            - name: CLOUD_API_KEY
+              value: "258422435872984"
+            - name: CLOUD_API_SECRET
+              value: "BUrrQCadrM4YUQvpVGIuf36AjLA"
+            - name: CLOUD_IMG_FOLDER
+              value: "askseaman/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: askseaman-serv-api
+  labels:
+    env: development
+spec:
+  selector:
+    project: askseaman-proj-api
+  type: ClusterIP
+  ports:
+    - name: api4000
+      port: 4000
+      targetPort: 4000
