@@ -7,5 +7,5 @@
 /client/.eslintcache
 /client/node_modules
 /neo4j/data
-/neo4j/import
 /neo4j/logs
+/neo4j/plugins

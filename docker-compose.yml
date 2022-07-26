@@ -19,7 +19,7 @@ services:
       - NEO4J_apoc_import_file_use__neo4j__config=true
       - NEO4J_apoc_import_file_enabled=true
       - NEO4J_apoc_export_file_enabled=true
-      # - NEO4JLABS_PLUGINS=["apoc"]
+      - NEO4JLABS_PLUGINS=["apoc"]
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*
 
   api:
@@ -58,11 +58,6 @@ services:
 
   client-build:
     image: zzzloy777/askseaman-client:latest
-#    build:
-#      context: ./client
-    environment:
-      - REACT_APP_GRAPHQL_HOST=${REACT_APP_GRAPHQL_HOST}
-      - REACT_APP_GRAPHQL_PORT=${GRAPHQL_SERVER_PORT}
     volumes:
       - static_content:/client/build/
 

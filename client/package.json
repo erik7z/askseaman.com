@@ -35,7 +35,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "typesgen": "graphql-codegen --config typesgen.yml",
-    "docker:build": "docker build -t askseaman-client . && docker tag askseaman-client zzzloy777/askseaman-client:latest && docker push zzzloy777/askseaman-client:latest"
+    "docker:build": "source ./../.env && docker build -t askseaman-client --build-arg REACT_APP_GRAPHQL_HOST=$REACT_APP_GRAPHQL_HOST --build-arg REACT_APP_GRAPHQL_PORT=$REACT_APP_GRAPHQL_PORT . && docker tag askseaman-client zzzloy777/askseaman-client:latest && docker push zzzloy777/askseaman-client:latest"
   },
   "eslintConfig": {
     "extends": [
