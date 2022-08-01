@@ -32,7 +32,7 @@ metadata:
 spec:
   selector:
     project: askseaman-proj-client
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: client80
       port: 80

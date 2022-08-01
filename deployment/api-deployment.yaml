@@ -72,7 +72,7 @@ metadata:
 spec:
   selector:
     project: askseaman-proj-api
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: api4000
       port: 4000

@@ -67,7 +67,7 @@ metadata:
 spec:
   selector:
     project: askseaman-proj-neo4j
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: neo4j7474
       port: 7474
