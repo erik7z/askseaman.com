@@ -56,22 +56,11 @@ services:
       - client-build
       - client-serve
 
-  client-build:
-#    image: zzzloy777/askseaman-client-build:latest
-    image: zzzloy777/askseaman-client-build-local:latest
-    volumes:
-      - static_content:/client/build/
-
-  client-serve:
-#    image: zzzloy777/askseaman-client-nginx:latest
-    image: zzzloy777/askseaman-client-nginx-local:latest
+  client:
+#    image: zzzloy777/askseaman-client:latest
+    image: zzzloy777/askseaman-client-local:latest
     restart: unless-stopped
     ports:
       - 80:80
-    volumes:
-      - static_content:/usr/share/nginx/html
     depends_on:
-      - client-build
-
-volumes:
-  static_content:
+      - api

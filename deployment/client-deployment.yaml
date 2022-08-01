@@ -1,15 +1,3 @@
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: client-build-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 8Gi
-  storageClassName: "standard-rwo"
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,25 +16,12 @@ spec:
         project: askseaman-proj-client
     spec:
       containers:
-        - name: as-client-build
-          image: zzzloy777/askseaman-client-build:latest
-#          image: zzzloy777/askseaman-client-build-local:latest
-          volumeMounts:
-            - mountPath: "/client/build"
-              name: client-build
-        - name: as-client-serve
-          image: zzzloy777/askseaman-client-nginx:latest
-#          image: zzzloy777/askseaman-client-nginx-local:latest
-          volumeMounts:
-            - mountPath: "/usr/share/nginx/html"
-              name: client-build
+        - name: askseaman-client
+          image: zzzloy777/askseaman-client:latest
+#          image: zzzloy777/askseaman-client-local:latest
           ports:
             - containerPort: 80
               name: as-client-serve
-      volumes:
-        - name: client-build
-          persistentVolumeClaim:
-            claimName: client-build-claim
 ---
 apiVersion: v1
 kind: Service

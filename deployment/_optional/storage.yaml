@@ -1,9 +1,0 @@
-# optional storage class (you can use instead: premium-rwo, standard, standard-rwo default classes)
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: sc-storage
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-ssd
----

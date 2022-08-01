@@ -35,8 +35,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "typesgen": "graphql-codegen --config typesgen.yml",
-    "docker:build": "source ./../.env && docker build -t askseaman-client-build --build-arg REACT_APP_GRAPHQL_HOST=$REACT_APP_GRAPHQL_HOST --build-arg REACT_APP_GRAPHQL_PORT=$REACT_APP_GRAPHQL_PORT . && docker tag askseaman-client-build zzzloy777/askseaman-client-build:latest && docker push zzzloy777/askseaman-client-build:latest",
-    "docker:build:local": "source ./../.env.local && docker build -t askseaman-client-build-local --build-arg REACT_APP_GRAPHQL_HOST=$REACT_APP_GRAPHQL_HOST --build-arg REACT_APP_GRAPHQL_PORT=$REACT_APP_GRAPHQL_PORT . && docker tag askseaman-client-build-local zzzloy777/askseaman-client-build-local:latest && docker push zzzloy777/askseaman-client-build-local:latest"
+    "docker:build": "source ./../.env && docker build -t askseaman-client --build-arg REACT_APP_GRAPHQL_HOST=$REACT_APP_GRAPHQL_HOST --build-arg REACT_APP_GRAPHQL_PORT=$REACT_APP_GRAPHQL_PORT --build-arg NGINX_HOST=$NGINX_HOST --build-arg NGINX_PORT=$NGINX_PORT . && docker tag askseaman-client zzzloy777/askseaman-client:latest && docker push zzzloy777/askseaman-client:latest",
+    "docker:build:local": "source ./../.env.local && docker build -t askseaman-client-local --build-arg REACT_APP_GRAPHQL_HOST=$REACT_APP_GRAPHQL_HOST --build-arg REACT_APP_GRAPHQL_PORT=$REACT_APP_GRAPHQL_PORT --build-arg NGINX_HOST=$NGINX_HOST --build-arg NGINX_PORT=$NGINX_PORT . && docker tag askseaman-client-local zzzloy777/askseaman-client-local:latest && docker push zzzloy777/askseaman-client-local:latest"
   },
   "eslintConfig": {
     "extends": [
