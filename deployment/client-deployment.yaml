@@ -1,0 +1,64 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: client-build-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: "standard-rwo"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: askseaman-depl-client
+  labels:
+    env: development
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: askseaman-proj-client
+  template:
+    metadata:
+      labels:
+        project: askseaman-proj-client
+    spec:
+      containers:
+        - name: as-client-build
+          image: zzzloy777/askseaman-client-build:latest
+#          image: zzzloy777/askseaman-client-build-local:latest
+          volumeMounts:
+            - mountPath: "/client/build"
+              name: client-build
+        - name: as-client-serve
+          image: zzzloy777/askseaman-client-nginx:latest
+#          image: zzzloy777/askseaman-client-nginx-local:latest
+          volumeMounts:
+            - mountPath: "/usr/share/nginx/html"
+              name: client-build
+          ports:
+            - containerPort: 80
+              name: as-client-serve
+      volumes:
+        - name: client-build
+          persistentVolumeClaim:
+            claimName: client-build-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: askseaman-serv-client
+  labels:
+    env: development
+spec:
+  selector:
+    project: askseaman-proj-client
+  type: LoadBalancer
+  ports:
+    - name: client80
+      port: 80
+      targetPort: 80

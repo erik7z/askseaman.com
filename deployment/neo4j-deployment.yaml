@@ -18,6 +18,16 @@ spec:
       containers:
         - name: askseaman-neo4j
           image: neo4j:4.2.2-enterprise
+          volumeMounts:
+            - mountPath: "/var/lib/neo4j/data"
+              subPath: "askseaman.com/neo4j/data"
+              name: sc-volume
+            - mountPath: "/var/lib/neo4j/import"
+              subPath: "askseaman.com/neo4j/import"
+              name: sc-volume
+            - mountPath: "/var/lib/neo4j/plugins"
+              subPath: "askseaman.com/neo4j/plugins"
+              name: sc-volume
           ports:
             - containerPort: 7474
             - containerPort: 7473
@@ -27,12 +37,26 @@ spec:
               value: "neo4j/cr3wsilent"
             - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
               value: "yes"
-#            - name: NEO4J_apoc_import_file_use__neo4j__config
-#              value: "true"
-#            - name: NEO4J_apoc_export_file_enabled
-#              value: "true"
-#            - name: NEO4J_dbms_security_procedures_unrestricted
-#              value: "apoc.*"
+            - name: NEO4J_apoc_import_file_use__neo4j__config
+              value: "true"
+            - name: NEO4J_apoc_export_file_enabled
+              value: "true"
+            - name: NEO4J_dbms_security_procedures_unrestricted
+              value: "apoc.*"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - us-east4-a
+                      - us-east4-b
+      volumes:
+        - name: sc-volume
+          persistentVolumeClaim:
+            claimName: sc-volume-claim
 ---
 apiVersion: v1
 kind: Service
@@ -43,7 +67,7 @@ metadata:
 spec:
   selector:
     project: askseaman-proj-neo4j
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - name: neo4j7474
       port: 7474

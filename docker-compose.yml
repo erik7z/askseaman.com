@@ -57,18 +57,17 @@ services:
       - client-serve
 
   client-build:
-    image: zzzloy777/askseaman-client:latest
+#    image: zzzloy777/askseaman-client-build:latest
+    image: zzzloy777/askseaman-client-build-local:latest
     volumes:
       - static_content:/client/build/
 
   client-serve:
-    build: ./nginx
+#    image: zzzloy777/askseaman-client-nginx:latest
+    image: zzzloy777/askseaman-client-nginx-local:latest
     restart: unless-stopped
     ports:
       - 80:80
-    environment:
-      - NGINX_HOST=${NGINX_HOST}
-      - NGINX_PORT=${NGINX_PORT}
     volumes:
       - static_content:/usr/share/nginx/html
     depends_on:

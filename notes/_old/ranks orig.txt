@@ -1,0 +1,292 @@
+Chief Officer
+Radio Officer
+Single Officer
+2nd Officer
+3rd Officer
+Senior DPO
+Junior DPO
+DPO
+Trainee Officer
+Bosun (Boatswain)
+AB (Able Seaman)
+OS (Ordinary Seaman)
+Crane Operator
+Dredge Master
+Deck Cadet
+Cook
+Messboy
+AB/Cook
+AB/Welder
+Cadet/Trainee
+Chief Engineer
+Single Engineer
+2nd Engineer
+3rd Engineer
+4th Engineer
+Ref. Engineer
+Gas Engineer
+Electrical Engineer
+ETO 
+Trainee Engineer
+Motorman/Oiler
+Fitter/Welder
+Turner
+Electrician
+Pumpman
+Engine Cadet
+Superintendent
+AB/MM
+Chief Cook
+2nd Cook
+Diver
+Wiper
+Motorman/Electrician
+Assistant Electrical Engineer
+Watch Engineer
+Staff Engineer
+Hotel Accommodation Engineer
+Stewardess
+Hydro-acoustic operator
+Chief trawl-master
+Watch trawl-master
+Seaman-winchman
+Trawl seaman
+Master of the product
+Fish-master
+Workers of the product-plant
+Engineer-adjuster
+Fishmill operator
+Refrigerator operator
+Laundry operator
+General Manager
+Hotel Manager
+Casino Manager
+Shop Manager
+Provision Master
+Store Manager
+Purser
+Accountant
+Cruise Director
+Hotel, Manager - Director
+Hotel, Manager Secretary
+Receptionist
+Storekeeper
+Cashier
+Photographer
+Security Officer
+Security Guard
+Steward, Head Room
+Steward / Stewardess, Cabin
+Steward / Stewardess, Assistant Cabin
+Bell Captain
+Bell Boy
+Cleaner
+Laundry, Man
+Linen Keeper
+Chambermaid
+Pool Attendant
+Food / Beverage Manager
+Food / Beverage Assistant Manager
+Bar Manager
+Bar Assistant Manager
+Bartender
+Bar Waiter
+Head Waiter
+Waiter / Waitress
+Wine Steward
+Busboy
+Plumber
+Upholsterer
+Tailor
+Carpenter
+AC Repairman
+General Purpose Repairman
+Doctor
+Administrative Assistant
+Art Auctioneer
+Assistant Cruise Director
+Assistant Shore Excursions Manager
+Audio Visual Coordinator
+AV/IT
+Baker
+Bar Steward
+Beautician
+Beauty Therapist
+Bedroom Steward
+Booking Agent
+Bookkeeper
+Brand Manager
+Buffet Server 
+Butcher
+Cabin Stewardess
+CETO
+Chef de Partie
+Chief Cabin Steward
+Chief Purser
+Chief Steward/Housekeeper
+Chief Stewardess
+Cocktail Server 
+Computer Systems Manager/IT
+Cosmetologist
+Cruise Consultant
+Customer Service Representative
+Dancer
+Dance Instructor
+Deck Hand
+Dining Room Head Waiter
+Dining Room Manager 
+Disc Jockey
+Dive Instructor
+Entertainer
+Expedition Leader
+Field Representative
+Fitness Director
+Fitness Instructor
+Galley Stewardess
+General Cook 
+Gentlemen Host
+Gift Shop Manager
+Gift Shop Sales Assistant
+Hair Stylist
+Housekeeper, Assistant
+Housekeeper, Chief
+HR Manager
+Inside Sales Representative
+IT Lead Developer
+IT Staff
+Laundry Helper
+Laundry Keeper
+Laundry Supervisor
+Lead Deckhand 
+Lecturer/ Special Guest Speaker
+Lifeguard
+Maitre d' Hotel
+Manicurist
+Marketing / PR
+Marketing Research Analyst
+Massage Therapist
+Naturalist
+Nurse/Stewardess
+Operations Administrator
+Operations Analyst
+Outside Sales Representative
+Payroll Clerk
+Personal Trainer
+Production Manager
+Program Coordinator
+Purchasing Agent
+Quarter Master
+Safety Officer
+Senior Business Analyst
+Senior Housekeeper
+Senior Staff Accountant
+Senior Stewardess
+Shore Excursions Manager
+Social Host/Hostess
+Software Engineer
+Sound and Light Technician
+Spa Attendant
+Spa Stewardess
+Staff Accountant
+Staff Captain
+Tour Accounting
+Water Sports Instructor
+Worker of the product-plant
+Contracts Administrator
+Contracts Manager
+Chartering Manager
+Systems Engineer
+Naval Architect
+Sales Manager
+Business Development Manager
+Superintendent Electrical
+Trader
+Analyst
+Port Manager
+Engineering Manager
+Maintenance Technician
+CAD Operator
+SG1A
+Service Manager
+Technical Manager
+Underwriter
+Head of Network Planning
+Network Planning Manager
+Marine Surveyor
+Marine Consultant
+Buyer
+Terminal Manager
+Superintendent Technical
+IT Manager
+Technical Assistant
+Operations Manager
+Ship Planner
+Marine Manager
+Associate
+Ship Operator
+Crewing Manager
+Service Engineer
+Controls Engineer
+Account Executive
+Claims Executive
+Risk Advisor
+Account Manager
+Commercial Manager
+Human Resources
+Welding Engineer
+Export Clerk
+Project Manager
+Vetting Superintendent
+Procurement Officer
+Superintendent Operations
+Operations Assistant
+Operations Executive
+Logistics Executive
+Quality Manager
+Marine Engineer
+Operations Officer
+Sales Engineer
+Cargo Engineer
+Technical Director
+Procurement Manager
+Customer Service Executive
+Bunker Purchaser
+Project Engineer
+Bunker Trader
+Recruitment Consultant
+Structural Engineer
+Project Officer
+Port Engineer
+Client Representative
+Ships Agent
+Port Agent
+Charterer
+Superintendent Cargo
+Crewing Officer
+Operations Director
+Assistant HSE Superintendent
+Environmental Manager
+Marketing Executive
+Port Captain
+Broker
+HSE Manager
+Surveyor
+Administration Manager
+Roustabout
+Derrickman
+Floor man
+Pipefitter
+Fabricator
+Coxswain
+Repair Engineer
+Personal Assistant (secretary)
+Administration support
+Injection Molding machine operator
+Junior mechanical engineer 
+Spring machine operator 
+lathe machine operator
+Slot Technician
+Commissioning Engineer
+Communication Officer
+Hydrographic surveyor
+Pipe Operator

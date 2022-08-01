@@ -1,6 +1,6 @@
 .env
 .idea
-/_other
+/notes/_other
 /api/.env
 /api/build
 /api/node_modules

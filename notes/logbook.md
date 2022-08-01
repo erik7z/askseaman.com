@@ -1,3 +1,8 @@
+# 28.07.22
+
+gcloud container clusters update sc --update-addons=GcePersistentDiskCsiDriver=ENABLED --region=us-east4
+gcloud compute disks create seacontact-disk --size 32 --type pd-ssd
+gcloud compute disks list
 
 # 18.07.22
 ## setting up k8 for askseaman/sc:
