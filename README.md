@@ -24,7 +24,7 @@ cd ./client && npm run docker:build # or npm run docker:build:local
 # copy envs from .env-local.example or .env-server.example to .env according to your environment:
 cp ./.env-local.example .env
 
-# uncomment appropriate line for client image (local or production) in docker-compose.yml
+# uncomment appropriate line in docker-compose.yml for client image (local or production)
 
 # wind up the project:
 docker-compose up --force-recreate 
