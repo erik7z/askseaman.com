@@ -23,7 +23,6 @@ services:
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*
 
   api:
-#   build: ./api
     image: zzzloy777/askseaman-api:latest
     restart: unless-stopped
     ports:
