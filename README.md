@@ -60,7 +60,7 @@ kubectl config use-context {context-name}
 kubectl get nodes 
 ```
 
-- Set up storage disk:
+- Set up and prepare storage disk: (only formatted disks can be used in instance PVC)
 ```shell
 # enable PD addon and create unformatted disk:
 gcloud container clusters update ez --update-addons=GcePersistentDiskCsiDriver=ENABLED --zone=europe-west4-a
@@ -95,8 +95,6 @@ sudo mount -o discard,defaults /dev/sdb /mnt/disks/ez_disk
 # 3. Configure read and write permissions on the disk. For this example, grant write access to the disk for all users.
 sudo chmod a+w /mnt/disks/ez_disk
 
-# SFTP to instance, copy all necessary files and then unmount and detach disk
-
 # Unmounting disk
 lsblk
 # unmount using directory
@@ -113,24 +111,85 @@ gcloud compute instances stop sc-util
 gcloud compute instances delete sc-util
 
 # get disk link:
-gcloud compute disks describe ez-disk | grep selfLink #take part starting from project
+gcloud compute disks describe ez-disk | grep selfLink #use part starting from 'project' in PV config
+```
+
+- prepare storages and transfer static files:
+```shell
+# create storage class
+kubectl apply -f ./deployment/storage.yaml
+
+# create volume+volume claim
+kubectl apply -f ./deployment/zonal/volume+claim.yaml
+
+# run up utility pod if needed: (transfer files/manage storage)
+kubectl apply -f ./deployment/zonal/util.yaml
+
+# ssh to utility pod and transfer files:
+kubectl exec -ti ez-util -- /bin/bash
+
+# copy neo4j db data into root@ez-util:/transfer/askseaman.com/neo4j
+# get local directory size:
+du -sh ./neo4j
+
+# install pv on your machine (to see transfer progress)
+apt install pv
+# copy files to root directory
+tar cf - ./neo4j | pv -s 219M | kubectl exec -i ez-util -- tar xf -
+
+# move transfered folder
+root@ez-util:/# mv ./neo4j ./transfer/askseaman.com/
+
+# install curl and fetch neo4j apoc plugin in pod 
+root@ez-util:/# apt update && apt install curl
+root@ez-util:/# curl -L -o /transfer/askseaman.com/neo4j/plugins/apoc-4.2.0.5-all.jar https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/4.2.0.5/apoc-4.2.0.5-all.jar
+
+# change access rights:
+#chmod -R 777 ./transfer/askseaman.com/neo4j/
+
+# disconnect and delete utility pod
+kubectl delete -f ./deployment/zonal/util.yaml
+```
+
+- run up deployments
+```shell
+# run neo4j db deployment
+kubectl apply -f ./deployment/zonal/neo4j-deployment.yaml
+
+# deploy api & client
+kubectl apply -f ./deployment/api-deployment.yaml
+kubectl apply -f ./deployment/client-deployment.yaml
 ```
 
 
+Setup static ip, ingress, dns
+```shell
+# add ingress controller to cluster
+kubectl apply -f https://projectcontour.io/quickstart/contour.yaml
 
+# get list of static addresses
+gcloud compute addresses list 
 
+# create new static ip if needed
+#gcloud compute addresses create askseaman-ip --global
 
+# add static ip as annotation to ingress rules (kubernetes.io/ingress.global-static-ip-name: "askseaman-ip")
+# apply ingress rules to cluster
+kubectl apply -f ./deployment/ingress.yaml
 
+# check forwarding rules 
+gcloud compute forwarding-rules list --format \
+  "table[box](name,region,IPAddress,target.segment(-2):label=TARGET_TYPE)"
 
+# take ip address for created ingress and update A record type in dns rules
+gcloud dns --project=seacontact record-sets update askseaman.com. --type="A" --zone="askseaman" --rrdatas="34.120.76.214" --ttl="300"
+gcloud dns --project=seacontact record-sets update api.askseaman.com. --type="A" --zone="askseaman" --rrdatas="34.120.76.214" --ttl="300"
+gcloud dns --project=seacontact record-sets update '*.askseaman.com.' --type="A" --zone="askseaman" --rrdatas="34.120.76.214" --ttl="300"
+
+```
 
 
 # TODO:
-
-!- add deployment instructions
-
-- deploy askseaman to gcloud k8 cluster
-  - volumes
-  - set up dns for new ingress
 - set up github pipelines to automatically update deployment
 - set up secrets and environments in k8/gcp
 - set up static files storages (images, db cache)

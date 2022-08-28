@@ -51,8 +51,7 @@ spec:
                   - key: topology.kubernetes.io/zone
                     operator: In
                     values:
-                      - us-east4-a
-                      - us-east4-b
+                      - europe-west4-a
       volumes:
         - name: ez-volume
           persistentVolumeClaim:
