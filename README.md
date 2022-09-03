@@ -125,9 +125,6 @@ kubectl apply -f ./deployment/zonal/volume+claim.yaml
 # run up utility pod if needed: (transfer files/manage storage)
 kubectl apply -f ./deployment/zonal/util.yaml
 
-# ssh to utility pod and transfer files:
-kubectl exec -ti ez-util -- /bin/bash
-
 # copy neo4j db data into root@ez-util:/transfer/askseaman.com/neo4j
 # get local directory size:
 du -sh ./neo4j
@@ -137,7 +134,8 @@ apt install pv
 # copy files to root directory
 tar cf - ./neo4j | pv -s 219M | kubectl exec -i ez-util -- tar xf -
 
-# move transfered folder
+# ssh to utility pod and move transfered folder
+kubectl exec -ti ez-util -- /bin/bash
 root@ez-util:/# mv ./neo4j ./transfer/askseaman.com/
 
 # install curl and fetch neo4j apoc plugin in pod 
