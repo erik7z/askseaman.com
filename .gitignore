@@ -1,4 +1,5 @@
 .idea
+.env
 /notes/_other
 /api/.env
 /api/build
